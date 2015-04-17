@@ -1,38 +1,27 @@
 package et4.corpus;
 
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.io.FileNotFoundException;
+
+import et4.index.CorpusIndex;
+import et4.index.Tokenization;
 
 public class MonolingualCorpus {
-	private static String corpusContent;
+	private static CorpusIndex index;
 
-	/**
-	 * @param fileName
-	 * @param encoding
-	 * @return String contains file input
-	 * @throws IOException
-	 */
-	public static boolean loadFromFile(String fileName, Charset encoding) {
-		try {
-			byte[] encoded = Files.readAllBytes(Paths.get(fileName));
-			corpusContent = new String(encoded, encoding);
-			return true;
-		} catch (IOException e) {
-			return false;
-		}
+	public MonolingualCorpus(Tokenization tok, String filename) throws FileNotFoundException {
+		index = tok.Tokenize(filename);
 	}
 
 	public String getTokenAtPosition(int position) {
-		return null;
+		return index.getListTokens().get(position).getStringToken();
 	}
 
 	public String getSuffixFromPosition(int position) {
 		return null;
 	}
 
-	public int compareSuffixes(int position1, int position2) {
-		return 0;
+	public int compareSuffixes(int pos1, int pos2) {
+		return index.getListTokens().get(pos1).getStringToken()
+				.compareTo(index.getListTokens().get(pos2).getStringToken());
 	}
 }

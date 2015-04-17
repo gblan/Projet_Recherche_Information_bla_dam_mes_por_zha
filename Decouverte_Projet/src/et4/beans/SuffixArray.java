@@ -1,17 +1,32 @@
 package et4.beans;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 import et4.corpus.MonolingualCorpus;
+import et4.index.CorpusIndex;
+import et4.index.Token;
 
 public class SuffixArray {
 
 	private MonolingualCorpus corpus;
-
 	// the main data structure
-	private int suffixes[];
+	private int tabSuffixes[];
+	private CorpusIndex index;
 	// random number generator used for quick sorting
 	private static final Random RAND = new Random();
+
+	public SuffixArray(MonolingualCorpus corpus, CorpusIndex index) {
+		this.corpus = corpus;
+		this.index = index;
+		tabSuffixes = new int[index.getListTokens().size()];
+	}
+
+	private void fillTabSuffix() {
+		for (int i = 0; i < index.getListTokens().size(); i++) {
+			tabSuffixes[i] = index.getListTokens().get(i).getPosition();
+		}
+	}
 
 	// call to sort the entire suffix array
 	// qsort( suffixes , 0 , suffixes.length - 1);
@@ -20,34 +35,61 @@ public class SuffixArray {
 	 *
 	 * Uses : corpus . compareSuffixes ( i , j ) to sort values
 	 *
-	 * @param array
+	 * @param tabSuffixes
 	 * @param begin
 	 * @param end
 	 */
-	private void qsort(int[] array, int begin, int end) {
+	private void qsort(int[] tabSuffixes, int begin, int end) {
 		if (end > begin) {
 			int index = begin + RAND.nextInt(end - begin + 1);
-			int pivot = array[index];
+			int pivot = tabSuffixes[index];
 			{
-				int tmp = array[index];
-				array[index] = array[end];
-				array[end] = tmp;
+				int tmp = tabSuffixes[index];
+				tabSuffixes[index] = tabSuffixes[end];
+				tabSuffixes[end] = tmp;
 			}
 			for (int i = index = begin; i < end; ++i) {
-				if (corpus.compareSuffixes(array[i], pivot) <= 0) {
-					int tmp = array[index];
-					array[index] = array[i];
-					array[i] = tmp;
+				if (corpus.compareSuffixes(tabSuffixes[i], pivot) <= 0) {
+					int tmp = tabSuffixes[index];
+					tabSuffixes[index] = tabSuffixes[i];
+					tabSuffixes[i] = tmp;
 					index++;
 				}
 			}
 			{
-				int tmp = array[index];
-				array[index] = array[end];
-				array[end] = tmp;
+				int tmp = tabSuffixes[index];
+				tabSuffixes[index] = tabSuffixes[end];
+				tabSuffixes[end] = tmp;
 			}
-			qsort(array, begin, index - 1);
-			qsort(array, index + 1, end);
+			qsort(tabSuffixes, begin, index - 1);
+			qsort(tabSuffixes, index + 1, end);
 		}
+	}
+
+	public int[] getLCPVector() {
+		int[] result = new int[tabSuffixes.length + 1];
+		ArrayList<Token> listToken = index.getListTokens();
+		result[0] = 0;
+		for (int i = 1; i < tabSuffixes.length + 1; i++) {
+			result[i] = getLCP2String(listToken.get(tabSuffixes[i]), listToken.get(tabSuffixes[i - 1]));
+		}
+
+		return result;
+	}
+
+	private int getLCP2String(Token token1, Token token2) {
+		int result = 0;
+		String s1 = token1.getStringToken();
+		String s2 = token2.getStringToken();
+
+		for (int i = 0; i < Integer.min(s1.length(), s2.length()); i++) {
+			if (s1.charAt(i) == s2.charAt(i)) {
+				result++;
+			} else {
+				break;
+			}
+		}
+
+		return result;
 	}
 }
