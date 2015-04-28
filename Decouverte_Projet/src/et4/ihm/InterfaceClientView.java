@@ -51,7 +51,7 @@ public class InterfaceClientView extends JFrame {
 		
 		JPanel inputR = new JPanel();
 		JTextField jTFR = new JTextField();
-		JLabel jLR = new JLabel("Recherche d'un mot ou d'un ensemble de mot: ");
+		JLabel jLR = new JLabel("Recherche ");
 		BoxLayout inputRLayout = new BoxLayout(inputR,BoxLayout.X_AXIS);
 		inputR.setLayout(inputRLayout);
 		inputR.add(jLR);
