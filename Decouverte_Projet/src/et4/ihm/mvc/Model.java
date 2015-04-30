@@ -65,11 +65,11 @@ public class Model extends Observable{
 		for(int i = 0; i<15; i++) {
 			//Le premier composant n'a pas de + space dans le calcul
 			if(i==0) {
-				components.add(new KnowledgeComponent(new Point(0,KnowledgePanel.heightComponent+KnowledgePanel.space*i),"男人","homme",getPinyin("男人"), rate, View.width, KnowledgePanel.heightComponent));
+				components.add(new KnowledgeComponent(new Point(0,KnowledgePanel.heightComponent+KnowledgePanel.space*i),"鸟","oiseau",getPinyin("鸟"), rate, View.width, KnowledgePanel.heightComponent));
 			}
 			else {
 				//components.add(new KnowledgeComponent(new Point(0,KnowledgePanel.heightComponent*(i+1)+KnowledgePanel.space*i),"男人","homme","Nánrén", rate, View.width, KnowledgePanel.heightComponent));
-				components.add(new KnowledgeComponent(new Point(0,KnowledgePanel.heightComponent*(i+1)+KnowledgePanel.space*i),"男人","homme", getPinyin("男人"), rate, View.width, KnowledgePanel.heightComponent));
+				components.add(new KnowledgeComponent(new Point(0,KnowledgePanel.heightComponent*(i+1)+KnowledgePanel.space*i),"鸟","oiseau", getPinyin("鸟"), rate, View.width, KnowledgePanel.heightComponent));
 			}
 			//components.add(new SearchComponent(new Point(0,heightComponent*2+space),"要还是不","Etre ou ne pas etre","Yào háishì bù","not", View.width, heightComponent));
 			rate+=80;
