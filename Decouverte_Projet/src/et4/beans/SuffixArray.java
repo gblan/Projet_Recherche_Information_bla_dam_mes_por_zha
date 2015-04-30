@@ -144,4 +144,16 @@ public class SuffixArray {
 
 		return result;
 	}
+	
+	int[] getAllPositionsOfPhrase(String phrase){
+		/* tokenisation pour tester si tous les tokens de la phrase sont dans l'index*/
+		
+		
+		/* recherche dichotomique*/
+		
+		
+		/* liste de secours*/
+		
+		return null;		
+	}
 }
