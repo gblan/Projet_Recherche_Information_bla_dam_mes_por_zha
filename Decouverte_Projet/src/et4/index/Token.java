@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class Token {
 
 	private String documentName;
-	private ArrayList<Integer> positions;
+	private ArrayList<Integer> positions = new ArrayList<Integer>();
 	private String token;
 
 	public Token(String documentName, int position, String token) {
@@ -27,7 +27,7 @@ public class Token {
 	public String getStringToken() {
 		return token;
 	}
-	
+
 	public ArrayList<Integer> getPositions() {
 		return positions;
 	}

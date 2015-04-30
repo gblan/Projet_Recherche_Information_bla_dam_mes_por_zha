@@ -15,9 +15,9 @@ public class CorpusIndex {
 
 	public void addToken(Token tok){
 		if(mapTokens.containsKey(tok.getStringToken())){
-			mapTokens.put(tok.getStringToken(),tok);
-		}else{
 			mapTokens.get(tok.getStringToken()).getPositions().add(tok.getPositions().get(0));
+		}else{
+			mapTokens.put(tok.getStringToken(),tok);
 		}
 	}
 }

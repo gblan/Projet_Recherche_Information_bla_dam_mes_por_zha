@@ -25,7 +25,7 @@ public class SuffixArray {
 
 	public void initTabSuffix() {
 		for (int i = 0; i < corpus.getIndex().getListTokens().size(); i++) {
-			tabSuffixes[i] = corpus.getIndex().getListTokens().get(i).getPosition();
+//			tabSuffixes[i] = corpus.getIndex().getListTokens().get(i).getPositions();
 		}
 		System.out.println("init OK");
 	}
@@ -42,8 +42,6 @@ public class SuffixArray {
 	 * @param end
 	 */
 	public void qsort(int[] tabSuffixes, int begin, int end) {
-		System.out.println("qsort");
-		System.out.println("begin : "+begin+", end : "+end);
 		if (end > begin) {
 			int index = begin + RAND.nextInt(end - begin + 1);
 			int pivot = tabSuffixes[index];
@@ -72,10 +70,10 @@ public class SuffixArray {
 
 	public int[] getLCPVector() {
 		int[] result = new int[tabSuffixes.length + 1];
-		ArrayList<Token> listToken = corpus.getIndex().getListTokens();
+//		ArrayList<Token> listToken = corpus.getIndex().getListTokens();
 		result[0] = 0;
 		for (int i = 1; i < tabSuffixes.length ; i++) {
-			result[i] = getLCP2String(listToken.get(tabSuffixes[i]), listToken.get(tabSuffixes[i - 1]));
+//			result[i] = getLCP2String(listToken.get(tabSuffixes[i]), listToken.get(tabSuffixes[i - 1]));
 		}
 		
 		result[tabSuffixes.length] = 0;

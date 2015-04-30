@@ -4,6 +4,11 @@ import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Observable;
 
+import net.sourceforge.pinyin4j.PinyinHelper;
+import net.sourceforge.pinyin4j.format.HanyuPinyinOutputFormat;
+import net.sourceforge.pinyin4j.format.HanyuPinyinToneType;
+import net.sourceforge.pinyin4j.format.HanyuPinyinVCharType;
+import net.sourceforge.pinyin4j.format.exception.BadHanyuPinyinOutputFormatCombination;
 import et4.ihm.mvc.component.KnowledgeComponent;
 import et4.ihm.mvc.component.SearchComponent;
 import et4.ihm.mvc.panel.body.KnowledgePanel;
@@ -34,10 +39,11 @@ public class Model extends Observable{
 
 			//Le premier composant n'a pas de + space dans le calcul
 			if(i==0) {
-				components.add(new SearchComponent(new Point(0,SearchPanel.heightComponent*(i+1)),"你好吗","Comment allez-vous ?","Nǐ hǎo ma?", "allez", View.width-20, SearchPanel.heightComponent));
+				components.add(new SearchComponent(new Point(0,SearchPanel.heightComponent*(i+1)),"你好吗","Comment allez-vous ?",getPinyin("你好吗"), "allez", View.width-20, SearchPanel.heightComponent));
 			}
 			else {
-				components.add(new SearchComponent(new Point(0,SearchPanel.heightComponent*(i+1)+SearchPanel.space*i),"你好吗","Comment allez-vous ?","Nǐ hǎo ma?", "allez", View.width-20, SearchPanel.heightComponent));
+				//components.add(new SearchComponent(new Point(0,SearchPanel.heightComponent*(i+1)+SearchPanel.space*i),"你好吗","Comment allez-vous ?","Nǐ hǎo ma?", "allez", View.width-20, SearchPanel.heightComponent));
+				components.add(new SearchComponent(new Point(0,SearchPanel.heightComponent*(i+1)+SearchPanel.space*i),"你好吗","Comment allez-vous ?",getPinyin("你好吗"), "allez", View.width-20, SearchPanel.heightComponent));
 			}
 		}
 		
@@ -59,10 +65,11 @@ public class Model extends Observable{
 		for(int i = 0; i<15; i++) {
 			//Le premier composant n'a pas de + space dans le calcul
 			if(i==0) {
-				components.add(new KnowledgeComponent(new Point(0,KnowledgePanel.heightComponent+KnowledgePanel.space*i),"男人","homme","Nánrén", rate, View.width, KnowledgePanel.heightComponent));
+				components.add(new KnowledgeComponent(new Point(0,KnowledgePanel.heightComponent+KnowledgePanel.space*i),"鸟","oiseau",getPinyin("鸟"), rate, View.width, KnowledgePanel.heightComponent));
 			}
 			else {
-				components.add(new KnowledgeComponent(new Point(0,KnowledgePanel.heightComponent*(i+1)+KnowledgePanel.space*i),"男人","homme","Nánrén", rate, View.width, KnowledgePanel.heightComponent));
+				//components.add(new KnowledgeComponent(new Point(0,KnowledgePanel.heightComponent*(i+1)+KnowledgePanel.space*i),"男人","homme","Nánrén", rate, View.width, KnowledgePanel.heightComponent));
+				components.add(new KnowledgeComponent(new Point(0,KnowledgePanel.heightComponent*(i+1)+KnowledgePanel.space*i),"鸟","oiseau", getPinyin("鸟"), rate, View.width, KnowledgePanel.heightComponent));
 			}
 			//components.add(new SearchComponent(new Point(0,heightComponent*2+space),"要还是不","Etre ou ne pas etre","Yào háishì bù","not", View.width, heightComponent));
 			rate+=80;
@@ -76,5 +83,35 @@ public class Model extends Observable{
 	public void search(String text) {
 		
 		System.out.println("Action dans le model 'search' : "+text);
+	}
+	
+	public String getPinyin(String phraseChinoise){
+		String pinYinDePhrase = null;
+		HanyuPinyinOutputFormat format= new HanyuPinyinOutputFormat();
+		format.setToneType(HanyuPinyinToneType.WITH_TONE_MARK);
+		format.setVCharType(HanyuPinyinVCharType.WITH_U_UNICODE);
+		                  
+		for (int j = 0; j < phraseChinoise.length(); j++) {
+			char caractereChinois = phraseChinoise.charAt(j);
+			String[] pinyinArray = null;
+			try {
+				pinyinArray = PinyinHelper
+						.toHanyuPinyinStringArray(caractereChinois, format);
+			} catch (BadHanyuPinyinOutputFormatCombination e) {
+				e.printStackTrace();
+			}
+			/* afficher toutes les possibilites de Pinyin
+			for (int i = 0; i < pinyinArray.length; ++i) {
+				System.out.println(pinyinArray[i]);
+			}
+			*/
+			//System.out.println(pinyinArray[0]);
+			if(pinYinDePhrase == null){
+			pinYinDePhrase = pinyinArray[0];
+			}else{
+				pinYinDePhrase = pinYinDePhrase + " " + pinyinArray[0];
+			}
+		}
+		return pinYinDePhrase;
 	}
 }

@@ -1,8 +1,10 @@
 package et4.ihm.mvc.panel.body;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 
+import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
@@ -32,8 +34,10 @@ public class BodyPanel extends JPanel{
 		
 		scrollSearch = new JScrollPane();
 		scrollSearch.setBackground(UIColor.BLUE_LIGHT);
+		scrollSearch.setBorder(BorderFactory.createEmptyBorder());
 		scrollKnowledge = new JScrollPane();
 		scrollKnowledge.setBackground(UIColor.BLUE_NORMAL);
+		scrollKnowledge.setBorder(BorderFactory.createEmptyBorder());
 		
 		setLayout(new BorderLayout());
 		scrollSearch.setViewportView(search);
