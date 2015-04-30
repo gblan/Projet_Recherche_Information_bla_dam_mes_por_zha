@@ -11,6 +11,8 @@ import et4.index.TokenizationFrench;
 
 public class Test {
 
+
+
 	public static void main(String[] args) {
 		Tokenization tf = new TokenizationFrench();
 		try {
@@ -23,6 +25,7 @@ public class Test {
 			for (int i = 0; i < 100; i++) {
 				System.out.println(suffixArray.getTabSuffix()[i]);
 			}
+
 			
 			/* tri du tableau */
 		
@@ -31,5 +34,6 @@ public class Test {
 			System.err.println("File Not Found");
 		}
 	}
+
 
 }
