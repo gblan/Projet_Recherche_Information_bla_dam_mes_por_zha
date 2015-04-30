@@ -16,18 +16,24 @@ public class SuffixArray {
 
 	public SuffixArray(MonolingualCorpus corpus) {
 		this.corpus = corpus;
+		this.tabSuffixes = new int[corpus.getNbMots()];
 	}
-	
-	public int[] getTabSuffix(){
+
+	public int[] getTabSuffix() {
 		return tabSuffixes;
 	}
 
+	/**
+	 * Initialise le tableau de suffixes en donnant les positions des différents
+	 * tokens du fichier
+	 */
 	public void initTabSuffix() {
-		for(Entry<String, Token> entry : corpus.getIndex().getListTokens().entrySet()){
-//			for(Integer :entry.)
-		}
-		for (int i = 0; i < corpus.getIndex().getListTokens().size(); i++) {
-//			tabSuffixes[i] = corpus.getIndex().getListTokens().get(i).getPositions();
+		int i = 0;
+		for (Entry<String, Token> entry : corpus.getIndex().getListTokens().entrySet()) {
+			for (int list : entry.getValue().getPositions()) {
+				tabSuffixes[i] = list;
+				i++;
+			}
 		}
 		System.out.println("init OK");
 	}
@@ -44,6 +50,7 @@ public class SuffixArray {
 	 * @param end
 	 */
 	public void qsort(int[] tabSuffixes, int begin, int end) {
+		// System.out.println("qsort");
 		if (end > begin) {
 			int index = begin + RAND.nextInt(end - begin + 1);
 			int pivot = tabSuffixes[index];
@@ -68,39 +75,41 @@ public class SuffixArray {
 			qsort(tabSuffixes, begin, index - 1);
 			qsort(tabSuffixes, index + 1, end);
 		}
+		// System.out.println("QSort OK");
 	}
 
 	public int[] getLCPVector() {
 		int[] result = new int[tabSuffixes.length + 1];
-//		ArrayList<Token> listToken = corpus.getIndex().getListTokens();
+		// ArrayList<Token> listToken = corpus.getIndex().getListTokens();
 		result[0] = 0;
-		for (int i = 1; i < tabSuffixes.length ; i++) {
-//			result[i] = getLCP2String(listToken.get(tabSuffixes[i]), listToken.get(tabSuffixes[i - 1]));
+		for (int i = 1; i < tabSuffixes.length; i++) {
+			 result[i] = getLCP2String(tabSuffixes[i],tabSuffixes[i+1]);
+			// listToken.get(tabSuffixes[i - 1]));
 		}
-		
+
 		result[tabSuffixes.length] = 0;
 
 		return result;
 	}
-	
+
 	/**
-	 * @param token1
-	 * @param token2
+	 * @param tabSuffixes2
+	 * @param tabSuffixes3
 	 * @return
 	 */
-	private int getLCP2String(Token token1, Token token2) {
+	private int getLCP2String(int tabSuffixes2, int tabSuffixes3) {
 		int result = 0;
-		String s1 = token1.getStringToken();
-		String s2 = token2.getStringToken();
-
-		for (int i = 0; i < Math.min(s1.length(), s2.length()); i++) {
-			if (s1.charAt(i) == s2.charAt(i)) {
-				result++;
-			} else {
-				break;
-			}
-		}
-
+////		String s1 = tabSuffixes2.getStringToken();
+////		String s2 = tabSuffixes3.getStringToken();
+//
+//		for (int i = 0; i < Math.min(s1.length(), s2.length()); i++) {
+//			if (s1.charAt(i) == s2.charAt(i)) {
+//				result++;
+//			} else {
+//				break;
+//			}
+//		}
+//
 		return result;
 	}
 }
