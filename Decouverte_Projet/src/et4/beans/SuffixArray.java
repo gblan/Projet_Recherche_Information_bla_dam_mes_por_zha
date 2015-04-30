@@ -1,7 +1,10 @@
 package et4.beans;
 
 import java.util.Map.Entry;
+import java.util.ArrayList;
 import java.util.Random;
+
+import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
 
 import et4.corpus.MonolingualCorpus;
 import et4.index.Token;
@@ -144,4 +147,66 @@ public class SuffixArray {
 
 		return result;
 	}
+	
+	
+	
+	public static int dichotomieRecursive(ArrayList<String> array, String text, int starting, int ending) {
+		
+		if(ending<starting) return -1;
+		int mid = (int)((starting+ending)/2);
+		System.out.println("array.get(mid)= " +array.get(mid));
+		int result = array.get(mid).compareTo(text);
+		if(result==0)
+			return mid;
+		else if(result<0) {
+			starting = mid+1;
+		}
+		else {
+			
+			ending = mid-1;
+		}
+	
+		
+		return dichotomieRecursive(array,text, starting, ending);
+	}
+	
+	public static void main(String[] args) {
+		
+		ArrayList<String> exemple = new ArrayList<String>();
+			exemple.add("Anacondaaaaaa");
+			exemple.add("Anticonsti-qjsqdqdh");
+			exemple.add("Cerise");
+			exemple.add("Java");
+			exemple.add("Orange");
+			exemple.add("Pastèque");
+			exemple.add("Pastèque");
+			exemple.add("Pastèque");
+			exemple.add("Pastèque");
+			exemple.add("Pastèque");
+			exemple.add("Pastèque");
+			exemple.add("Pastèque");
+			exemple.add("Pastèque");
+			exemple.add("Pastèque");
+			exemple.add("Pastèque");
+			exemple.add("Pastèque");
+			exemple.add("Pastèque");
+			exemple.add("Pastèque");
+			exemple.add("Pastèque");
+			exemple.add("Pastèque");
+			exemple.add("Pastèque");
+			exemple.add("Pastèque");
+			exemple.add("Pastèque");
+			exemple.add("Pastèque");
+			exemple.add("Pastèque");
+			exemple.add("Pastèque");
+			exemple.add("Pastèque");
+			exemple.add("Pomme");
+			exemple.add("Vert");
+			exemple.add("Zèbre");
+			
+			
+		int position = SuffixArray.dichotomieRecursive(exemple,"Anacondaaaaaa",0,exemple.size()-1);
+		System.out.println("Position = "+position);
+	}
+	
 }
