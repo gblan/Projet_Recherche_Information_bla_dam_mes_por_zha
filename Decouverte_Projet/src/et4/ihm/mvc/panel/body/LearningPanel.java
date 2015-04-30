@@ -8,12 +8,21 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridLayout;
 import java.awt.RenderingHints;
+import java.awt.im.InputContext;
+import java.io.IOException;
+import java.util.Properties;
 
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
+
+import org.kiang.chinese.pinyin.im.PinyinInputTermSource.PinyinInputMethodControl;
+import org.kiang.chinese.pinyin.im.app.PinyinInputConfig;
+import org.kiang.chinese.pinyin.im.app.main.PinyinInputAppConfig;
+import org.kiang.chinese.pinyin.im.swing.PinyinInputTextArea;
+import org.kiang.swing.JFontChooser;
 
 import et4.ihm.mvc.Model;
 import et4.ihm.mvc.View;
@@ -26,10 +35,24 @@ public class LearningPanel extends JPanel{
 	private final String FONT = "Helvetica-Neue";
 	private final int FONT_SIZE = 20;
 	private Model model;
+	// a Font bundled as a resource, if available
+	private Font bundledFont;
+	// resource path of the configuration
+	static private final String PROPERTIES_RESOURCE = "input.properties";
+	
+	static private final String[] SUPPORTED_CHARSETS = new String[] {
+		// FileFilters get added to a JFileChooser in the order
+		// they appear in the array.  seems like JFileChooser
+		// will use the last as the selected no matter what,
+		// so make the last the one that should be selected.
+		"GB2312",
+		"Big5",
+		"UTF-8",
+	};
 	public LearningPanel(Model model) {
 		this.model = model;
 		
-		JTextArea inputarea = new JTextArea(); inputarea.setBackground(UIColor.BLUE_DARK);
+		PinyinInputTextArea inputarea = initConfig(); inputarea.setBackground(UIColor.BLUE_DARK);
 			inputarea.setForeground(Color.WHITE);
 			inputarea.setFont(new Font(FONT, Font.PLAIN, FONT_SIZE));
 			inputarea.setCaretColor(Color.WHITE);
@@ -96,4 +119,64 @@ public class LearningPanel extends JPanel{
 		
 		
 	}
+	/**
+	 * Initialize the text area using the resource configuration.
+	 * @return the configured text area
+	 */
+	private PinyinInputTextArea initConfig() {
+		PinyinInputTextArea textArea = this.buildTextArea();
+		
+		Properties props = new Properties();
+		try {
+			props.load(PinyinInputAppConfig.class.getResourceAsStream(PROPERTIES_RESOURCE));
+		} catch(IOException ioe) {
+			// couldn't read props, will just resort to defaults.
+			// not necessarily wrong, since the properties are optional
+		}
+		
+		// use the properties to initialize a configuration
+		PinyinInputConfig config = new PinyinInputAppConfig(props);
+		
+		// obtain the InputContext from the text area, and use
+		// its control object in the configuration.
+		InputContext inputContext = textArea.getInputContext();
+		PinyinInputMethodControl control = (PinyinInputMethodControl)inputContext.getInputMethodControlObject();
+		control.setCharacterMode(config.getCharacterMode());
+		control.setChooserOrientation(config.getChooserOrientation());
+		control.setUsingRawWindow(config.getRawMode());
+		
+
+		Font currentFont = textArea.getFont();
+		Font font = config.getFont(currentFont);
+		// check if the font is one that exists on the system already.
+		// if not, then we store it as an instance variable so we
+		// can re-present it as an option later on the font chooser.
+		boolean fontBundled = true;
+		Font[] systemFonts = JFontChooser.getSystemFonts(font.getStyle(), font.getSize());
+		for(Font systemFont : systemFonts) {
+			if(font.getFamily().equals(systemFont.getFamily())) {
+				fontBundled = false;
+				break;
+			}
+		}
+		if(fontBundled) {
+			this.bundledFont = font;
+		}
+	
+		textArea.setFont(font);
+		control.setFont(font);
+		
+		return textArea;
+	}
+	
+	/**
+	 * @return build the JTextArea component in which text is composed
+	 */
+	private PinyinInputTextArea buildTextArea() {
+		PinyinInputTextArea textArea = new PinyinInputTextArea();
+		textArea.setLineWrap(true);
+		textArea.setWrapStyleWord(true);
+		return textArea;
+	}
+	
 }
