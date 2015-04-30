@@ -37,6 +37,9 @@ public class Test {
 				System.out.println(lcp[i]);
 			}
 			
+			System.out.println("Les positions : ");
+			System.out.println("------> "+suffixArray.getAllPositionsOfPhrase("to be"));
+			
 		} catch (IOException e) {
 			System.err.println("File Not Found");
 		} catch (Exception e) {
