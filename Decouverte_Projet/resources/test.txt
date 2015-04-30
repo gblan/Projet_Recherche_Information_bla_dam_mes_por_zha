@@ -1,1 +1,1 @@
-il faut bien choisir les mots a tokiser, car ils permettent de créer l ' index . index
+il faut bien choisir les mots a tokiser, car ils permettent de creer l ' index . index
