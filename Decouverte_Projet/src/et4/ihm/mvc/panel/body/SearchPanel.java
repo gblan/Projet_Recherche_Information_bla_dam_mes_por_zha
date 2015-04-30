@@ -59,6 +59,7 @@ public class SearchPanel extends JPanel{
 		
 		this.components.clear();
 		this.components.addAll(components);
+		
 		repaint();
 	}
 	
