@@ -1,10 +1,18 @@
 package test;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.List;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.logging.Log;
+import org.apache.thrift.TException;
+
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
-
-import java.io.IOException;
-
 import com.medallia.word2vec.Searcher;
 import com.medallia.word2vec.Searcher.Match;
 import com.medallia.word2vec.Searcher.UnknownWordException;
@@ -18,26 +26,16 @@ import com.medallia.word2vec.util.Format;
 import com.medallia.word2vec.util.ProfilingTimer;
 import com.medallia.word2vec.util.Strings;
 import com.medallia.word2vec.util.ThriftUtils;
+import com.google.common.collect.*;
 
-import org.apache.commons.logging.Log;
-import org.apache.thrift.TException;
-import org.apache.commons.io.FileUtils;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Arrays;
-import java.util.List;
-
+/** Example usages of {@link Word2VecModel} */
 public class Test2 {
-	
-
 	private static final Log LOG = AutoLog.getLog();
 	
 	/** Runs the example */
 	public static void main(String[] args) throws IOException, TException, UnknownWordException, InterruptedException {
-		demoWord() ;
+		demoWord();
 	}
 	
 	/** 
@@ -55,6 +53,8 @@ public class Test2 {
 				return Arrays.asList(input.split(" "));
 			}
 		});
+		
+	
 		
 		Word2VecModel model = Word2VecModel.trainer()
 				.setMinVocabFrequency(5)
