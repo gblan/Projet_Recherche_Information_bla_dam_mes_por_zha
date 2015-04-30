@@ -68,6 +68,10 @@ public class SuffixArray {
 		}
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public int[] getLCPVector() {
 		int[] result = new int[tabSuffixes.length + 1];
 //		ArrayList<Token> listToken = corpus.getIndex().getListTokens();
@@ -83,9 +87,11 @@ public class SuffixArray {
 
 	/**
 	 * Work with JRE 1.8 only
+	 * 
+	 * 
 	 * @param token1
 	 * @param token2
-	 * @return
+	 * @return le plus long prefixe commun entre les deux positions
 	 */
 	private int getLCP2String(Token token1, Token token2) {
 		int result = 0;
