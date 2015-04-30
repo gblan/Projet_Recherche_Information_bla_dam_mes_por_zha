@@ -1,14 +1,16 @@
 package et4.index;
 
+import java.util.ArrayList;
+
 public class Token {
 
 	private String documentName;
-	private int position;
+	private ArrayList<Integer> positions = new ArrayList<Integer>();
 	private String token;
 
 	public Token(String documentName, int position, String token) {
 		this.documentName = documentName;
-		this.position = position;
+		this.positions.add(position);
 		this.token = token;
 	}
 
@@ -16,7 +18,7 @@ public class Token {
 	public String toString() {
 		String result = "";
 
-		result += "[" + documentName + ", position :" + position + "]\n";
+		result += "[" + documentName + ", positions :" + positions + "]\n";
 		result += "[token : " + token + "]";
 
 		return result;
@@ -25,9 +27,9 @@ public class Token {
 	public String getStringToken() {
 		return token;
 	}
-	
-	public int getPosition() {
-		return position;
+
+	public ArrayList<Integer> getPositions() {
+		return positions;
 	}
 
 }

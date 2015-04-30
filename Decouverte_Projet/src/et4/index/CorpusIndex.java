@@ -1,19 +1,23 @@
 package et4.index;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 
 public class CorpusIndex {
-	private ArrayList<Token> listTokens;
+	private HashMap<String, Token> mapTokens;
 	
 	public CorpusIndex() {
-		listTokens = new ArrayList<Token>();
+		mapTokens = new HashMap<String, Token>();
 	}
 	
-	public ArrayList<Token> getListTokens() {
-		return listTokens;
+	public HashMap<String, Token> getListTokens() {
+		return mapTokens;
 	}
 
 	public void addToken(Token tok){
-		listTokens.add(tok);
+		if(mapTokens.containsKey(tok.getStringToken())){
+			mapTokens.get(tok.getStringToken()).getPositions().add(tok.getPositions().get(0));
+		}else{
+			mapTokens.put(tok.getStringToken(),tok);
+		}
 	}
 }

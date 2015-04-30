@@ -25,7 +25,7 @@ public class SuffixArray {
 
 	public void initTabSuffix() {
 		for (int i = 0; i < corpus.getIndex().getListTokens().size(); i++) {
-			tabSuffixes[i] = corpus.getIndex().getListTokens().get(i).getPosition();
+//			tabSuffixes[i] = corpus.getIndex().getListTokens().get(i).getPositions();
 		}
 		System.out.println("init OK");
 	}
@@ -70,10 +70,10 @@ public class SuffixArray {
 
 	public int[] getLCPVector() {
 		int[] result = new int[tabSuffixes.length + 1];
-		ArrayList<Token> listToken = corpus.getIndex().getListTokens();
+//		ArrayList<Token> listToken = corpus.getIndex().getListTokens();
 		result[0] = 0;
 		for (int i = 1; i < tabSuffixes.length ; i++) {
-			result[i] = getLCP2String(listToken.get(tabSuffixes[i]), listToken.get(tabSuffixes[i - 1]));
+//			result[i] = getLCP2String(listToken.get(tabSuffixes[i]), listToken.get(tabSuffixes[i - 1]));
 		}
 		
 		result[tabSuffixes.length] = 0;
@@ -92,7 +92,7 @@ public class SuffixArray {
 		String s1 = token1.getStringToken();
 		String s2 = token2.getStringToken();
 
-		for (int i = 0; i < Integer.min(s1.length(), s2.length()); i++) {
+		for (int i = 0; i < Math.min(s1.length(), s2.length()); i++) {
 			if (s1.charAt(i) == s2.charAt(i)) {
 				result++;
 			} else {
