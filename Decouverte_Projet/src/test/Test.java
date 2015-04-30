@@ -1,6 +1,6 @@
 package test;
 
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
@@ -28,11 +28,10 @@ public class Test {
 			}
 
 			/* tri du tableau */
-			// suffixArray.qsort(suffixArray.getTabSuffix(), 0,
-			// corpus.getIndex().getListTokens().size());
-			System.out.println("Sort OK");
+			 suffixArray.qsort(suffixArray.getTabSuffix(), 0,corpus.getNbMots()-1);
 
-		} catch (FileNotFoundException e) {
+			 
+		} catch (IOException e) {
 			System.err.println("File Not Found");
 		}
 	}
