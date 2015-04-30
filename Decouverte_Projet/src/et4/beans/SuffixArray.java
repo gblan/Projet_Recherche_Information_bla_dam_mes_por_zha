@@ -24,14 +24,14 @@ public class SuffixArray {
 	}
 
 	/**
-	 * Initialise le tableau de suffixes en donnant les positions des différents
-	 * tokens du fichier
+	 * Initialise le tableau de suffixes en donnant les positions des
+	 * diffï¿½rents tokens du fichier
 	 */
 	public void initTabSuffix() {
 		int i = 0;
 		for (Entry<String, Token> entry : corpus.getIndex().getListTokens().entrySet()) {
-			for (int list : entry.getValue().getPositions()) {
-				tabSuffixes[i] = list;
+			for (int position : entry.getValue().getPositions()) {
+				tabSuffixes[i] = position;
 				i++;
 			}
 		}
@@ -78,13 +78,13 @@ public class SuffixArray {
 		// System.out.println("QSort OK");
 	}
 
-	public int[] getLCPVector() {
-		int[] result = new int[tabSuffixes.length + 1];
+	public int[] getLCPVector() throws Exception {
+		int[] result = new int[tabSuffixes.length +1];
 		// ArrayList<Token> listToken = corpus.getIndex().getListTokens();
 		result[0] = 0;
-		for (int i = 1; i < tabSuffixes.length; i++) {
-			 result[i] = getLCP2String(tabSuffixes[i],tabSuffixes[i+1]);
-			// listToken.get(tabSuffixes[i - 1]));
+		for (int i = 1; i < tabSuffixes.length ; i++) {
+			result[i] = getLCPLongPrefixeBetween(tabSuffixes[i-1], tabSuffixes[i]);
+			System.out.println("Result : "+result[i]);
 		}
 
 		result[tabSuffixes.length] = 0;
@@ -93,23 +93,55 @@ public class SuffixArray {
 	}
 
 	/**
-	 * @param tabSuffixes2
-	 * @param tabSuffixes3
-	 * @return
+	 * @param posFirstToken
+	 * @param posSecondToken
+	 * @return le plus long prefixe commun entre les deux tokens aux positions
+	 *         firstToken et secondToken
+	 * @throws Exception
 	 */
-	private int getLCP2String(int tabSuffixes2, int tabSuffixes3) {
-		int result = 0;
-////		String s1 = tabSuffixes2.getStringToken();
-////		String s2 = tabSuffixes3.getStringToken();
-//
-//		for (int i = 0; i < Math.min(s1.length(), s2.length()); i++) {
-//			if (s1.charAt(i) == s2.charAt(i)) {
-//				result++;
-//			} else {
-//				break;
-//			}
-//		}
-//
+	public Integer getLCPLongPrefixeBetween(Integer posFirstToken, Integer posSecondToken) throws Exception {
+		Integer result = 0;
+		// String content = "";
+
+		/**
+		 * TODO Rajouter > taille max
+		 */
+		if (posFirstToken < 0 || posSecondToken < 0) {
+			throw new Exception("getLCP2String in SuffixArray : posFirstToken < 0 || posSecondToken < 0");
+		}
+
+		String corpusSentence = corpus.getCorpus();
+
+		// System.out.println("Corpus "+corpusSentence);
+
+		System.out.println("Token a la position : " + posFirstToken + " = |"
+				+ corpusSentence.substring(posFirstToken, corpusSentence.length()) + "|");
+		System.out.println("Token a la position : " + posSecondToken + " = |"
+				+ corpusSentence.substring(posSecondToken, corpusSentence.length()) + "|");
+
+		String firstToken = corpusSentence.substring(posFirstToken, corpusSentence.length());
+		String secondToken = corpusSentence.substring(posSecondToken, corpusSentence.length());
+
+		int i = 0;
+		boolean match = true;
+		while (i < Math.min(firstToken.length(), secondToken.length()) && match) {
+
+			if (firstToken.charAt(i) == secondToken.charAt(i)) {
+				// content += firstToken.charAt(i);
+				result++;
+			} else
+				match = false;
+
+			i++;
+		}
+
+		/**
+		 * 0 2 4 6 10 11 to be or not to be
+		 * 
+		 * 
+		 * 
+		 */
+
 		return result;
 	}
 }
