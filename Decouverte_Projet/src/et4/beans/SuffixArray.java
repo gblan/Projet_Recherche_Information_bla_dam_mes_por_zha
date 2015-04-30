@@ -150,12 +150,13 @@ public class SuffixArray {
 	
 	
 	
-	public static int dichotomieRecursive(ArrayList<String> array, String text, int starting, int ending) {
+	public static int dichotomieRecursive(ArrayList<String> array, String search, int starting, int ending) {
 		
 		if(ending<starting) return -1;
 		int mid = (int)((starting+ending)/2);
 		System.out.println("array.get(mid)= " +array.get(mid));
-		int result = array.get(mid).compareTo(text);
+		int result = compare2Tokens(array.get(mid),search);
+		
 		if(result==0)
 			return mid;
 		else if(result<0) {
@@ -167,7 +168,21 @@ public class SuffixArray {
 		}
 	
 		
-		return dichotomieRecursive(array,text, starting, ending);
+		return dichotomieRecursive(array,search, starting, ending);
+	}
+	
+	public static int compare2Tokens(String fromArray, String search) {
+		// Si la string a la position 'mid' a une taille inferieur a celle du 'search' on va juste faire un compareto
+		// => aucune chance que les deux strings se ressemblent
+		if(fromArray.length()<search.length()) {
+			return fromArray.compareTo(search);
+		}
+		// Si la string a la position 'mid' a une taille superieur a celle de 'search', alors elle est un candiat potentiel
+		// => il y a une chance qu'elle se ressemble : par exemple mid="to be" search="to" on va decouper mid pour qu'elle ai
+		// la meme taille que 'search'
+		else {
+			return fromArray.substring(0, search.length()).compareTo(search);
+		}
 	}
 	
 	public static void main(String[] args) {
@@ -192,21 +207,61 @@ public class SuffixArray {
 			exemple.add("Pastèque");
 			exemple.add("Pastèque");
 			exemple.add("Pastèque");
+			exemple.add("Pastèques");
 			exemple.add("Pastèque");
 			exemple.add("Pastèque");
 			exemple.add("Pastèque");
+			exemple.add("Pastèque Ro");
 			exemple.add("Pastèque");
 			exemple.add("Pastèque");
 			exemple.add("Pastèque");
-			exemple.add("Pastèque");
-			exemple.add("Pastèque");
-			exemple.add("Pomme");
+			exemple.add("Pommes Ro");
 			exemple.add("Vert");
 			exemple.add("Zèbre");
 			
-			
-		int position = SuffixArray.dichotomieRecursive(exemple,"Anacondaaaaaa",0,exemple.size()-1);
+		String search = "Pastèque";
+		int position = SuffixArray.dichotomieRecursive(exemple,search,0,exemple.size()-1);
 		System.out.println("Position = "+position);
+
+		ArrayList<Integer> positions = new ArrayList<Integer>();
+		
+		
+		for(int i = position-1; i>=0; i--) {
+			
+			if(SuffixArray.compare2Tokens(exemple.get(i), search)==0) {
+				positions.add(0, i);
+			}
+			//TODO transforme en while
+			else 
+				break;
+			
+		}
+		
+		positions.add(position);
+		
+		for (int i = position+1; i < exemple.size(); i++) {
+						
+			if(SuffixArray.compare2Tokens(exemple.get(i), search)==0) {
+				positions.add(positions.size(), i);
+			}
+			//TODO transforme en while
+			else 
+				break;
+		}
+		
+		System.out.println("Positions : "+positions);
 	}
 	
+	
+	int[] getAllPositionsOfPhrase(String search){
+		/* tokenisation pour tester si tous les tokens de la phrase sont dans l'index*/
+		
+		System.out.println("HEYYY-------");
+		/* recherche dichotomique*/
+		
+		
+		/* liste de secours*/
+		
+		return null;		
+	}
 }
