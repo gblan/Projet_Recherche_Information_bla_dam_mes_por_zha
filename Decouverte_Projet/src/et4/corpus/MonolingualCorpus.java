@@ -21,15 +21,14 @@ public class MonolingualCorpus {
 	}
 
 	public int compareSuffixes(int pos1, int pos2) {
-		return index.getListTokens().get(pos1).getStringToken()
-				.compareTo(index.getListTokens().get(pos2).getStringToken());
+		return getTokenAtPosition(pos1).compareTo(getTokenAtPosition(pos2));
 	}
 
 	public int getIndexSize() {
 		return index.getListTokens().size();
 	}
-	
-	public CorpusIndex getIndex(){
+
+	public CorpusIndex getIndex() {
 		return index;
 	}
 }

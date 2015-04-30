@@ -42,6 +42,8 @@ public class SuffixArray {
 	 * @param end
 	 */
 	public void qsort(int[] tabSuffixes, int begin, int end) {
+		System.out.println("qsort");
+		System.out.println("begin : "+begin+", end : "+end);
 		if (end > begin) {
 			int index = begin + RAND.nextInt(end - begin + 1);
 			int pivot = tabSuffixes[index];
