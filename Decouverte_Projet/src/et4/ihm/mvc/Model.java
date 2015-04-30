@@ -106,10 +106,16 @@ public class Model extends Observable{
 			}
 			*/
 			//System.out.println(pinyinArray[0]);
-			if(pinYinDePhrase == null){
-			pinYinDePhrase = pinyinArray[0];
-			}else{
-				pinYinDePhrase = pinYinDePhrase + " " + pinyinArray[0];
+			try {
+				//temp est inutile, c'est juste pour savoir pinyinArray est null ou pas
+				int temp = pinyinArray.length;
+				if(pinYinDePhrase == null){
+					pinYinDePhrase = pinyinArray[0];
+					}else{
+						pinYinDePhrase = pinYinDePhrase + " " + pinyinArray[0];
+					}
+			} catch (NullPointerException e){
+				pinYinDePhrase = pinYinDePhrase + " " + caractereChinois;
 			}
 		}
 		return pinYinDePhrase;
