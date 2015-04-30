@@ -1,6 +1,6 @@
 package test;
 
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
@@ -32,7 +32,7 @@ public class Test {
 			// corpus.getIndex().getListTokens().size());
 			System.out.println("Sort OK");
 
-		} catch (FileNotFoundException e) {
+		} catch (IOException e) {
 			System.err.println("File Not Found");
 		}
 	}

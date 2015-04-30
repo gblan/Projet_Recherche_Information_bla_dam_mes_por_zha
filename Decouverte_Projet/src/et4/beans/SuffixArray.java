@@ -1,6 +1,6 @@
 package et4.beans;
 
-import java.util.ArrayList;
+import java.util.Map.Entry;
 import java.util.Random;
 
 import et4.corpus.MonolingualCorpus;
@@ -16,7 +16,6 @@ public class SuffixArray {
 
 	public SuffixArray(MonolingualCorpus corpus) {
 		this.corpus = corpus;
-		tabSuffixes = new int[corpus.getIndexSize()+1];
 	}
 	
 	public int[] getTabSuffix(){
@@ -24,6 +23,9 @@ public class SuffixArray {
 	}
 
 	public void initTabSuffix() {
+		for(Entry<String, Token> entry : corpus.getIndex().getListTokens().entrySet()){
+//			for(Integer :entry.)
+		}
 		for (int i = 0; i < corpus.getIndex().getListTokens().size(); i++) {
 //			tabSuffixes[i] = corpus.getIndex().getListTokens().get(i).getPositions();
 		}
@@ -68,10 +70,6 @@ public class SuffixArray {
 		}
 	}
 
-	/**
-	 * 
-	 * @return
-	 */
 	public int[] getLCPVector() {
 		int[] result = new int[tabSuffixes.length + 1];
 //		ArrayList<Token> listToken = corpus.getIndex().getListTokens();
@@ -84,27 +82,27 @@ public class SuffixArray {
 
 		return result;
 	}
-
+	
 	/**
-	 * Work with JRE 1.8 only
-	 * 
-	 * 
-	 * @param token1
-	 * @param token2
-	 * @return le plus long prefixe commun entre les deux positions
+	 * @param posFirstToken
+	 * @param posSecondToken
+	 * @return le plus long prefixe commun entre les deux tokens aux positions firstToken et secondToken
+	 * @throws Exception
 	 */
-	private int getLCP2String(Token token1, Token token2) {
-		int result = 0;
-		String s1 = token1.getStringToken();
-		String s2 = token2.getStringToken();
-
-		for (int i = 0; i < Math.min(s1.length(), s2.length()); i++) {
-			if (s1.charAt(i) == s2.charAt(i)) {
-				result++;
-			} else {
-				break;
-			}
+	public String getLCPLongPrefixeBetween(Integer posFirstToken, Integer posSecondToken) throws Exception {
+		String result = "";
+		
+		
+		if(posFirstToken<0 || posSecondToken<0) {
+			throw new Exception("getLCP2String in SuffixArray : posFirstToken < 0 || posSecondToken < 0");
 		}
+		
+		//String corpusSentence = corpus.getCorpus();
+		String corpusSentence = "to be or not to be";
+
+		
+		
+		
 
 		return result;
 	}

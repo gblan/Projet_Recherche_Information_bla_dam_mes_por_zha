@@ -1,7 +1,7 @@
 
 package et4.corpus;
 
-import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import et4.index.CorpusIndex;
 import et4.index.Tokenization;
@@ -9,7 +9,7 @@ import et4.index.Tokenization;
 public class MonolingualCorpus {
 	private static CorpusIndex index;
 
-	public MonolingualCorpus(Tokenization tok, String filename) throws FileNotFoundException {
+	public MonolingualCorpus(Tokenization tok, String filename) throws IOException {
 		index = tok.Tokenize(filename);
 	}
 
