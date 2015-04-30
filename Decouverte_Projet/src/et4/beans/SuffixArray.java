@@ -1,5 +1,6 @@
 package et4.beans;
 
+import java.util.Map.Entry;
 import java.util.Random;
 
 import et4.corpus.MonolingualCorpus;
@@ -15,7 +16,6 @@ public class SuffixArray {
 
 	public SuffixArray(MonolingualCorpus corpus) {
 		this.corpus = corpus;
-		tabSuffixes = new int[corpus.getIndexSize()+1];
 	}
 	
 	public int[] getTabSuffix(){
@@ -23,6 +23,9 @@ public class SuffixArray {
 	}
 
 	public void initTabSuffix() {
+		for(Entry<String, Token> entry : corpus.getIndex().getListTokens().entrySet()){
+//			for(Integer :entry.)
+		}
 		for (int i = 0; i < corpus.getIndex().getListTokens().size(); i++) {
 //			tabSuffixes[i] = corpus.getIndex().getListTokens().get(i).getPositions();
 		}

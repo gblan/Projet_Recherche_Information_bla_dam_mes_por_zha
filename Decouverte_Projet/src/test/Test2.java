@@ -26,15 +26,16 @@ import com.medallia.word2vec.util.Format;
 import com.medallia.word2vec.util.ProfilingTimer;
 import com.medallia.word2vec.util.Strings;
 import com.medallia.word2vec.util.ThriftUtils;
+import com.google.common.collect.*;
 
+
+/** Example usages of {@link Word2VecModel} */
 public class Test2 {
-	
-
 	private static final Log LOG = AutoLog.getLog();
 	
 	/** Runs the example */
 	public static void main(String[] args) throws IOException, TException, UnknownWordException, InterruptedException {
-		demoWord() ;
+		demoWord();
 	}
 	
 	/** 
@@ -52,6 +53,8 @@ public class Test2 {
 				return Arrays.asList(input.split(" "));
 			}
 		});
+		
+	
 		
 		Word2VecModel model = Word2VecModel.trainer()
 				.setMinVocabFrequency(5)

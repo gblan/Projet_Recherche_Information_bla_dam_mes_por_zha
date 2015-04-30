@@ -114,4 +114,9 @@ public class Model extends Observable{
 		}
 		return pinYinDePhrase;
 	}
+
+	public String learn(String text) {
+		// TODO Auto-generated method stub
+		return getPinyin(text);
+	}
 }
