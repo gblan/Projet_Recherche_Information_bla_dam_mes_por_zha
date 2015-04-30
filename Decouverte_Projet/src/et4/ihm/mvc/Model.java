@@ -37,7 +37,7 @@ public class Model extends Observable{
 				components.add(new SearchComponent(new Point(0,SearchPanel.heightComponent*(i+1)),"你好吗","Comment allez-vous ?","Nǐ hǎo ma?", "allez", View.width-20, SearchPanel.heightComponent));
 			}
 			else {
-				components.add(new SearchComponent(new Point(0,SearchPanel.heightComponent*(i+1)+SearchPanel.space*i),"你好吗","Comment allez-vous ?","Nǐ hǎo ma?", "allez", View.width-20, SearchPanel.heightComponent));
+				//components.add(new SearchComponent(new Point(0,SearchPanel.heightComponent*(i+1)+SearchPanel.space*i),"你好吗","Comment allez-vous ?","Nǐ hǎo ma?", "allez", View.width-20, SearchPanel.heightComponent));
 			}
 		}
 		
@@ -62,7 +62,7 @@ public class Model extends Observable{
 				components.add(new KnowledgeComponent(new Point(0,KnowledgePanel.heightComponent+KnowledgePanel.space*i),"男人","homme","Nánrén", rate, View.width, KnowledgePanel.heightComponent));
 			}
 			else {
-				components.add(new KnowledgeComponent(new Point(0,KnowledgePanel.heightComponent*(i+1)+KnowledgePanel.space*i),"男人","homme","Nánrén", rate, View.width, KnowledgePanel.heightComponent));
+				//components.add(new KnowledgeComponent(new Point(0,KnowledgePanel.heightComponent*(i+1)+KnowledgePanel.space*i),"男人","homme","Nánrén", rate, View.width, KnowledgePanel.heightComponent));
 			}
 			//components.add(new SearchComponent(new Point(0,heightComponent*2+space),"要还是不","Etre ou ne pas etre","Yào háishì bù","not", View.width, heightComponent));
 			rate+=80;
