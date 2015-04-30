@@ -8,7 +8,11 @@ import et4.index.Tokenization;
 import et4.index.TokenizationFrench;
 
 public class Test {
+public static void main(String[] args) {
+	System.out.println("hello");
+}
 
+/*
 	public static void main(String[] args) {
 		Tokenization tf = new TokenizationFrench();
 		try {
@@ -22,9 +26,11 @@ public class Test {
 				System.out.println(tok);
 				i++;
 			}
+		
 		} catch (FileNotFoundException e) {
 			System.err.println("File Not Found");
 		}
 	}
+	*/
 
 }
