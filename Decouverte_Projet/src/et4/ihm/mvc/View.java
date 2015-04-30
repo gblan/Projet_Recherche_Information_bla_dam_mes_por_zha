@@ -125,15 +125,17 @@ public class View implements Observer{
 			
 			ArrayList<SearchComponent> components = (ArrayList<SearchComponent>)arg;
 			SearchComponent tester = components.get(0); //sert a provoquer class cast exception
+			
 			body.getSearch().update(components);
+			body.showSearch();
 		} catch (ClassCastException e) {
 		}
 		
 		try {
 			ArrayList<KnowledgeComponent> components = (ArrayList<KnowledgeComponent>)arg;
 			KnowledgeComponent tester = components.get(0); //sert a provoquer class cast exception
-			System.out.println("OKK");
 			body.getKnowledge().update(components);
+			body.showKnowledge();;
 		} catch (ClassCastException e) {
 		}
 		

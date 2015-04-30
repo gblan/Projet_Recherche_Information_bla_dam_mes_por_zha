@@ -39,9 +39,9 @@ public class BodyPanel extends JPanel{
 		scrollSearch.setViewportView(search);
 		scrollKnowledge.setViewportView(knowledge);
 		
-		showKnowledge();
-		showSearch();
+		
 
+		showSearch();
 
 	}
 	
@@ -72,7 +72,8 @@ public class BodyPanel extends JPanel{
 	 * Plus il y a de contenu + la scrollbar
 	 * s'aggrandit
 	 */
-	private void updateSizeSearch() {
+	public void updateSizeSearch() {
+		System.out.println(search.getSearchComponent().size());
 		search.setPreferredSize(new Dimension(View.width-20,120*search.getSearchComponent().size()+120));
 		//scrollSearch.setPreferredSize(new Dimension(View.width,140*3));
 		
@@ -83,7 +84,7 @@ public class BodyPanel extends JPanel{
 	 * Plus il y a de contenu + la scrollbar
 	 * s'aggrandit
 	 */
-	private void updateSizeKnowledge() {
+	public void updateSizeKnowledge() {
 		knowledge.setPreferredSize(new Dimension(View.width-20,120*knowledge.getKnowledgeComponent().size()+120));
 		//scrollKnowledge.setPreferredSize(new Dimension(View.width,140*3));
 	}
@@ -91,11 +92,15 @@ public class BodyPanel extends JPanel{
 	public void showSearch() {
 		hideAll();
 		updateSizeSearch();
-		scrollSearch.setVisible(true);
+		
 		search.setVisible(true);
+		
 		add(scrollSearch,BorderLayout.CENTER);
-
+		scrollSearch.setVisible(true);
+		scrollSearch.revalidate();
+		
 		revalidate(); //forcer le refresh
+		setVisible(true);
 	}
 
 	public void showKnowledge() {
@@ -104,7 +109,6 @@ public class BodyPanel extends JPanel{
 		knowledge.setVisible(true);
 		scrollKnowledge.setVisible(true);
 		add(scrollKnowledge,BorderLayout.CENTER);
-		
 		revalidate(); // forcer le refresh
 	}
 	public void showLearning() {
