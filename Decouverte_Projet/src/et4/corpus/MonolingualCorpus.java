@@ -24,4 +24,12 @@ public class MonolingualCorpus {
 		return index.getListTokens().get(pos1).getStringToken()
 				.compareTo(index.getListTokens().get(pos2).getStringToken());
 	}
+
+	public int getIndexSize() {
+		return index.getListTokens().size();
+	}
+	
+	public CorpusIndex getIndex(){
+		return index;
+	}
 }

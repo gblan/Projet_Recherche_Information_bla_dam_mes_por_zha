@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import et4.corpus.MonolingualCorpus;
-import et4.index.CorpusIndex;
 import et4.index.Token;
 
 public class SuffixArray {
@@ -12,20 +11,23 @@ public class SuffixArray {
 	private MonolingualCorpus corpus;
 	// the main data structure
 	private int tabSuffixes[];
-	private CorpusIndex index;
 	// random number generator used for quick sorting
 	private static final Random RAND = new Random();
 
-	public SuffixArray(MonolingualCorpus corpus, CorpusIndex index) {
+	public SuffixArray(MonolingualCorpus corpus) {
 		this.corpus = corpus;
-		this.index = index;
-		tabSuffixes = new int[index.getListTokens().size()];
+		tabSuffixes = new int[corpus.getIndexSize()+1];
+	}
+	
+	public int[] getTabSuffix(){
+		return tabSuffixes;
 	}
 
-	private void fillTabSuffix() {
-		for (int i = 0; i < index.getListTokens().size(); i++) {
-			tabSuffixes[i] = index.getListTokens().get(i).getPosition();
+	public void initTabSuffix() {
+		for (int i = 0; i < corpus.getIndex().getListTokens().size(); i++) {
+			tabSuffixes[i] = corpus.getIndex().getListTokens().get(i).getPosition();
 		}
+		System.out.println("init OK");
 	}
 
 	// call to sort the entire suffix array
@@ -39,7 +41,7 @@ public class SuffixArray {
 	 * @param begin
 	 * @param end
 	 */
-	private void qsort(int[] tabSuffixes, int begin, int end) {
+	public void qsort(int[] tabSuffixes, int begin, int end) {
 		if (end > begin) {
 			int index = begin + RAND.nextInt(end - begin + 1);
 			int pivot = tabSuffixes[index];
@@ -68,15 +70,23 @@ public class SuffixArray {
 
 	public int[] getLCPVector() {
 		int[] result = new int[tabSuffixes.length + 1];
-		ArrayList<Token> listToken = index.getListTokens();
+		ArrayList<Token> listToken = corpus.getIndex().getListTokens();
 		result[0] = 0;
-		for (int i = 1; i < tabSuffixes.length + 1; i++) {
+		for (int i = 1; i < tabSuffixes.length ; i++) {
 			result[i] = getLCP2String(listToken.get(tabSuffixes[i]), listToken.get(tabSuffixes[i - 1]));
 		}
+		
+		result[tabSuffixes.length] = 0;
 
 		return result;
 	}
 
+	/**
+	 * Work with JRE 1.8 only
+	 * @param token1
+	 * @param token2
+	 * @return
+	 */
 	private int getLCP2String(Token token1, Token token2) {
 		int result = 0;
 		String s1 = token1.getStringToken();
