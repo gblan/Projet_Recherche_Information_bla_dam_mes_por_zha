@@ -16,18 +16,24 @@ public class SuffixArray {
 
 	public SuffixArray(MonolingualCorpus corpus) {
 		this.corpus = corpus;
+		this.tabSuffixes = new int[corpus.getNbMots()];
 	}
-	
-	public int[] getTabSuffix(){
+
+	public int[] getTabSuffix() {
 		return tabSuffixes;
 	}
 
+	/**
+	 * Initialise le tableau de suffixes en donnant les positions des diff�rents
+	 * tokens du fichier
+	 */
 	public void initTabSuffix() {
-		for(Entry<String, Token> entry : corpus.getIndex().getListTokens().entrySet()){
-//			for(Integer :entry.)
-		}
-		for (int i = 0; i < corpus.getIndex().getListTokens().size(); i++) {
-//			tabSuffixes[i] = corpus.getIndex().getListTokens().get(i).getPositions();
+		int i = 0;
+		for (Entry<String, Token> entry : corpus.getIndex().getListTokens().entrySet()) {
+			for (int list : entry.getValue().getPositions()) {
+				tabSuffixes[i] = list;
+				i++;
+			}
 		}
 		System.out.println("init OK");
 	}
@@ -44,6 +50,7 @@ public class SuffixArray {
 	 * @param end
 	 */
 	public void qsort(int[] tabSuffixes, int begin, int end) {
+		// System.out.println("qsort");
 		if (end > begin) {
 			int index = begin + RAND.nextInt(end - begin + 1);
 			int pivot = tabSuffixes[index];
@@ -68,21 +75,23 @@ public class SuffixArray {
 			qsort(tabSuffixes, begin, index - 1);
 			qsort(tabSuffixes, index + 1, end);
 		}
+		// System.out.println("QSort OK");
 	}
 
-	public int[] getLCPVector() {
+	public int[] getLCPVector() throws Exception {
 		int[] result = new int[tabSuffixes.length + 1];
-//		ArrayList<Token> listToken = corpus.getIndex().getListTokens();
+		// ArrayList<Token> listToken = corpus.getIndex().getListTokens();
 		result[0] = 0;
-		for (int i = 1; i < tabSuffixes.length ; i++) {
-//			result[i] = getLCP2String(listToken.get(tabSuffixes[i]), listToken.get(tabSuffixes[i - 1]));
+		for (int i = 1; i < tabSuffixes.length; i++) {
+			 result[i] = getLCPLongPrefixeBetween(tabSuffixes[i],tabSuffixes[i+1]);
+			// listToken.get(tabSuffixes[i - 1]));
 		}
-		
+
 		result[tabSuffixes.length] = 0;
 
 		return result;
 	}
-	
+
 	/**
 	 * @param posFirstToken
 	 * @param posSecondToken
@@ -93,6 +102,9 @@ public class SuffixArray {
 		Integer result = 0;
 		//String content = "";
 		
+		/**
+		 * TODO Rajouter > taille max
+		 */
 		if(posFirstToken<0 || posSecondToken<0) {
 			throw new Exception("getLCP2String in SuffixArray : posFirstToken < 0 || posSecondToken < 0");
 		}
@@ -131,5 +143,4 @@ public class SuffixArray {
 
 		return result;
 	}
-	
 }
