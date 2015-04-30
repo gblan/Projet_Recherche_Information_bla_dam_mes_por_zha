@@ -19,6 +19,15 @@ public class Test {
 			MonolingualCorpus corpus = new MonolingualCorpus(tf, "resources/test.txt");
 			SuffixArray suffixArray = new SuffixArray(corpus);
 			suffixArray.initTabSuffix();
+			
+			try {
+				Integer first = 0;
+				Integer second = 13;
+				System.out.println("Correspondance entre les position ["+first+","+second+"] = "+suffixArray.getLCPLongPrefixeBetween(first, second));
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 
 			/* tableau de suffixes initialisé */
 			HashMap<String, Token> tmp = corpus.getIndex().getListTokens();

@@ -89,21 +89,47 @@ public class SuffixArray {
 	 * @return le plus long prefixe commun entre les deux tokens aux positions firstToken et secondToken
 	 * @throws Exception
 	 */
-	public String getLCPLongPrefixeBetween(Integer posFirstToken, Integer posSecondToken) throws Exception {
-		String result = "";
-		
+	public Integer getLCPLongPrefixeBetween(Integer posFirstToken, Integer posSecondToken) throws Exception {
+		Integer result = 0;
+		//String content = "";
 		
 		if(posFirstToken<0 || posSecondToken<0) {
 			throw new Exception("getLCP2String in SuffixArray : posFirstToken < 0 || posSecondToken < 0");
 		}
 		
-		//String corpusSentence = corpus.getCorpus();
-		String corpusSentence = "to be or not to be";
+		String corpusSentence = corpus.getCorpus();
+		
+		System.out.println("Corpus "+corpusSentence);
+		
+		System.out.println("Token a la position : "+posFirstToken+" = |"+corpusSentence.substring(posFirstToken, corpusSentence.length())+"|");
+		System.out.println("Token a la position : "+posSecondToken+" = |"+corpusSentence.substring(posSecondToken, corpusSentence.length())+"|");
 
+		String firstToken = corpusSentence.substring(posFirstToken, corpusSentence.length());
+		String secondToken = corpusSentence.substring(posSecondToken, corpusSentence.length());
 		
+		int i = 0;
+		boolean match = true;
+		while (i < Math.min(firstToken.length(), secondToken.length()) && match) {
+			
+			if(firstToken.charAt(i) == secondToken.charAt(i)) {
+				//content += firstToken.charAt(i);
+				result++;
+			}
+			else
+				match = false;
+				
+			i++;
+		}
 		
-		
+		/**
+		 * 0  2  4  6   10 11
+		 * to be or not to be
+		 * 
+		 * 
+		 * 
+		 */
 
 		return result;
 	}
+	
 }
