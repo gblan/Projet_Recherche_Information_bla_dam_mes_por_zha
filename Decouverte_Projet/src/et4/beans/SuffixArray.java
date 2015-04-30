@@ -1,6 +1,5 @@
 package et4.beans;
 
-import java.util.ArrayList;
 import java.util.Random;
 
 import et4.corpus.MonolingualCorpus;
@@ -80,9 +79,8 @@ public class SuffixArray {
 
 		return result;
 	}
-
+	
 	/**
-	 * Work with JRE 1.8 only
 	 * @param token1
 	 * @param token2
 	 * @return
@@ -92,7 +90,7 @@ public class SuffixArray {
 		String s1 = token1.getStringToken();
 		String s2 = token2.getStringToken();
 
-		for (int i = 0; i < Integer.min(s1.length(), s2.length()); i++) {
+		for (int i = 0; i < Math.min(s1.length(), s2.length()); i++) {
 			if (s1.charAt(i) == s2.charAt(i)) {
 				result++;
 			} else {
