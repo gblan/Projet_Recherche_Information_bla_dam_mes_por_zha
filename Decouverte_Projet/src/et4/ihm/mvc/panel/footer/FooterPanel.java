@@ -32,10 +32,6 @@ public class FooterPanel extends JPanel{
 	@Override
 	public void paint(Graphics graphics) {
 		super.paint(graphics);
-		
-		
-		
-		
 	}
 	
 }

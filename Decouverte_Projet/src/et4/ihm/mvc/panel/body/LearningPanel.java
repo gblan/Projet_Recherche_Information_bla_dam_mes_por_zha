@@ -2,6 +2,7 @@ package et4.ihm.mvc.panel.body;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -15,6 +16,9 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
 import et4.ihm.mvc.Model;
+import et4.ihm.mvc.View;
+import et4.ihm.mvc.component.LearningSubmitBtn;
+import et4.ihm.mvc.controller.LearningController;
 import et4.ihm.mvc.panel.UIColor;
 
 public class LearningPanel extends JPanel{
@@ -56,7 +60,6 @@ public class LearningPanel extends JPanel{
 			outputarea.setFont(new Font(FONT, Font.PLAIN, FONT_SIZE));
 			outputarea.setEditable(false);
 			outputarea.setCaretColor(Color.WHITE);
-			outputarea.setText("Hello ...");
 		JLabel outputlabel = new JLabel("Output"); 
 			outputlabel.setBackground(UIColor.BLUE_DARK); 
 			outputlabel.setOpaque(true);
@@ -68,13 +71,16 @@ public class LearningPanel extends JPanel{
 		output.add(outputlabel, BorderLayout.PAGE_START);
 		output.add(outputarea, BorderLayout.CENTER);
 		
-		JButton btn = new JButton("Submit");
+		LearningSubmitBtn btn = new LearningSubmitBtn("Submit");
 		output.add(btn, BorderLayout.PAGE_END);
 		
 		setLayout(new GridLayout(2, 1));
 		
 		add(input);
 		add(output);
+		
+		
+		LearningController c = new LearningController(model, btn, inputarea, outputarea);
 	}
 	
 	@Override
