@@ -217,6 +217,7 @@ public class SuffixArray {
 			array.add(returnAllSentence(tabSuffixes[i]));
 		}
 		
+		
 		/* recherche dichotomique*/
 		
 		
