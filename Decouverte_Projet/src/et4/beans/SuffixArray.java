@@ -1,6 +1,7 @@
 package et4.beans;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Map.Entry;
 import java.util.Random;
 
@@ -12,18 +13,27 @@ public class SuffixArray {
 	private MonolingualCorpus corpus;
 	// the main data structure
 	private int tabSuffixes[];
+	
+	private int LCPVector[];
+	
 	// random number generator used for quick sorting
 	private static final Random RAND = new Random();
+
 
 	public SuffixArray(MonolingualCorpus corpus) {
 		this.corpus = corpus;
 		this.tabSuffixes = new int[corpus.getNbMots()];
+		this.LCPVector = new int[corpus.getNbMots()];
 	}
 
 	public int[] getTabSuffix() {
 		return tabSuffixes;
 	}
 
+	public int[] getLCPVector() {
+		return LCPVector;
+	}
+	
 	/**
 	 * Initialise le tableau de suffixes en donnant les positions des
 	 * diff�rents tokens du fichier
@@ -80,18 +90,18 @@ public class SuffixArray {
 		// System.out.println("QSort OK");
 	}
 
-	public int[] getLCPVector() throws Exception {
-		int[] result = new int[tabSuffixes.length +1];
+	public void initLCPVector() throws Exception {
+		LCPVector = new int[tabSuffixes.length +1];
 		// ArrayList<Token> listToken = corpus.getIndex().getListTokens();
-		result[0] = 0;
+		LCPVector[0] = 0;
 		for (int i = 1; i < tabSuffixes.length ; i++) {
-			result[i] = getLCPLongPrefixeBetween(tabSuffixes[i-1], tabSuffixes[i]);
-			System.out.println("Result : "+result[i]);
+			LCPVector[i] = getLCPLongPrefixeBetween(tabSuffixes[i-1], tabSuffixes[i]);
+			System.out.println("Result : "+LCPVector[i]);
 		}
 
-		result[tabSuffixes.length] = 0;
+		LCPVector[tabSuffixes.length] = 0;
 
-		return result;
+		
 	}
 
 	/**
@@ -221,21 +231,19 @@ public class SuffixArray {
 		
 		
 		int position = dichotomieRecursive(array, search, 0, array.size()-1);
-		
-		
-		parcourLeft(array, positions, search, position);
-		positions.add(position);
-		parcourRight(array, positions, search, position);
-		
-		
+		if (position != -1){
+			parcourLeft(array, positions, search, position);
+			positions.add(tabSuffixes[position]);
+			parcourRight(array, positions, search, position);
+		}
 		/* liste de secours*/
 		
-		
+		Collections.sort(positions);
 		return positions;	
 	}
 	
 	/**
-	 * Parcour iteratif de droite a gauche a partir de la position 'position' jusqu'a i=0
+	 * Parcour iteratif de droite a gauche a partir de la position 'position' jusqu'a i=0 utilisant LCP
 	 * @param array
 	 * @param positions
 	 * @param search
@@ -243,20 +251,24 @@ public class SuffixArray {
 	 */
 	public void parcourLeft(ArrayList<String> array, ArrayList<Integer> positions, String search,int position) {
 			
-			for(int i = position-1; i>=0; i--) {
+				int i = position-1; 
 			
 				/**
 				 * FIXME Ajouter une condition qui dit si lcpvector[indice] < seuil => on quitte la boucle 
 				 * 
 				 */
-				if(compare2Tokens(array.get(i), search)==0) {
+				while (LCPVector[i] >= search.length() && i>=0 ){
+					positions.add(0, tabSuffixes[i]);
+					i--;
+				}
+				/*if(compare2Tokens(array.get(i), search)==0) {
 					positions.add(0, i);
 				}
 				//TODO transforme en while
 				else 
-					break;
+					break;*/
 			
-		}
+		
 	}
 	
 	/**
@@ -268,21 +280,18 @@ public class SuffixArray {
 	 */
 	public void parcourRight(ArrayList<String> array, ArrayList<Integer> positions, String search,int position) {
 		
-		for (int i = position+1; i < array.size(); i++) {
-			
+		    int i = position+1; 
 			
 			/**
 			 * FIXME Ajouter une condition qui dit si lcpvector[indice] < seuil => on quitte la boucle 
 			 * 
 			 */
-			
-			if(compare2Tokens(array.get(i), search)==0) {
-				positions.add(positions.size(), i);
+			while (LCPVector[i] >= search.length() && i < array.size()){
+				positions.add(positions.size(), tabSuffixes[i]);
+				i++;
 			}
-			//TODO transforme en while
-			else 
-				return;
-		}
+			
+		
 	}
 	
 	/*public static void main(String[] args) {

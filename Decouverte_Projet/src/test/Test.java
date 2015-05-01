@@ -20,7 +20,7 @@ public class Test {
 			SuffixArray suffixArray = new SuffixArray(corpus);
 			suffixArray.initTabSuffix();
 
-			/* tableau de suffixes initialisé */
+			/* tableau de suffixes initialisÃ© */
 			HashMap<String, Token> tmp = corpus.getIndex().getListTokens();
 
 			System.out.println("####    TOKENS    ####");
@@ -32,9 +32,9 @@ public class Test {
 			suffixArray.qsort(suffixArray.getTabSuffix(), 0, corpus.getNbMots() - 1);
 
 			System.out.println("####    TABLEAU LCP    ####");
-			int[] lcp = suffixArray.getLCPVector();
-			for (int i = 0; i < lcp.length; i++) {
-				System.out.println(lcp[i]);
+			suffixArray.initLCPVector();
+			for (int i = 0; i < suffixArray.getLCPVector().length; i++) {
+				System.out.println(suffixArray.getLCPVector()[i]);
 			}
 			
 			System.out.println("Les positions : ");
