@@ -9,6 +9,7 @@ import et4.ihm.mvc.panel.body.BodyPanel;
 import et4.ihm.mvc.panel.body.KnowledgePanel;
 import et4.ihm.mvc.panel.body.LearningPanel;
 import et4.ihm.mvc.panel.body.SearchPanel;
+import et4.ihm.mvc.panel.footer.FooterPanel;
 import et4.ihm.mvc.panel.header.HeaderPanel;
 
 public class HeaderController implements ActionListener, MouseListener{
@@ -18,13 +19,15 @@ public class HeaderController implements ActionListener, MouseListener{
 	SearchPanel search;
 	KnowledgePanel knowledge;
 	LearningPanel learning;
+	FooterPanel footer;
 	
-	public HeaderController(HeaderPanel header, BodyPanel body, SearchPanel search, KnowledgePanel knowledge, LearningPanel learning) {
+	public HeaderController(HeaderPanel header, BodyPanel body, FooterPanel footer) {
 		this.header = header;
 		this.body = body;
-		this.search = search;
-		this.knowledge = knowledge;
-		this.learning = learning;
+		this.search = body.getSearch();
+		this.knowledge = body.getKnowledge();
+		this.learning = body.getLearning();
+		this.footer = footer;
 	}
 	
 	@Override
@@ -36,14 +39,17 @@ public class HeaderController implements ActionListener, MouseListener{
 		if(header.getSearchBtn().equals(e.getSource())){
 			System.out.println("Search");
 			body.showSearch();
+			footer.showLoading();
 		}
 		else if(header.getKnowledgeBtn().equals(e.getSource())){
 			System.out.println("Knowledge");
 			body.showKnowledge();
+			footer.showBtn();
 		}
 		else if(header.getLearningBtn().equals(e.getSource())){
 			System.out.println("Learning");
 			body.showLearning();
+			footer.showLoading();
 		}
 		
 	}

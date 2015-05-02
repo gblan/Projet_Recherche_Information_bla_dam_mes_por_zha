@@ -1,6 +1,7 @@
 package et4.ihm.mvc;
 
 import java.awt.Point;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Observable;
 
@@ -124,5 +125,15 @@ public class Model extends Observable{
 	public String learn(String text) {
 		// TODO Auto-generated method stub
 		return getPinyin(text);
+	}
+
+	/**
+	 * Prend en parametre le fichier que l'utilisateur a choisi dans le FileChooser
+	 * @param fichier
+	 */
+	public void updateKnowledge(File file) {
+		
+		System.out.println("Model : updateKnowledge in "+file.getAbsolutePath());
+		
 	}
 }

@@ -16,6 +16,7 @@ import et4.ihm.mvc.View;
 import et4.ihm.mvc.controller.HeaderController;
 import et4.ihm.mvc.panel.UIColor;
 import et4.ihm.mvc.panel.body.BodyPanel;
+import et4.ihm.mvc.panel.footer.FooterPanel;
 
 public class HeaderPanel extends JPanel{
 	
@@ -23,9 +24,9 @@ public class HeaderPanel extends JPanel{
 	private final String FONT = "Helvetica-Neue";
 	private final int FONT_SIZE = 20;
 	
-	public HeaderPanel(BodyPanel bodyPanel) {
+	public HeaderPanel(BodyPanel bodyPanel, FooterPanel footerPanel) {
 		super();
-		HeaderController controller = new HeaderController(this,bodyPanel,bodyPanel.getSearch(),bodyPanel.getKnowledge(),bodyPanel.getLearning());
+		HeaderController controller = new HeaderController(this,bodyPanel, footerPanel);
 		searchBtn = new JPanel();
 		searchBtn.setLayout(new BoxLayout(searchBtn, BoxLayout.X_AXIS));
 		searchBtn.add(Box.createHorizontalGlue());

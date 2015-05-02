@@ -44,11 +44,13 @@ public class View implements Observer{
 		
 		
 		global = new JPanel();
-		body = new BodyPanel(model);
 		
-		header = new HeaderPanel(body);
-		footer = new FooterPanel();
 		
+		footer = new FooterPanel(model);
+		body = new BodyPanel(model,footer);
+		header = new HeaderPanel(body,footer);
+		
+
 		
 		frame.addWindowListener(new java.awt.event.WindowAdapter() {
 		    @Override
@@ -128,6 +130,7 @@ public class View implements Observer{
 			
 			body.getSearch().update(components);
 			body.showSearch();
+			footer.showLoading();
 		} catch (ClassCastException e) {
 		}
 		
@@ -135,7 +138,8 @@ public class View implements Observer{
 			ArrayList<KnowledgeComponent> components = (ArrayList<KnowledgeComponent>)arg;
 			KnowledgeComponent tester = components.get(0); //sert a provoquer class cast exception
 			body.getKnowledge().update(components);
-			body.showKnowledge();;
+			body.showKnowledge();
+			footer.showBtn();
 		} catch (ClassCastException e) {
 		}
 		
