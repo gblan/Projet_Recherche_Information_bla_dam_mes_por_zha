@@ -25,8 +25,6 @@ public class TokenizationFrench extends Tokenization {
 		}
 		
 		
-		System.out.println("Exit du system dans TokenizationFrench.java");
-		System.exit(0);
 		
 		return index;
 	}
