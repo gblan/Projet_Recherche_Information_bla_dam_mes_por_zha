@@ -81,12 +81,12 @@ public class SuffixArray {
 	}
 
 	public int[] getLCPVector() throws Exception {
-		int[] result = new int[tabSuffixes.length +1];
+		int[] result = new int[tabSuffixes.length + 1];
 		// ArrayList<Token> listToken = corpus.getIndex().getListTokens();
 		result[0] = 0;
-		for (int i = 1; i < tabSuffixes.length ; i++) {
-			result[i] = getLCPLongPrefixeBetween(tabSuffixes[i-1], tabSuffixes[i]);
-			System.out.println("Result : "+result[i]);
+		for (int i = 1; i < tabSuffixes.length; i++) {
+			result[i] = getLCPLongPrefixeBetween(tabSuffixes[i - 1], tabSuffixes[i]);
+			System.out.println("Result : " + result[i]);
 		}
 
 		result[tabSuffixes.length] = 0;
@@ -116,10 +116,9 @@ public class SuffixArray {
 
 		// System.out.println("Corpus "+corpusSentence);
 
-		System.out.println("Token a la position : " + posFirstToken + " = |"
-				+ returnAllSentence(posFirstToken) + "|");
-		System.out.println("Token a la position : " + posSecondToken + " = |"
-				+ returnAllSentence(posSecondToken) + "|");
+		System.out.println("Token a la position : " + posFirstToken + " = |" + returnAllSentence(posFirstToken) + "|");
+		System.out
+				.println("Token a la position : " + posSecondToken + " = |" + returnAllSentence(posSecondToken) + "|");
 
 		String firstToken = corpusSentence.substring(posFirstToken, corpusSentence.length());
 		String secondToken = corpusSentence.substring(posSecondToken, corpusSentence.length());
@@ -146,15 +145,15 @@ public class SuffixArray {
 
 		return result;
 	}
-	
+
 	public String returnAllSentence(Integer pos) {
 		String corpusSentence = corpus.getCorpus();
 		return corpusSentence.substring(pos, corpusSentence.length());
 	}
-	
-	
+
 	/**
 	 * Fonction de dichotomie recursive
+	 * 
 	 * @param array
 	 * @param search
 	 * @param starting
@@ -162,193 +161,175 @@ public class SuffixArray {
 	 * @return la position du premier element
 	 */
 	public int dichotomieRecursive(ArrayList<String> array, String search, int starting, int ending) {
-		
-		if(ending<starting) return -1;
-		int mid = (int)((starting+ending)/2);
-		int result = compare2Tokens(array.get(mid),search);
-		
-		if(result==0)
+
+		if (ending < starting)
+			return -1;
+		int mid = (int) ((starting + ending) / 2);
+		int result = compare2Tokens(array.get(mid), search);
+
+		if (result == 0)
 			return mid;
-		else if(result<0) {
-			starting = mid+1;
+		else if (result < 0) {
+			starting = mid + 1;
+		} else {
+
+			ending = mid - 1;
 		}
-		else {
-			
-			ending = mid-1;
-		}
-	
-		
-		return dichotomieRecursive(array,search, starting, ending);
+
+		return dichotomieRecursive(array, search, starting, ending);
 	}
-	
+
 	/**
 	 * Compare 2 token
+	 * 
 	 * @param fromArray
 	 * @param search
-	 * @return si les tokens ne commence pas parreille renvoi > 0 ou < 0 | si les tokens commence de la meme maniere
-	 * Ex : toto et totoa => return 0
-	 * Ex : toto et tota => return > 0 ou < 0
+	 * @return si les tokens ne commence pas parreille renvoi > 0 ou < 0 | si
+	 *         les tokens commence de la meme maniere Ex : toto et totoa =>
+	 *         return 0 Ex : toto et tota => return > 0 ou < 0
 	 */
 	public int compare2Tokens(String fromArray, String search) {
-		// Si la string a la position 'mid' a une taille inferieur a celle du 'search' on va juste faire un compareto
+		// Si la string a la position 'mid' a une taille inferieur a celle du
+		// 'search' on va juste faire un compareto
 		// => aucune chance que les deux strings se ressemblent
-		if(fromArray.length()<search.length()) {
+		if (fromArray.length() < search.length()) {
 			return fromArray.compareTo(search);
 		}
-		// Si la string a la position 'mid' a une taille superieur a celle de 'search', alors elle est un candiat potentiel
-		// => il y a une chance qu'elle se ressemble : par exemple mid="to be" search="to" on va decouper mid pour qu'elle ai
+		// Si la string a la position 'mid' a une taille superieur a celle de
+		// 'search', alors elle est un candiat potentiel
+		// => il y a une chance qu'elle se ressemble : par exemple mid="to be"
+		// search="to" on va decouper mid pour qu'elle ai
 		// la meme taille que 'search'
 		else {
 			return fromArray.substring(0, search.length()).compareTo(search);
 		}
 	}
-	
-	
-	public ArrayList<Integer> getAllPositionsOfPhrase(String search){
-		//contient toute les positions de la phrase recherche
+
+	public ArrayList<Integer> getAllPositionsOfPhrase(String search) {
+		// contient toute les positions de la phrase recherche
 		ArrayList<Integer> positions = new ArrayList<Integer>();
 		ArrayList<String> array = new ArrayList<String>();
-		/* tokenisation pour tester si tous les tokens de la phrase sont dans l'index*/
-		
-		
+		/*
+		 * tokenisation pour tester si tous les tokens de la phrase sont dans
+		 * l'index
+		 */
+
 		// Creation d'un tableau de suffixe
-		for (int i = 0; i < tabSuffixes.length ; i++) {
-			System.out.println("= "+returnAllSentence(tabSuffixes[i]));
+		for (int i = 0; i < tabSuffixes.length; i++) {
+			System.out.println("= " + returnAllSentence(tabSuffixes[i]));
 			array.add(returnAllSentence(tabSuffixes[i]));
 		}
-		
-		/* recherche dichotomique*/
-		
-		
-		int position = dichotomieRecursive(array, search, 0, array.size()-1);
-		
-		
+
+		/* recherche dichotomique */
+
+		int position = dichotomieRecursive(array, search, 0, array.size() - 1);
+
 		parcourLeft(array, positions, search, position);
 		positions.add(position);
 		parcourRight(array, positions, search, position);
-		
-		
-		/* liste de secours*/
-		
-		
-		return positions;	
+
+		/* liste de secours */
+
+		return positions;
 	}
-	
+
 	/**
-	 * Parcour iteratif de droite a gauche a partir de la position 'position' jusqu'a i=0
+	 * Parcour iteratif de droite a gauche a partir de la position 'position'
+	 * jusqu'a i=0
+	 * 
 	 * @param array
 	 * @param positions
 	 * @param search
 	 * @param position
 	 */
-	public void parcourLeft(ArrayList<String> array, ArrayList<Integer> positions, String search,int position) {
-			
-			for(int i = position-1; i>=0; i--) {
-			
-				/**
-				 * FIXME Ajouter une condition qui dit si lcpvector[indice] < seuil => on quitte la boucle 
-				 * 
-				 */
-				if(compare2Tokens(array.get(i), search)==0) {
-					positions.add(0, i);
-				}
-				//TODO transforme en while
-				else 
-					break;
-			
-		}
-	}
-	
-	/**
-	 * Parcour iteratif de gauche a droite a partir de la position 'position' jusqu'a la fin
-	 * @param array
-	 * @param positions
-	 * @param search
-	 * @param position
-	 */
-	public void parcourRight(ArrayList<String> array, ArrayList<Integer> positions, String search,int position) {
-		
-		for (int i = position+1; i < array.size(); i++) {
-			
-			
+	public void parcourLeft(ArrayList<String> array, ArrayList<Integer> positions, String search, int position) {
+
+		for (int i = position - 1; i >= 0; i--) {
+
 			/**
-			 * FIXME Ajouter une condition qui dit si lcpvector[indice] < seuil => on quitte la boucle 
+			 * FIXME Ajouter une condition qui dit si lcpvector[indice] < seuil
+			 * => on quitte la boucle
 			 * 
 			 */
-			
-			if(compare2Tokens(array.get(i), search)==0) {
+			if (compare2Tokens(array.get(i), search) == 0) {
+				positions.add(0, i);
+			}
+			// TODO transforme en while
+			else
+				break;
+
+		}
+	}
+
+	/**
+	 * Parcour iteratif de gauche a droite a partir de la position 'position'
+	 * jusqu'a la fin
+	 * 
+	 * @param array
+	 * @param positions
+	 * @param search
+	 * @param position
+	 */
+	public void parcourRight(ArrayList<String> array, ArrayList<Integer> positions, String search, int position) {
+
+		for (int i = position + 1; i < array.size(); i++) {
+
+			/**
+			 * FIXME Ajouter une condition qui dit si lcpvector[indice] < seuil
+			 * => on quitte la boucle
+			 * 
+			 */
+
+			if (compare2Tokens(array.get(i), search) == 0) {
 				positions.add(positions.size(), i);
 			}
-			//TODO transforme en while
-			else 
+			// TODO transforme en while
+			else
 				return;
 		}
 	}
-	
-	/*public static void main(String[] args) {
-	
-	ArrayList<String> exemple = new ArrayList<String>();
-		exemple.add("Anacondaaaaaa");
-		exemple.add("Anticonsti-qjsqdqdh");
-		exemple.add("Cerise");
-		exemple.add("Java");
-		exemple.add("Orange");
-		exemple.add("Pastèque");
-		exemple.add("Pastèque");
-		exemple.add("Pastèque");
-		exemple.add("Pastèque");
-		exemple.add("Pastèque");
-		exemple.add("Pastèque");
-		exemple.add("Pastèque");
-		exemple.add("Pastèque");
-		exemple.add("Pastèque");
-		exemple.add("Pastèque");
-		exemple.add("Pastèque");
-		exemple.add("Pastèque");
-		exemple.add("Pastèque");
-		exemple.add("Pastèque");
-		exemple.add("Pastèques");
-		exemple.add("Pastèque");
-		exemple.add("Pastèque");
-		exemple.add("Pastèque");
-		exemple.add("Pastèque Ro");
-		exemple.add("Pastèque");
-		exemple.add("Pastèque");
-		exemple.add("Pastèque");
-		exemple.add("Pommes Ro");
-		exemple.add("Vert");
-		exemple.add("Zèbre");
-		
-	String search = "Pastèque";
-	int position = SuffixArray.dichotomieRecursive(exemple,search,0,exemple.size()-1);
-	System.out.println("Position = "+position);
 
-	ArrayList<Integer> positions = new ArrayList<Integer>();
-	
-	
-	for(int i = position-1; i>=0; i--) {
-		
-		if(SuffixArray.compare2Tokens(exemple.get(i), search)==0) {
-			positions.add(0, i);
-		}
-		//TODO transforme en while
-		else 
-			break;
-		
-	}
-	
-	positions.add(position);
-	
-	for (int i = position+1; i < exemple.size(); i++) {
-		
-		if(SuffixArray.compare2Tokens(exemple.get(i), search)==0) {
-			positions.add(positions.size(), i);
-		}
-		//TODO transforme en while
-		else 
-			break;
-	}
-	
-	System.out.println("Positions : "+positions);
-}*/
+	/*
+	 * public static void main(String[] args) {
+	 * 
+	 * ArrayList<String> exemple = new ArrayList<String>();
+	 * exemple.add("Anacondaaaaaa"); exemple.add("Anticonsti-qjsqdqdh");
+	 * exemple.add("Cerise"); exemple.add("Java"); exemple.add("Orange");
+	 * exemple.add("Pastèque"); exemple.add("Pastèque");
+	 * exemple.add("Pastèque"); exemple.add("Pastèque");
+	 * exemple.add("Pastèque"); exemple.add("Pastèque");
+	 * exemple.add("Pastèque"); exemple.add("Pastèque");
+	 * exemple.add("Pastèque"); exemple.add("Pastèque");
+	 * exemple.add("Pastèque"); exemple.add("Pastèque");
+	 * exemple.add("Pastèque"); exemple.add("Pastèque");
+	 * exemple.add("Pastèques"); exemple.add("Pastèque");
+	 * exemple.add("Pastèque"); exemple.add("Pastèque");
+	 * exemple.add("Pastèque Ro"); exemple.add("Pastèque");
+	 * exemple.add("Pastèque"); exemple.add("Pastèque");
+	 * exemple.add("Pommes Ro"); exemple.add("Vert"); exemple.add("Zèbre");
+	 * 
+	 * String search = "Pastèque"; int position =
+	 * SuffixArray.dichotomieRecursive(exemple,search,0,exemple.size()-1);
+	 * System.out.println("Position = "+position);
+	 * 
+	 * ArrayList<Integer> positions = new ArrayList<Integer>();
+	 * 
+	 * 
+	 * for(int i = position-1; i>=0; i--) {
+	 * 
+	 * if(SuffixArray.compare2Tokens(exemple.get(i), search)==0) {
+	 * positions.add(0, i); } //TODO transforme en while else break;
+	 * 
+	 * }
+	 * 
+	 * positions.add(position);
+	 * 
+	 * for (int i = position+1; i < exemple.size(); i++) {
+	 * 
+	 * if(SuffixArray.compare2Tokens(exemple.get(i), search)==0) {
+	 * positions.add(positions.size(), i); } //TODO transforme en while else
+	 * break; }
+	 * 
+	 * System.out.println("Positions : "+positions); }
+	 */
 }
