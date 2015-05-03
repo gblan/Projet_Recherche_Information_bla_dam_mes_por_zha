@@ -11,6 +11,7 @@ import javax.swing.JScrollPane;
 import et4.ihm.mvc.Model;
 import et4.ihm.mvc.View;
 import et4.ihm.mvc.panel.UIColor;
+import et4.ihm.mvc.panel.footer.FooterPanel;
 
 public class BodyPanel extends JPanel{
 
@@ -19,7 +20,7 @@ public class BodyPanel extends JPanel{
 	LearningPanel learning;
 	JScrollPane scrollSearch,scrollKnowledge;
 	
-	public BodyPanel(Model model) {
+	public BodyPanel(Model model, FooterPanel footer) {
 		super();
 		
 		search = new SearchPanel(model);
@@ -46,7 +47,7 @@ public class BodyPanel extends JPanel{
 		
 
 		showSearch();
-
+		footer.showLoading();
 	}
 	
 
