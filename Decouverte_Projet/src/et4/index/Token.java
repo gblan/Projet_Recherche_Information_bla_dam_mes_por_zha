@@ -37,5 +37,23 @@ public class Token {
 	public ArrayList<Integer> getPositions() {
 		return positions;
 	}
-
+	
+	@Override
+	public int hashCode() {
+		return token.hashCode();
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(obj==null) return false;
+		if(obj==this) return true;
+		
+		try {
+			Token second = (Token)obj;
+			return token.equals(second.token) && documentName.equals(second.documentName);
+		} catch (ClassCastException e) {
+			
+			return false;
+		}
+	}
 }

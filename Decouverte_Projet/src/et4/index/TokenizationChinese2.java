@@ -15,11 +15,11 @@ public class TokenizationChinese2 extends Tokenization {
 	private static final String basedir = System.getProperty(
 			"TokenizationChinese", "data");
 
-	/*
+	
 	public static void main(String[] args) throws Exception {
 		TokenizationChinese2 tc = new TokenizationChinese2();
 		System.out.println(tc.TokenizeDeFichier("texteChinois.txt").toString());
-	}*/
+	}
 	 
 	public CorpusIndex TokenizeDeFichier(String fileName) throws FileNotFoundException {
 		CorpusIndex index = new CorpusIndex();
