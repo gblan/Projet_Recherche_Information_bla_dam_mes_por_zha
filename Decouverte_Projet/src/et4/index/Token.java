@@ -24,7 +24,7 @@ public class Token {
 	public String toString() {
 		String result = "";
 
-		result += "[" + documentName + ", positions :" + positions + "]\n";
+		//result += "[" + documentName + ", positions :" + positions + "]\n";
 		result += "[token : " + token + "]";
 
 		return result;
