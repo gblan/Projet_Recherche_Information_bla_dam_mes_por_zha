@@ -13,17 +13,18 @@ public class SuffixArray {
 	private MonolingualCorpus corpus;
 	// the main data structure
 	private int tabSuffixes[];
-	
+	private int line;
 	private int LCPVector[];
 	
 	// random number generator used for quick sorting
 	private static final Random RAND = new Random();
 
 
-	public SuffixArray(MonolingualCorpus corpus) {
+	public SuffixArray(MonolingualCorpus corpus,int line) {
 		this.corpus = corpus;
-		this.tabSuffixes = new int[corpus.getNbMots()];
-		this.LCPVector = new int[corpus.getNbMots()];
+		this.line=line;
+		this.tabSuffixes = new int[corpus.getNbMots().get(line)];
+		this.LCPVector = new int[corpus.getNbMots().get(line)];
 	}
 
 	public int[] getTabSuffix() {
@@ -41,13 +42,18 @@ public class SuffixArray {
 	public void initTabSuffix() {
 		int i = 0;
 
-		for (Entry<String, Token> entry : corpus.getIndex().getListTokens().entrySet()) {
+		for (Entry<String, Token> entry : corpus.getIndex().get(line).getListTokens().entrySet()) {
+			//System.out.println(entry.getKey());
 			for (int position : entry.getValue().getPositions()) {
+				//System.out.println(position);
 				tabSuffixes[i] = position;
 				i++;
 			}
 		}
-		System.out.println("init OK");
+		/*for(int j =0; j<tabSuffixes.length;j++){
+			System.out.println(tabSuffixes[j]);
+		}
+		System.out.println("init OK");*/
 	}
 
 	// call to sort the entire suffix array
@@ -72,7 +78,7 @@ public class SuffixArray {
 				tabSuffixes[end] = tmp;
 			}
 			for (int i = index = begin; i < end; ++i) {
-				if (corpus.compareSuffixes(tabSuffixes[i], pivot) <= 0) {
+				if (corpus.compareSuffixes(tabSuffixes[i], pivot,this.line) <= 0) {
 					int tmp = tabSuffixes[index];
 					tabSuffixes[index] = tabSuffixes[i];
 					tabSuffixes[i] = tmp;
@@ -96,7 +102,7 @@ public class SuffixArray {
 		LCPVector[0] = 0;
 		for (int i = 1; i < tabSuffixes.length ; i++) {
 			LCPVector[i] = getLCPLongPrefixeBetween(tabSuffixes[i-1], tabSuffixes[i]);
-			System.out.println("Result : "+LCPVector[i]);
+			//System.out.println("Result : "+LCPVector[i]);
 		}
 
 		LCPVector[tabSuffixes.length] = 0;
@@ -122,14 +128,15 @@ public class SuffixArray {
 			throw new Exception("getLCP2String in SuffixArray : posFirstToken < 0 || posSecondToken < 0");
 		}
 
-		String corpusSentence = corpus.getCorpus();
+
+		String corpusSentence = corpus.getCorpusArray()[line];
 
 		// System.out.println("Corpus "+corpusSentence);
 
-		System.out.println("Token a la position : " + posFirstToken + " = |"
+		/*System.out.println("Token a la position : " + posFirstToken + " = |"
 				+ returnAllSentence(posFirstToken) + "|");
 		System.out.println("Token a la position : " + posSecondToken + " = |"
-				+ returnAllSentence(posSecondToken) + "|");
+				+ returnAllSentence(posSecondToken) + "|");*/
 
 		String firstToken = corpusSentence.substring(posFirstToken, corpusSentence.length());
 		String secondToken = corpusSentence.substring(posSecondToken, corpusSentence.length());
@@ -158,11 +165,15 @@ public class SuffixArray {
 	}
 	
 	public String returnAllSentence(Integer pos) {
-		String corpusSentence = corpus.getCorpus();
+		String corpusSentence = corpus.getCorpusArray()[line];
 		return corpusSentence.substring(pos, corpusSentence.length());
 	}
 	
 	
+	public MonolingualCorpus getCorpus() {
+		return corpus;
+	}
+
 	/**
 	 * Fonction de dichotomie recursive
 	 * @param array
@@ -200,6 +211,8 @@ public class SuffixArray {
 	 * Ex : toto et tota => return > 0 ou < 0
 	 */
 	public int compare2Tokens(String fromArray, String search) {
+		fromArray = fromArray.toLowerCase();
+		search = search.toLowerCase();
 		// Si la string a la position 'mid' a une taille inferieur a celle du 'search' on va juste faire un compareto
 		// => aucune chance que les deux strings se ressemblent
 		if(fromArray.length()<search.length()) {
@@ -223,11 +236,10 @@ public class SuffixArray {
 		
 		// Creation d'un tableau de suffixe
 		for (int i = 0; i < tabSuffixes.length ; i++) {
-			System.out.println("= "+returnAllSentence(tabSuffixes[i]));
+			//System.out.println("= "+tabSuffixes[i]);
 			array.add(returnAllSentence(tabSuffixes[i]));
 		}
-		
-		
+
 		/* recherche dichotomique*/
 		
 		
@@ -258,7 +270,7 @@ public class SuffixArray {
 				 * FIXME Ajouter une condition qui dit si lcpvector[indice] < seuil => on quitte la boucle 
 				 * 
 				 */
-				while (LCPVector[i] >= search.length() && i>=0 ){
+				while ( i>=0 && LCPVector[i] >= search.length()  ){
 					positions.add(0, tabSuffixes[i]);
 					i--;
 				}
@@ -287,7 +299,7 @@ public class SuffixArray {
 			 * FIXME Ajouter une condition qui dit si lcpvector[indice] < seuil => on quitte la boucle 
 			 * 
 			 */
-			while (LCPVector[i] >= search.length() && i < array.size()){
+			while (i < array.size() && LCPVector[i] >= search.length() ){
 				positions.add(positions.size(), tabSuffixes[i]);
 				i++;
 			}
