@@ -14,6 +14,12 @@ public class Token {
 		this.token = token;
 	}
 
+	public Token(String documentName, ArrayList<Integer> positions, String token){
+		this.documentName = documentName;
+		this.positions = positions;
+		this.token = token;
+	}
+	
 	@Override
 	public String toString() {
 		String result = "";
