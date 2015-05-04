@@ -40,11 +40,11 @@ public class Model extends Observable{
 
 			//Le premier composant n'a pas de + space dans le calcul
 			if(i==0) {
-				components.add(new SearchComponent(new Point(0,SearchPanel.heightComponent*(i+1)),"你好吗","Comment allez-vous ?",getPinyin("你好吗"), "allez", View.width-20, SearchPanel.heightComponent));
+				components.add(new SearchComponent(new Point(0,SearchPanel.heightComponent*(i+1)),"ä½ å¥½å�—","Comment allez-vous ?",getPinyin("ä½ å¥½å�—"), "allez", View.width-20, SearchPanel.heightComponent));
 			}
 			else {
-				//components.add(new SearchComponent(new Point(0,SearchPanel.heightComponent*(i+1)+SearchPanel.space*i),"你好吗","Comment allez-vous ?","Nǐ hǎo ma?", "allez", View.width-20, SearchPanel.heightComponent));
-				components.add(new SearchComponent(new Point(0,SearchPanel.heightComponent*(i+1)+SearchPanel.space*i),"你好吗","Comment allez-vous ?",getPinyin("你好吗"), "allez", View.width-20, SearchPanel.heightComponent));
+				//components.add(new SearchComponent(new Point(0,SearchPanel.heightComponent*(i+1)+SearchPanel.space*i),"ä½ å¥½å�—","Comment allez-vous ?","NÇ� hÇŽo ma?", "allez", View.width-20, SearchPanel.heightComponent));
+				components.add(new SearchComponent(new Point(0,SearchPanel.heightComponent*(i+1)+SearchPanel.space*i),"ä½ å¥½å�—","Comment allez-vous ?",getPinyin("ä½ å¥½å�—"), "allez", View.width-20, SearchPanel.heightComponent));
 			}
 		}
 		
@@ -66,13 +66,13 @@ public class Model extends Observable{
 		for(int i = 0; i<15; i++) {
 			//Le premier composant n'a pas de + space dans le calcul
 			if(i==0) {
-				components.add(new KnowledgeComponent(new Point(0,KnowledgePanel.heightComponent+KnowledgePanel.space*i),"鸟","oiseau",getPinyin("鸟"), rate, View.width, KnowledgePanel.heightComponent));
+				components.add(new KnowledgeComponent(new Point(0,KnowledgePanel.heightComponent+KnowledgePanel.space*i),"é¸Ÿ","oiseau",getPinyin("é¸Ÿ"), rate, View.width, KnowledgePanel.heightComponent));
 			}
 			else {
-				//components.add(new KnowledgeComponent(new Point(0,KnowledgePanel.heightComponent*(i+1)+KnowledgePanel.space*i),"男人","homme","Nánrén", rate, View.width, KnowledgePanel.heightComponent));
-				components.add(new KnowledgeComponent(new Point(0,KnowledgePanel.heightComponent*(i+1)+KnowledgePanel.space*i),"鸟","oiseau", getPinyin("鸟"), rate, View.width, KnowledgePanel.heightComponent));
+				//components.add(new KnowledgeComponent(new Point(0,KnowledgePanel.heightComponent*(i+1)+KnowledgePanel.space*i),"ç”·äºº","homme","NÃ¡nrÃ©n", rate, View.width, KnowledgePanel.heightComponent));
+				components.add(new KnowledgeComponent(new Point(0,KnowledgePanel.heightComponent*(i+1)+KnowledgePanel.space*i),"é¸Ÿ","oiseau", getPinyin("é¸Ÿ"), rate, View.width, KnowledgePanel.heightComponent));
 			}
-			//components.add(new SearchComponent(new Point(0,heightComponent*2+space),"要还是不","Etre ou ne pas etre","Yào háishì bù","not", View.width, heightComponent));
+			//components.add(new SearchComponent(new Point(0,heightComponent*2+space),"è¦�è¿˜æ˜¯ä¸�","Etre ou ne pas etre","YÃ o hÃ¡ishÃ¬ bÃ¹","not", View.width, heightComponent));
 			rate+=80;
 		}
 		
@@ -86,7 +86,7 @@ public class Model extends Observable{
 		System.out.println("Action dans le model 'search' : "+text);
 	}
 	
-	public String getPinyin(String phraseChinoise){
+	public static String getPinyin(String phraseChinoise){
 		String pinYinDePhrase = null;
 		HanyuPinyinOutputFormat format= new HanyuPinyinOutputFormat();
 		format.setToneType(HanyuPinyinToneType.WITH_TONE_MARK);
