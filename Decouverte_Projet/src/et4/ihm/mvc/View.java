@@ -65,6 +65,7 @@ public class View implements Observer{
 		});
 		
 		init();
+		
 	}
 	
 	private void init() {
@@ -113,7 +114,7 @@ public class View implements Observer{
 		frame.add(global);
 		
 		frame.setVisible(true);
-		//setResizable(false);
+		frame.setResizable(false);
 		frame.setLocationRelativeTo(null);
 	}
 

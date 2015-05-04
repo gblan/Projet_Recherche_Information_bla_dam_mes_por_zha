@@ -81,9 +81,14 @@ public class Model extends Observable{
 		notifyObservers(components);
 	}
 
-	public void search(String text) {
+	/**
+	 * @param search
+	 * @param langue 1 mandarin, 2 français
+	 */
+	public void search(String search,int langue) {
 		
-		System.out.println("Action dans le model 'search' : "+text);
+		System.out.println("Action dans le model 'search' : "+search);
+		
 	}
 	
 	public static String getPinyin(String phraseChinoise){
