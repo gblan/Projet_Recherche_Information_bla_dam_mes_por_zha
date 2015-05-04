@@ -30,7 +30,7 @@ public class TokenizationFrench extends Tokenization {
 		try{
 			while ((line = frB.readLine()) != null) {
 				CorpusIndex cp = new CorpusIndex();
-				String[] tmp = line.replaceAll("[(){},.;!?<>%]", "").split("\\s+");
+				String[] tmp = line.replaceAll("[(){},.;'!?<>%]", "").split("\\s+");
 				for(String str : tmp){
 					for (int i = -1; (i = line.indexOf(str, i + 1)) != -1; ) {
 						cp.addToken(new Token(fileName, i, str));
