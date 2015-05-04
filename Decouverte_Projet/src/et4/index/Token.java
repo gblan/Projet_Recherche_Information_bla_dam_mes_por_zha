@@ -50,7 +50,7 @@ public class Token {
 		
 		try {
 			Token second = (Token)obj;
-			return token.equals(second.token) && documentName.equals(second.documentName);
+			return token.equals(second.token);
 		} catch (ClassCastException e) {
 			
 			return false;
