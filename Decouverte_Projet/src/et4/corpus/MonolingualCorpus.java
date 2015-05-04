@@ -1,7 +1,13 @@
 package et4.corpus;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.Map.Entry;
 
 import org.apache.commons.io.FileUtils;
@@ -11,39 +17,56 @@ import et4.index.Token;
 import et4.index.Tokenization;
 
 public class MonolingualCorpus {
-	private static CorpusIndex index;
-	private int nbMots = 0;
+	private static ArrayList<CorpusIndex> index;
+	private ArrayList<Integer> nbMots = new ArrayList<Integer>();
 	private String corpus;
+	private String[] corpusArray;
 
-	public MonolingualCorpus(Tokenization tok, String filename) throws IOException {
+	/*
+	 * 1 = Français 2 = Chinois
+	 */
+	public MonolingualCorpus(Tokenization tok, String filename)
+			throws IOException {
 		index = tok.Tokenize(filename);
 		corpus = FileUtils.readFileToString(new File(filename), "UTF-8");
-		for (Entry<String, Token> entry : index.getListTokens().entrySet()) {
-			nbMots += entry.getValue().getPositions().size();
+		corpusArray = corpus.split("\n");
+		for (int i = 0; i < corpusArray.length; i++) {
+			int nbMot=0;
+			for (Entry<String, Token> entry : index.get(i).getListTokens()
+					.entrySet()) {
+				nbMot += entry.getValue().getPositions().size();
+			}
+			nbMots.add(nbMot);
 		}
 	}
 
-	public String getTokenAtPosition(int position) {
-		return index.getListTokens().get(position).getStringToken();
+	public String[] getCorpusArray() {
+		return corpusArray;
 	}
 
-	public String getSuffixFromPosition(int position) {
-		return corpus.substring(position);
+	public String getTokenAtPosition(int position, int ligne) {
+		return index.get(ligne).getListTokens().get(position).getStringToken();
 	}
 
-	public int compareSuffixes(int pos1, int pos2) {
-		return corpus.substring(pos1).compareTo(corpus.substring(pos2));
+	public String getSuffixFromPosition(int position, int ligne) {
+		return corpusArray[ligne].substring(position);
 	}
 
-	public int getIndexSize() {
-		return index.getListTokens().size();
+	public int compareSuffixes(int pos1, int pos2,int line) {
+		String a = corpusArray[line].substring(pos1).toLowerCase();
+		String b = corpusArray[line].substring(pos2).toLowerCase();
+		return a.compareTo(b);
 	}
 
-	public CorpusIndex getIndex() {
+	public int getIndexSize(int line) {
+		return index.get(line).getListTokens().size();
+	}
+
+	public ArrayList<CorpusIndex> getIndex() {
 		return index;
 	}
 
-	public int getNbMots() {
+	public ArrayList<Integer> getNbMots() {
 		return nbMots;
 	}
 
