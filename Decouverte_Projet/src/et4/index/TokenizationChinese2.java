@@ -4,6 +4,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
@@ -19,13 +20,15 @@ public class TokenizationChinese2 extends Tokenization {
 	public static void main(String[] args) throws Exception {
 		TokenizationChinese2 tc = new TokenizationChinese2();
 		System.out.println(tc.TokenizeDeFichier("texteChinois.txt").toString());
-	}*/
+		//System.out.println(tc.getTokensDePhrase("今天天气好,太好啦!"));
+	}
+	*/
 	 
 	public CorpusIndex TokenizeDeFichier(String fileName) throws FileNotFoundException {
 		CorpusIndex index = new CorpusIndex();
 		Set<String> tokensSet;
 		try {
-			tokensSet = getTokens(fileName);
+			tokensSet = getTokensDeFichier(fileName);
 			Iterator<String> it = tokensSet.iterator();
 			while (it.hasNext()) {
 				String token = it.next();
@@ -45,18 +48,18 @@ public class TokenizationChinese2 extends Tokenization {
 
 	public String getContenuDeFichier(String filePath) {
 		String contenu = "";
-		File filename = new File(filePath); // 要读取以上路径的input。txt文件
+		File filename = new File(filePath);
 		InputStreamReader reader;
 		try {
 			reader = new InputStreamReader(new FileInputStream(filename));
-			BufferedReader br = new BufferedReader(reader); // 建立一个对象，它把文件内容转成计算机能读懂的语言
+			BufferedReader br = new BufferedReader(reader);
 			String line = "";
 			try {
 				line = br.readLine();
 				while (line != null) {
 					contenu += line;
 					contenu += '\n';
-					line = br.readLine(); // 一次读入一行数据
+					line = br.readLine();
 				}
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -71,7 +74,7 @@ public class TokenizationChinese2 extends Tokenization {
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} // 建立一个输入流对象reader
+		} 
 		return contenu;
 	}
 
@@ -87,7 +90,7 @@ public class TokenizationChinese2 extends Tokenization {
 	 *
 	 * @author Christopher Manning
 	 */
-	public Set<String> getTokens(String filepath) throws Exception {
+	public Set<String> getTokensDeFichier(String filepath) throws Exception {
 		System.setOut(new PrintStream(System.out, true, "utf-8"));
 		Properties props = new Properties();
 		props.setProperty("sighanCorporaDict", basedir); //
@@ -153,6 +156,51 @@ public class TokenizationChinese2 extends Tokenization {
 			}
 		}
 		return tokensSet;
+	}
+	
+	public ArrayList<String> getTokensDePhrase(String phrase) throws Exception {
+		System.setOut(new PrintStream(System.out, true, "utf-8"));
+		Properties props = new Properties();
+		props.setProperty("sighanCorporaDict", basedir); //
+		props.setProperty("NormalizationTable", "data/norm.simp.utf8"); //
+		props.setProperty("normTableEncoding", "UTF-8"); // below is needed
+		// because
+		// CTBSegDocumentIteratorFactory
+		// accesses it
+		props.setProperty("serDictionary", basedir + "/dict-chris6.ser.gz");
+		/*
+		 * if (args.length > 0) { props.setProperty("testFile", args[0]); }
+		 */
+		props.setProperty("inputEncoding", "UTF-8");
+		props.setProperty("sighanPostProcessing", "true");
+
+		CRFClassifier<CoreLabel> segmenter = new CRFClassifier<CoreLabel>(props);
+		segmenter.loadClassifierNoExceptions(basedir + "/ctb.gz", props);
+		/*
+		 * for (String filename : args) { System.out.println("filename : " +
+		 * filename); segmenter.classifyAndWriteAnswers(filename); }
+		 */ 
+		 //Tokenization pour une phrase
+		String tokensList[] = new String[1000]; 
+		List<String> segmented = segmenter.segmentString(phrase);
+		String tokens = "";
+		for(int i=0; i<segmented.size();i++){
+			tokens = tokens+segmented.get(i)+" ";
+		}
+		tokens = tokens.replaceAll("，", " ").replaceAll("、", "")
+				.replaceAll("。", "").replaceAll("：", "").replaceAll("；", "")
+				.replaceAll("《", "").replaceAll("》", "").replaceAll("“", "")
+				.replaceAll("”", "").replaceAll("（", "").replaceAll("）", "")
+				.replaceAll("～", "").replaceAll("~", "").replaceAll("\\(", "")
+				.replaceAll("\\)", "").replaceAll("-", "").replaceAll("\n", "").replaceAll(",","");
+		tokensList = tokens.split(" ", -1);
+		ArrayList<String> resultat = new ArrayList<String>();
+		for(int i=0; i<tokensList.length;i++){
+			if(!tokensList[i].isEmpty()){
+				resultat.add(tokensList[i]);
+			}
+		}
+		return resultat;
 	}
 
 	public ArrayList<Integer> getAllPostions(String contenu, String token) {
