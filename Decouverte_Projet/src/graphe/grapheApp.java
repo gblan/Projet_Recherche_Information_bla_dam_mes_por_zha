@@ -3,6 +3,8 @@ package graphe;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import et4.index.Token;
+
 
 public class grapheApp {
 	
