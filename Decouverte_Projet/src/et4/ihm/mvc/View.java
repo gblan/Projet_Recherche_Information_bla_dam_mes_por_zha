@@ -33,7 +33,7 @@ public class View implements Observer {
 
 	private JFrame frame = new JFrame();
 
-	public final static Integer width = 420;
+	public final static Integer width = 500;
 	public final static Integer height = 640;
 	private static int POURCENTAGE_HEIGHT_HEADER = 15;
 	private static int POURCENTAGE_HEIGHT_FOOTER = 10;

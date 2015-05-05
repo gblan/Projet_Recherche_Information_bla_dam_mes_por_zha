@@ -82,7 +82,7 @@ public class Model extends Observable {
 		}
 //		System.out.println("model");
 	}
-
+	
 	/**
 	 * Prend en parametre un objet (indefini pour le moment)
 	 * qui permettra de remplir le panel de knowledge
@@ -117,6 +117,7 @@ public class Model extends Observable {
 	 *            1 mandarin, 2 français
 	 */
 	public void search(String searchinput, int langue) {
+		int j=0;
 		listComponent.clear();
 		
 		if (searchinput.equals(""))
@@ -188,9 +189,18 @@ public class Model extends Observable {
 //									currentCorpus.getCorpusArray()[i], trad, piying, "", positions.size(),
 //									View.width - 20, SearchPanel.heightComponent));
 //						} else {
-							listComponent.add(new SearchComponent(new Point(0, SearchPanel.heightComponent * (i + 1)
-									+ SearchPanel.space * i), corpus.getCorpusArray()[i], trad, piying, "",
-									positions.size(), View.width - 20, SearchPanel.heightComponent));
+							if(j==0){
+								listComponent.add(new SearchComponent(new Point(0, SearchPanel.heightComponent
+										+ SearchPanel.space * j), corpus.getCorpusArray()[i], trad, piying, "",
+										positions.size(), View.width - 20, SearchPanel.heightComponent));
+							}else{
+								listComponent.add(new SearchComponent(new Point(0, SearchPanel.heightComponent * (j + 1)
+										+ SearchPanel.space * j), corpus.getCorpusArray()[i], trad, piying, "",
+										positions.size(), View.width - 20, SearchPanel.heightComponent));
+							}
+
+							
+							j++;
 //						}
 						
 //						System.out.println("corpus : " + currentCorpus.getCorpusArray()[i]);
