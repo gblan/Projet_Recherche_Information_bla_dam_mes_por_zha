@@ -4,10 +4,12 @@ import java.awt.Point;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Observable;
 import java.util.Scanner;
+
 import org.springframework.core.io.ClassPathResource;
 
 import net.sourceforge.pinyin4j.PinyinHelper;
@@ -78,7 +80,7 @@ public class Model extends Observable {
 		graphe = new GrapheWord2Vec(tokenConnu);
 	
 	
-		launch();
+//		launch();
 		
 		ClassPathResource resource = new ClassPathResource("frCorpus.txt");
         System.out.println("ClassPathRessource");
@@ -98,7 +100,7 @@ public class Model extends Observable {
 			e.printStackTrace();
 		}
 
-    	
+    	System.out.println("model");
 	}
 	
 	public void launch() {
@@ -302,7 +304,8 @@ public class Model extends Observable {
 //		System.out.println("Action dans le model 'search' : " + searchinput);
 
 		/* tri par pertinence */
-		listComponent.sort(comparePertinence());
+		Collections.sort(listComponent, comparePertinence());
+//		listComponent.sort(comparePertinence());
 
 		/* notifie les observers */
 		setChanged();
