@@ -76,6 +76,7 @@ public class Model extends Observable{
 		launch();
 		ClassPathResource resource = new ClassPathResource("frCorpus.txt");
         System.out.println("ClassPathRessource");
+
         File f;
         
 		try {
