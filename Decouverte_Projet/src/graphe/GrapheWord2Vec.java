@@ -1,70 +1,83 @@
 package graphe;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
-import et4.index.Token;
-
 public class GrapheWord2Vec {
 
-	private HashMap<PaireToken,Double> noeud;
-	private ArrayList<Token> dico;
-	public GrapheWord2Vec(ArrayList<Token> tokenConnu) {
-		noeud = new HashMap<PaireToken, Double>();
-		dico = new ArrayList<Token>();
+	
+	private HashMap<String,Double> dico;
+	public GrapheWord2Vec(ArrayList<String> tokenConnu) {
+		dico = new HashMap<String, Double>();
 		for(int i = 0; i<tokenConnu.size();i++){
-			dico.add(tokenConnu.get(i));
-			for(int j = i+1; j<tokenConnu.size(); j++ ) {
-				add(new PaireToken(tokenConnu.get(i), tokenConnu.get(j)));
-			}
+			add(tokenConnu.get(i));
 		}
 		
 	}
 	
-	public void add(PaireToken paire) {
-		if(noeud.containsKey(paire)) {
-		}
-		else {
-			noeud.put(paire, (double) (1.0));
+	public void add(String token) {
+		if(!dico.containsKey(token)) {
+			dico.put(token, (double) (1.0));
 		}
 	}
 	
-	public boolean contains(PaireToken paire) {
-		return noeud.containsKey(paire);
+	public boolean contains(String token) {
+		return dico.containsKey(token);
 	}
 	
 	@Override
 	public String toString() {
 		String display = "";
-		for(Entry<PaireToken, Double> entry : noeud.entrySet()) {
-			display+=" "+entry.getKey()+" similarite = "+entry.getValue()+"\n";
+		for(Entry<String, Double> entry : dico.entrySet()) {
+			display+=" "+entry.getKey()+" apprentissage = "+entry.getValue()+"\n";
 		}
 		return display;
 	}
 	
-	
-	
-	public HashMap<PaireToken, Double> getNoeud() {
-		return noeud;
-	}
 
 	public static void main(String[] args) {
 		
-		ArrayList<Token> tokenConnu = new ArrayList<Token>();
-			tokenConnu.add(new Token("Doc", 1, "Test"));
-			tokenConnu.add(new Token("Doc", 18, "Test"));
-			tokenConnu.add(new Token("Doc", 18, "Bis"));
+		ArrayList<String> tokenConnu = new ArrayList<String>();
+			tokenConnu.add("Test");
+			tokenConnu.add("Test");
+			tokenConnu.add("Bis");
 		GrapheWord2Vec graphe = new GrapheWord2Vec(tokenConnu);
 		System.out.print("Graphe "+"\n"+graphe);
-		System.out.println(graphe.getNoeud().containsKey(new PaireToken(new Token("Doc", 1, "Test"), new Token("Doc", 1, "Test"))));
 	}
 
-	public boolean contains(String token) {
-		// TODO Auto-generated method stub
-		return dico.contains(new Token("", 0, token));
+	public void addDico(ArrayList<String> tokennew) {
+		
+		for(String token : tokennew) {
+			add(token);
+		}
+		
 	}
 	
+	public void save() throws IOException {
+		FileOutputStream fos = new FileOutputStream("dico.ser");
+        ObjectOutputStream oos = new ObjectOutputStream(fos);
+        oos.writeObject(dico);
+        oos.close();
+        fos.close();
+        System.out.printf("Serialized HashMap data is saved in dico.ser");
+	}
 	
+	public void load() throws IOException, ClassNotFoundException {
+		FileInputStream fis = new FileInputStream("hashmap.ser");
+        ObjectInputStream ois = new ObjectInputStream(fis);
+        dico = (HashMap<String,Double>) ois.readObject();
+        ois.close();
+        fis.close();
+        
+        System.out.println("------DESERIALIZE------");
+        
+        System.out.println(this);
+	}
 	
 }

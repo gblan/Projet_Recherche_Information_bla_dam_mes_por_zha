@@ -15,12 +15,14 @@ import org.apache.commons.io.FileUtils;
 import et4.index.CorpusIndex;
 import et4.index.Token;
 import et4.index.Tokenization;
+import et4.index.TokenizationChinese2;
 
 public class MonolingualCorpus {
 	private static ArrayList<CorpusIndex> index;
 	private ArrayList<Integer> nbMots = new ArrayList<Integer>();
 	private String corpus="";
 	private String[] corpusArray;
+	private TokenizationChinese2 tc;
 
 	/*
 	 * 1 = Francais 2 = Chinois
@@ -43,6 +45,12 @@ public class MonolingualCorpus {
 			}
 			nbMots.add(nbMot);
 		}
+		
+		
+		tc = new TokenizationChinese2();
+		tc.TokenizeDeFichier("chCorpusUTF.txt");
+		System.out.println("End");
+		
 	}
 
 	public String[] getCorpusArray() {
@@ -78,4 +86,10 @@ public class MonolingualCorpus {
 	public String getCorpus() {
 		return corpus;
 	}
+
+	public TokenizationChinese2 getTc() {
+		return tc;
+	}
+	
+	
 }

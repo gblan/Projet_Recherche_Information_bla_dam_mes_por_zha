@@ -2,6 +2,7 @@ package et4.index;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -15,23 +16,31 @@ public class TokenizationChinese2 extends Tokenization {
 
 	private static final String basedir = System.getProperty(
 			"TokenizationChinese", "data");
-
+	
+	private Set<String> tokensSet;
 	
 	
-	public static void main(String[] args) throws Exception {
+	/*public static void main(String[] args) throws Exception {
 		
 		TokenizationChinese2 tc = new TokenizationChinese2();
-		System.out.println(tc.getTokensDeFichierEtoile("test.txt"));
+		List<String> sentences = tc.getTokensDeFichierEtoile("chCorpusUTF.txt");
+
+		System.out.println("List.size "+sentences.size());
+		
+		for (int i = 0; i < sentences.size(); i++) {
+			System.out.println(sentences.get(i).replaceFirst(" ", ""));
+		}
+		
 		//tc.getContenuDeFichierEtoile("test.txt");
 		//System.out.println(tc.getTokensDeFichierEtoile("test.txt"));
 		//System.out.println(tc.TokenizeDeFichier("test.txt").toString());
 		//System.out.println(tc.getTokensDePhrase("今天天气好,太好啦!"));
-	}
+	}*/
 	
 	 
 	public CorpusIndex TokenizeDeFichier(String fileName) throws FileNotFoundException {
 		CorpusIndex index = new CorpusIndex();
-		Set<String> tokensSet;
+		
 		try {
 			tokensSet = getTokensDeFichier(fileName);
 			Iterator<String> it = tokensSet.iterator();
@@ -199,8 +208,13 @@ public class TokenizationChinese2 extends Tokenization {
 		return tokensSet;
 	}
 	
-	public String getTokensDeFichierEtoile(String filepath) throws Exception {
-		return getTokensDePhraseEtoile(getContenuDeFichierEtoile(filepath));
+	public List<String> getTokensDeFichierEtoile(String filepath) throws Exception {
+		String contenu = getTokensDePhraseEtoile(getContenuDeFichierEtoile(filepath));
+		contenu = contenu.replaceAll("\\* \\* \\*", "***").replaceAll("\\* \\*\\*", "***").replaceAll("\\*\\* \\*", "***").replaceAll("\\* \\* \\*\\* \\* \\*", "***").replace("\\* \\* \\* \\* \\* \\*", "***");
+		
+		String[] array = contenu.split("\\*\\*\\*");
+		
+		return Arrays.asList(array);
 	}
 	
 	public ArrayList<String> getTokensDePhrase(String phrase) throws Exception {
@@ -316,5 +330,11 @@ public class TokenizationChinese2 extends Tokenization {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	public Set<String> getTokensSet() {
+		return tokensSet;
+	}
+	
+	
 
 }
