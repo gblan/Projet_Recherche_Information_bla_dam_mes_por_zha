@@ -71,7 +71,7 @@ public class Model extends Observable {
 		tokenConnu.add("头");
 		tokenConnu.add("茶");
 		tokenConnu.add("工");
-		graphe = new GrapheWord2Vec(tokenConnu);
+		graphe = new GrapheWord2Vec();
 
 		// launch();
 
@@ -370,24 +370,26 @@ public class Model extends Observable {
 		}
 	}
 
-	private String learnWord2Vec(String text) {
-
-		System.out.println("-------------------------||||||| " + tw2v.similarity("买完整版", "买完整版"));
-
+private String learnWord2Vec(String text) {
+		
+		System.out.println("-------------------------||||||| "+tw2v.similarity("买完整版", "买完整版"));
+		
 		/**
 		 * Lire le corpus => trouve phrase avec des phrases bcp de mots connu
 		 */
-		double SEUIL = (double) 70 / 100.0;
-		HashMap<Integer, ArrayList<String>> phraseretenu = new HashMap<Integer, ArrayList<String>>();
-
+		double SEUIL = (double)70/100.0;
+		ArrayList<String> phraseretenu = new ArrayList<String>();
+		
+		
 		int connu = 0;
 		ArrayList<String> tokenretenu = new ArrayList<String>();
 		int line = 0;
-		// System.out.println("Phrase : "+corpus.getIndex().get(i).getListTokens());
-
+		//System.out.println("Phrase : "+corpus.getIndex().get(i).getListTokens());
+		
 		/*
 		 * 
 		 * Recuperation des token du fichier
+		 * 
 		 */
 		TokenizationChinese2 tc = new TokenizationChinese2();
 		List<String> sentences = null;
@@ -397,70 +399,84 @@ public class Model extends Observable {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-		if (sentences == null) {
+		
+		if(sentences==null)
+		{
 			System.out.println("Error sentences null in Model");
 			System.exit(0);
 		}
 		ArrayList<String> tokenChinese = new ArrayList<String>();
-		for (String sentence : sentences) {
-
+		for(String sentence : sentences) {
+			tokenretenu.clear();
 			tokenChinese.clear();
-
+			
 			String[] array = sentence.split(" ");
+			
+			for(String str : array) {
+				System.out.println("str = "+str);
+			}
+			
 			tokenChinese.addAll(Arrays.asList(array));
-
-			for (String token : tokenChinese) {
-
-				if (graphe.contains(token)) {
+			
+			for(String token : tokenChinese) {
+				System.out.println(graphe.contains(token));
+				if(graphe.contains(token)) {
 					connu++;
-					System.out.println("Token connu =" + token);
-				} else {
-					System.out.println("Token Inconnu =" + token);
-					tokenretenu.add(token);
+					System.out.println("Token connu ="+token);
+				}
+				else {
+					//System.out.println("Token Inconnu ="+token);
+					//System.out.println("Token inconnu ="+token);
 				}
 			}
 			if (connu != 0) {
 				double pourcentage = (double) connu / (double) tokenChinese.size();
-
+				
+				/**
+				 * Si on depace le seuil => la phrase est bonne pour l'affichage
+				 */
+				System.out.println("Pourcentage "+pourcentage);
+				System.out.println("Phrase : "+sentence);
 				if (pourcentage > SEUIL) {
-					// System.out.println("Pourcentage "+pourcentage);
+					System.out.println("Pourcentage "+pourcentage);
+					System.out.println("Phrase : "+sentence);
 					// System.out.println("Phrase : "+corpus.getCorpusArray()[i]);
-					phraseretenu.put(line, tokenretenu);
+					phraseretenu.add(sentence);
 				}
 			}
 			line++;
 		}
-
+		
+		System.out.println("Fin");
+		System.exit(0);
+		String result = "";
 		/**
 		 * Faire Word2Vec
 		 */
-		ArrayList<Integer> keyCorpus = new ArrayList<Integer>();
+		/*ArrayList<Integer> keyCorpus = new ArrayList<Integer>();
 		keyCorpus.addAll(phraseretenu.keySet());
-
-		String result = "";
-		double SEUIL_W2V = (double) 25.0 / 100.0;
+		
+		
+		double SEUIL_W2V = (double)25.0/100.0;
 		for (int i = 0; i < phraseretenu.size(); i++) {
-
-			System.out.println("Phrase : " + corpus.getCorpusArray()[keyCorpus.get(i)]);
-			System.out.println("Les tokens inconnu : " + phraseretenu.get(keyCorpus.get(i)));
+			
+			System.out.println("Les tokens inconnu : "+phraseretenu.get(keyCorpus.get(i)));
 			String tokenrand = phraseretenu.get(keyCorpus.get(i)).get(0);
-
+			
 			double similarity = 0;
-			for (String token : corpus.getIndex().get(keyCorpus.get(i)).getListTokens().keySet()) {
-				if (graphe.contains(token)) {
-					similarity += tw2v.similarity(token, tokenrand);
-					// System.out.println("Similarity Entre ["+token+","+tokenrand+"] ======== "+similarity);
+			for(String token : corpus.getIndex().get(keyCorpus.get(i)).getListTokens().keySet()) {
+				if(graphe.contains(token)) {
+					similarity+=tw2v.similarity(token, tokenrand);
+					//System.out.println("Similarity Entre ["+token+","+tokenrand+"] ======== "+similarity);
 				}
 			}
-
-			System.out.println("__________RESULT = " + (double) similarity
-					/ (double) corpus.getIndex().get(keyCorpus.get(i)).getListTokens().size() + "__________");
-			if ((double) similarity / (double) corpus.getIndex().get(keyCorpus.get(i)).getListTokens().size() > SEUIL_W2V) {
-				result += corpus.getCorpusArray()[keyCorpus.get(i)] + "\n";
+			
+			System.out.println("__________RESULT = "+(double)similarity/(double)corpus.getIndex().get(keyCorpus.get(i)).getListTokens().size()+"__________");
+			if((double)similarity/(double)corpus.getIndex().get(keyCorpus.get(i)).getListTokens().size()>SEUIL_W2V) {
+				result+=corpus.getCorpusArray()[keyCorpus.get(i)]+"\n";
 			}
 		}
-
+		*/
 		return result;
 	}
 
@@ -469,23 +485,30 @@ public class Model extends Observable {
 	 * FileChooser
 	 * 
 	 * @param fichier
-	 * @throws FileNotFoundException
+	 * @throws FileNotFoundException 
 	 */
 	public void updateKnowledge(File file) throws FileNotFoundException {
-
-		System.out.println("Model : updateKnowledge in " + file.getAbsolutePath());
-		TokenizationChinese2 tokenizefile = new TokenizationChinese2();
-		tokenizefile.TokenizeDeFichier(file.getAbsolutePath());
+		
+		System.out.println("Model : updateKnowledge in "+file.getAbsolutePath());
+		TokenizationChinese2 tc = new TokenizationChinese2();
+		List<String> sentences = null;
+		try {
+			sentences = tc.getTokensDeFichierEtoile(file.getAbsolutePath());
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		ArrayList<String> tokennew = new ArrayList<String>();
-		tokennew.addAll(tokenizefile.getTokensSet());
-
-		System.out.println("Nouveaux mots connus :D " + tokennew);
-
-		System.out.println("Dico avant" + graphe);
-
+		tokennew.addAll(sentences);
+		
+		//System.out.println("Nouveaux mots connus :D "+tokennew);
+		
+		System.out.println("Dico avant"+graphe);
+		
 		graphe.addDico(tokennew);
-
-		System.out.println("Dico après" + graphe);
+		
+		System.out.println("Dico après"+graphe);
 	}
 
 	public static String findTranslationChineseFrench(String A, int choice, String[] dicoCh, String[] dicoFr,
