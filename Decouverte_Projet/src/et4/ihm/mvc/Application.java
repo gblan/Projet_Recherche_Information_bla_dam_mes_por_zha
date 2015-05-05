@@ -8,7 +8,6 @@ public class Application {
 	}
 	
 	public void start() {
-		
 		Model model = new Model();
 		
 		View view = new View("Chinois Facile",model);

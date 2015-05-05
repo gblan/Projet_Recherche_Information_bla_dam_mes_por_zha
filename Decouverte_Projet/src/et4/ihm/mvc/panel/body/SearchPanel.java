@@ -270,6 +270,7 @@ public class SearchPanel extends JPanel {
 			searchPan.removeAll();
 			textAreaCN.append("");
 			textAreaCN.setVisible(false);
+			
 			initTextAreaFR();
 			textAreaFR.setVisible(true);
 
@@ -281,8 +282,8 @@ public class SearchPanel extends JPanel {
 
 			textAreaFR.append("");
 			textAreaFR.setVisible(false);
+			
 			initTextAreaCN();
-
 			textAreaCN.setVisible(true);
 
 			searchPan.add(textAreaCN);

@@ -19,21 +19,26 @@ import et4.index.Tokenization;
 public class MonolingualCorpus {
 	private static ArrayList<CorpusIndex> index;
 	private ArrayList<Integer> nbMots = new ArrayList<Integer>();
-	private String corpus;
+	private String corpus="";
 	private String[] corpusArray;
 
 	/*
 	 * 1 = Francais 2 = Chinois
 	 */
-	public MonolingualCorpus(Tokenization tok, String filename)
-			throws IOException {
+	public MonolingualCorpus(Tokenization tok, String filename) throws IOException {
 		index = tok.Tokenize(filename);
 		corpus = FileUtils.readFileToString(new File(filename), "UTF-8");
+//	String line;
+//		BufferedReader chB = new BufferedReader(new InputStreamReader(new FileInputStream(filename),
+//				Charset.forName("UTF-8")));
+//		while ((line=chB.readLine())!= null){
+//			corpus += line;
+//		}
+//		chB.close();
 		corpusArray = corpus.split("\n");
 		for (int i = 0; i < corpusArray.length; i++) {
-			int nbMot=0;
-			for (Entry<String, Token> entry : index.get(i).getListTokens()
-					.entrySet()) {
+			int nbMot = 0;
+			for (Entry<String, Token> entry : index.get(i).getListTokens().entrySet()) {
 				nbMot += entry.getValue().getPositions().size();
 			}
 			nbMots.add(nbMot);
@@ -52,7 +57,7 @@ public class MonolingualCorpus {
 		return corpusArray[ligne].substring(position);
 	}
 
-	public int compareSuffixes(int pos1, int pos2,int line) {
+	public int compareSuffixes(int pos1, int pos2, int line) {
 		String a = corpusArray[line].substring(pos1).toLowerCase();
 		String b = corpusArray[line].substring(pos2).toLowerCase();
 		return a.compareTo(b);

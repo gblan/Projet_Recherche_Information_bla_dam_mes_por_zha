@@ -28,19 +28,24 @@ public class SearchBarController implements ActionListener, KeyListener {
 
 	@Override
 	public void keyPressed(KeyEvent e) {
+		System.out.println("keyPressed");
+
 		if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+
+			if (panel.getFrRadioButton().isSelected()) {
+				System.out.println("searchFR OK : "+panel.getTextAreaFR().getText());
+
+				model.search(panel.getTextAreaFR().getText(), 2);
+			} else if (panel.getCnRadioButton().isSelected()) {
+				System.out.println("searchCN OK : "+panel.getTextAreaCN().getText());
+
+				model.search(panel.getTextAreaCN().getText(), 1);
+			}
+
 			/* pour ne pas afficher le caractère \n */
 			e.consume();
 
-			if (panel.getFrRadioButton().isSelected()) {
-				model.search(panel.getTextAreaFR().getText(), 2);
-
-			} else {
-				model.search(panel.getTextAreaCN().getText(), 1);
-
-			}
-			System.out.println("search");
-
+			System.out.println("keyPressed ENTER");
 		}
 	}
 
