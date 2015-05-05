@@ -60,7 +60,7 @@ public class Model extends Observable {
 			tokenConnu.add("Ubuntu包括的软件挺多。");
 			tokenConnu.add("她很少迟到。");
 			
-		graphe = new GrapheWord2Vec(tokenConnu);
+		graphe = new GrapheWord2Vec();
 	
 	
 //		launch();
@@ -350,7 +350,7 @@ public class Model extends Observable {
 		 * Lire le corpus => trouve phrase avec des phrases bcp de mots connu
 		 */
 		double SEUIL = (double)70/100.0;
-		HashMap<Integer,ArrayList<String>> phraseretenu = new HashMap<Integer, ArrayList<String>>();
+		ArrayList<String> phraseretenu = new ArrayList<String>();
 		
 		
 		int connu = 0;
@@ -379,46 +379,59 @@ public class Model extends Observable {
 		}
 		ArrayList<String> tokenChinese = new ArrayList<String>();
 		for(String sentence : sentences) {
-			
+			tokenretenu.clear();
 			tokenChinese.clear();
 			
 			String[] array = sentence.split(" ");
+			
+			for(String str : array) {
+				System.out.println("str = "+str);
+			}
+			
 			tokenChinese.addAll(Arrays.asList(array));
 			
 			for(String token : tokenChinese) {
-				
+				System.out.println(graphe.contains(token));
 				if(graphe.contains(token)) {
 					connu++;
 					System.out.println("Token connu ="+token);
 				}
 				else {
-					System.out.println("Token Inconnu ="+token);
-					tokenretenu.add(token);
+					//System.out.println("Token Inconnu ="+token);
+					//System.out.println("Token inconnu ="+token);
 				}
 			}
 			if (connu != 0) {
 				double pourcentage = (double) connu / (double) tokenChinese.size();
-
+				
+				/**
+				 * Si on depace le seuil => la phrase est bonne pour l'affichage
+				 */
+				System.out.println("Pourcentage "+pourcentage);
+				System.out.println("Phrase : "+sentence);
 				if (pourcentage > SEUIL) {
-					// System.out.println("Pourcentage "+pourcentage);
+					System.out.println("Pourcentage "+pourcentage);
+					System.out.println("Phrase : "+sentence);
 					// System.out.println("Phrase : "+corpus.getCorpusArray()[i]);
-					phraseretenu.put(line, tokenretenu);
+					phraseretenu.add(sentence);
 				}
 			}
 			line++;
 		}
 		
+		System.out.println("Fin");
+		System.exit(0);
+		String result = "";
 		/**
 		 * Faire Word2Vec
 		 */
-		ArrayList<Integer> keyCorpus = new ArrayList<Integer>();
+		/*ArrayList<Integer> keyCorpus = new ArrayList<Integer>();
 		keyCorpus.addAll(phraseretenu.keySet());
 		
-		String result = "";
+		
 		double SEUIL_W2V = (double)25.0/100.0;
 		for (int i = 0; i < phraseretenu.size(); i++) {
 			
-			System.out.println("Phrase : "+corpus.getCorpusArray()[keyCorpus.get(i)]);
 			System.out.println("Les tokens inconnu : "+phraseretenu.get(keyCorpus.get(i)));
 			String tokenrand = phraseretenu.get(keyCorpus.get(i)).get(0);
 			
@@ -435,7 +448,7 @@ public class Model extends Observable {
 				result+=corpus.getCorpusArray()[keyCorpus.get(i)]+"\n";
 			}
 		}
-		
+		*/
 		return result;
 	}
 
@@ -449,12 +462,19 @@ public class Model extends Observable {
 	public void updateKnowledge(File file) throws FileNotFoundException {
 		
 		System.out.println("Model : updateKnowledge in "+file.getAbsolutePath());
-		TokenizationChinese2 tokenizefile = new TokenizationChinese2();
-		tokenizefile.TokenizeDeFichier(file.getAbsolutePath());
-		ArrayList<String> tokennew = new ArrayList<String>();
-		tokennew.addAll(tokenizefile.getTokensSet());
+		TokenizationChinese2 tc = new TokenizationChinese2();
+		List<String> sentences = null;
+		try {
+			sentences = tc.getTokensDeFichierEtoile(file.getAbsolutePath());
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
-		System.out.println("Nouveaux mots connus :D "+tokennew);
+		ArrayList<String> tokennew = new ArrayList<String>();
+		tokennew.addAll(sentences);
+		
+		//System.out.println("Nouveaux mots connus :D "+tokennew);
 		
 		System.out.println("Dico avant"+graphe);
 		
