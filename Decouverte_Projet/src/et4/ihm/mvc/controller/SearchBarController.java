@@ -5,8 +5,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-import javax.swing.JTextField;
-
 import et4.ihm.mvc.Model;
 import et4.ihm.mvc.panel.body.SearchPanel;
 
@@ -30,48 +28,43 @@ public class SearchBarController implements ActionListener, KeyListener {
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		// TODO Auto-generated method stub
+		if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+			/* pour ne pas afficher le caractère \n */
+			e.consume();
 
+			if (panel.getFrRadioButton().isSelected()) {
+				model.search(panel.getTextAreaFR().getText(), 2);
+
+			} else {
+				model.search(panel.getTextAreaCN().getText(), 1);
+
+			}
+			System.out.println("search");
+
+		}
 	}
 
 	@Override
 	public void keyReleased(KeyEvent e) {
-		try {
-			JTextField txt = (JTextField) e.getSource();
-			int langue;
-			if (panel.getFrRadioButton().isSelected()) {
-				langue = 2;
-			} else {
-				langue = 1;
-			}
-			model.search(txt.getText(),langue);
-			System.out.println(txt+", "+langue);
-		} catch (ClassCastException e2) {
-		}
+
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if(panel.getFrRadioButton().isSelected()){
-			panel.setInputField(1);
-
-		}else{
+		System.out.println("ActionPerformed searchBar");
+		/* panel affiché */
+		if (panel.getFrRadioButton().isSelected()) {
+			System.out.println("FRSELECTED");
 			panel.setInputField(2);
+			panel.revalidate();
+
+		} else {
+			System.out.println("CNSELECTED");
+			panel.setInputField(1);
+			panel.revalidate();
 
 		}
-		
-		try {
-			JTextField txt = (JTextField) e.getSource();
-			int langue;
-			if (panel.getFrRadioButton().isSelected()) {
-				langue = 2;
-			} else {
-				langue = 1;
-			}
-			model.search(txt.getText(),langue);
-			System.out.println(txt+", "+langue);
-		} catch (ClassCastException e2) {
-		}
+
 	}
 
 }

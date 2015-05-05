@@ -31,20 +31,19 @@ import et4.ihm.mvc.component.SearchComponent;
 import et4.ihm.mvc.controller.SearchBarController;
 
 public class SearchPanel extends JPanel {
+	int r = 241, g = 196, b = 15, a = 255;
 
+	/* SWING */
 	PinyinInputTextArea textAreaCN;
 	JTextArea textAreaFR;
 	JRadioButton frRadioButton = new JRadioButton("Français");
 	JRadioButton cnRadioButton = new JRadioButton("Mandarin");
 	JPanel searchPan = new JPanel();
-
 	JPanel panelDroit = new JPanel();
-
 	JLabel label = new JLabel("Recherche selon la langue");
-	// Group the radio buttons.
 	ButtonGroup group = new ButtonGroup();
-	// group.add(mandarin);
-
+	private SearchBarController c;
+	
 	private ArrayList<SearchComponent> components;
 	private final String FONT = "Helvetica-Neue";
 	private final int FONT_SIZE = 20;
@@ -71,31 +70,18 @@ public class SearchPanel extends JPanel {
 
 		setLayout(new BorderLayout());
 
-		textAreaCN = this.initConfig();
-		textAreaCN.setPreferredSize(new Dimension(View.width - 160, 50));
-		textAreaCN.setFont(new Font(FONT, Font.PLAIN, FONT_SIZE));
-		textAreaCN.setCaretColor(Color.WHITE);
-		int r = 241, g = 196, b = 15, a = 255;
-		textAreaCN.setBackground(new Color(r, g, b, a));
-		textAreaCN.setForeground(Color.white);
+		c = new SearchBarController(model, this);
+		
+		initTextAreaCN();
 		//
-		textAreaFR = new JTextArea();
-		textAreaFR.setPreferredSize(new Dimension(View.width - 160, 50));
-		textAreaFR.setFont(new Font(FONT, Font.PLAIN, FONT_SIZE));
-		textAreaFR.setCaretColor(Color.WHITE);
-		textAreaFR.setBackground(new Color(r, g, b, a));
-		textAreaFR.setForeground(Color.white);
+		initTextAreaFR();
 
 		label.setFont(new Font(FONT, Font.PLAIN, FONT_SIZE));
 		label.setForeground(Color.WHITE);
 
-		SearchBarController c = new SearchBarController(model, this);
-
-		textAreaCN.addKeyListener(c);
-		// textArea.addActionListener(c);
 		searchPan.setLayout(new BoxLayout(searchPan, BoxLayout.X_AXIS));
 
-		searchPan.add(textAreaCN);
+		searchPan.add(textAreaFR);
 		searchPan.add(panelDroit);
 
 		// TODO ajouter titre
@@ -108,7 +94,30 @@ public class SearchPanel extends JPanel {
 		panelDroit.add(frRadioButton);
 		panelDroit.add(cnRadioButton);
 	}
+	
+	public void initTextAreaFR(){
+		textAreaFR = new JTextArea();
+		textAreaFR.setPreferredSize(new Dimension(View.width - 170, 50));
+		textAreaFR.setFont(new Font(FONT, Font.PLAIN, FONT_SIZE));
+		textAreaFR.setCaretColor(Color.WHITE);
+		textAreaFR.setBackground(new Color(r, g, b, a));
+		textAreaFR.setForeground(Color.white);
+		
+		textAreaFR.addKeyListener(c);
 
+	}
+	
+	public void initTextAreaCN() {
+		textAreaCN = this.initConfig();
+		textAreaCN.setPreferredSize(new Dimension(View.width - 170, 50));
+		textAreaCN.setFont(new Font(FONT, Font.PLAIN, FONT_SIZE));
+		textAreaCN.setCaretColor(Color.WHITE);
+		textAreaCN.setBackground(new Color(r, g, b, a));
+		textAreaCN.setForeground(Color.white);
+		
+		textAreaCN.addKeyListener(c);
+	}
+	
 	public void update(ArrayList<SearchComponent> components) {
 
 		this.components.clear();
@@ -131,6 +140,7 @@ public class SearchPanel extends JPanel {
 		int ynewword = 0;
 		int ytranslation = 0;
 		int yphonetic = 0;
+		int yoccurence = 0;
 		int yglobal = heightComponent;
 
 		for (SearchComponent sc : components) {
@@ -139,6 +149,7 @@ public class SearchPanel extends JPanel {
 			ytranslation = ysentence + 20;
 			yphonetic = ytranslation + 20;
 			ynewword = yphonetic + 20;
+			yoccurence = yphonetic + 20;
 
 			g.setColor(sc.getBackground());
 			g.fill(sc.getR().r);
@@ -156,9 +167,13 @@ public class SearchPanel extends JPanel {
 			g.setFont(new Font("Helvetica-Neue", Font.PLAIN, 16));
 			g.drawString("Phonetic : " + sc.getPhonetic(), 20, yphonetic);
 
-			g.setFont(new Font("Helvetica-Neue", Font.PLAIN, 12));
-			g.drawString("New Words : " + sc.getNewWords(), 20, ynewword);
-
+			if(sc.getNewWords() != ""){
+				g.setFont(new Font("Helvetica-Neue", Font.PLAIN, 12));
+				g.drawString("New Words : " + sc.getNewWords(), 20, ynewword);
+			} else{
+				g.setFont(new Font("Helvetica-Neue", Font.PLAIN, 12));
+				g.drawString("Occurence : " + sc.getOccurence(), 20, yoccurence);
+			}
 			yglobal += heightComponent + space;
 
 		}
@@ -233,6 +248,14 @@ public class SearchPanel extends JPanel {
 		return textArea;
 	}
 
+	public PinyinInputTextArea getTextAreaCN(){
+		return textAreaCN;
+	}
+	
+	public JTextArea getTextAreaFR(){
+		return textAreaFR;
+	}
+	
 	public JRadioButton getFrRadioButton() {
 		return frRadioButton;
 	}
@@ -242,22 +265,26 @@ public class SearchPanel extends JPanel {
 	}
 
 	public void setInputField(int i) {
-		if (i == 1) {
+		if (i == 2) {
 			/* français */
 			searchPan.removeAll();
-			textAreaCN.setText("");
+			textAreaCN.append("");
 			textAreaCN.setVisible(false);
+			initTextAreaFR();
 			textAreaFR.setVisible(true);
 
 			searchPan.add(textAreaFR);
 			searchPan.add(panelDroit);
 		} else {
 			/* chinois */
-			textAreaFR.setText("");
+			searchPan.removeAll();
+
+			textAreaFR.append("");
 			textAreaFR.setVisible(false);
+			initTextAreaCN();
+
 			textAreaCN.setVisible(true);
 
-			searchPan.removeAll();
 			searchPan.add(textAreaCN);
 			searchPan.add(panelDroit);
 		}
