@@ -37,7 +37,9 @@ public class TokenizationFrench extends Tokenization {
 					}
 				}
 				index.add(cp);
+				
 			}
+			frB.close();
 		}catch(Exception e){
 			System.out.println(e);
 		}

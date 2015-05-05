@@ -46,11 +46,9 @@ import graphe.word2vec.Word2VecObject;
  */
 public class Model extends Observable {
 	private Word2VecObject tw2v;
-	private MonolingualCorpus corpus;
 	private GrapheWord2Vec graphe;
-	private String[] tradCh;
-	private String[] tradLink;
-	private String[] tradFr;
+	private MonolingualCorpus corpus;
+	private ArrayList<SearchComponent> listComponent = new ArrayList<SearchComponent>();;
 
 	public Model() {
 		ArrayList<String> tokenConnu = new ArrayList<String>();
@@ -59,12 +57,11 @@ public class Model extends Observable {
 			tokenConnu.add("密码是\"Muiriel\"。");
 			tokenConnu.add("Ubuntu包括的软件挺多。");
 			tokenConnu.add("她很少迟到。");
-			
 		graphe = new GrapheWord2Vec();
-	
-	
-//		launch();
-		
+
+		// launch();
+
+				
 		ClassPathResource resource = new ClassPathResource("chCorpusUTF.txt");
         System.out.println("ClassPathRessource");
 
@@ -83,105 +80,9 @@ public class Model extends Observable {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-    	System.out.println("model");
+//		System.out.println("model");
 	}
 	
-	public void launch() {
-		/* 1 Ecrire en Chinois -- 2 Ecrire en Francais */
-		System.out.println("Dans quel langue voulez vous ecrire? 1 => Chinois 2 => Francais");
-		Scanner sc = new Scanner(System.in);
-		int choix =  sc.nextInt();
-		System.out.println("Quel mot recherchez vous?");
-		  sc.nextLine();
-		String search =  sc.nextLine();
-		sc.close();
-		Tokenization tf = new TokenizationFrench();
-		Tokenization tc = new TokenizationChinese();
-		try {
-			
-			if (choix == 1){
-				corpus =  new MonolingualCorpus(tc,
-						"resources/chCorpus.txt");
-			}
-			else {
-				corpus =  new MonolingualCorpus(tf,
-						"resources/frCorpus.txt");
-			}
-			 
-			String[] tradCh = FileUtils.readFileToString(new File("resources/ch.txt"), "UTF-8").split("\n");
-			String[] tradLink = FileUtils.readFileToString(new File("resources/linksChineseFrench.txt"), "UTF-8").split("\n");
-			String[] tradFr = FileUtils.readFileToString(new File("resources/fr.txt"), "UTF-8").split("\n");
-			
-			for (int i = 0; i < corpus.getCorpusArray().length; i++) {
-				if (corpus.getCorpusArray()[i].contains(search)) {
-					SuffixArray suffixArray = new SuffixArray(corpus, i);
-					suffixArray.initTabSuffix();
-					suffixArray.qsort(suffixArray.getTabSuffix(), 0, corpus
-							.getNbMots().get(i) - 1);
-					suffixArray.initLCPVector();
-
-					/*
-					 * for (int j = 0; j < suffixArray.getLCPVector().length ;
-					 * j++) { System.out.println(suffixArray.getLCPVector()[j]);
-					 * }
-					 */
-					ArrayList<Integer> positions = suffixArray
-							.getAllPositionsOfPhrase(search);
-
-					corpus.getCorpusArray()[i] = corpus.getCorpusArray()[i]
-							.substring(0,corpus.getCorpusArray()[i].length() - 1);
-					
-					if (positions.size() != 0) {
-						System.out.println("");
-						if (choix == 1){
-							String trad = findTranslationChineseFrench(
-									corpus.getCorpusArray()[i],1,tradCh,tradFr,tradLink);
-							System.out.println(trad);
-							System.out.println(Model.getPinyin(corpus.getCorpusArray()[i]));
-						}
-						else{
-							String trad = findTranslationChineseFrench(
-									corpus.getCorpusArray()[i], 2,tradCh,tradFr,tradLink);
-							System.out.println(trad);
-							System.out.println(Model.getPinyin(trad));
-						}
-						System.out.println(corpus.getCorpusArray()[i]);
-						System.out.println("Ligne: " + i + " Positions: "
-								+ positions);
-						System.out.println("Occurence: " + positions.size());
-					}
-				}
-			}
-
-			/*
-			 * tableau de suffixes initialisÃ© HashMap<String, Token> tmp =
-			 * corpus.getIndex().getListTokens();
-			 * 
-			 * System.out.println("####    TOKENS    ####"); for (Entry<String,
-			 * Token> entry : tmp.entrySet()) {
-			 * System.out.println(entry.getValue()); }
-			 * 
-			 * System.out.println("####    TRI DU TABLEAU    ####");
-			 */
-
-			/*
-			 * System.out.println("####    TABLEAU LCP    ####");
-			 * suffixArray.initLCPVector(); for (int j = 0; j <
-			 * suffixArray.getLCPVector().length; j++) {
-			 * System.out.println(suffixArray.getLCPVector()[j]); }
-			 * System.out.println("Les positions : ");
-			 * System.out.println("-----> " +
-			 * suffixArray.getAllPositionsOfPhrase("to be"));
-			 */
-
-		} catch (IOException e) {
-			System.err.println("File Not Found");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
 	/**
 	 * Prend en parametre un objet (indefini pour le moment)
 	 * qui permettra de remplir le panel de knowledge
@@ -216,21 +117,31 @@ public class Model extends Observable {
 	 *            1 mandarin, 2 français
 	 */
 	public void search(String searchinput, int langue) {
+		int j=0;
+		listComponent.clear();
+		
 		if (searchinput.equals(""))
 			return;
-
-		ArrayList<SearchComponent> listComponent = new ArrayList<SearchComponent>();
-
+		
 		Tokenization tf = new TokenizationFrench();
 		Tokenization tc = new TokenizationChinese();
+
+
 		try {
+			String[] tradCh = FileUtils.readFileToString(new File("resources/ch.txt"), "UTF-8").split("\n");
+			String[] tradLink = FileUtils.readFileToString(new File("resources/linksChineseFrench.txt"), "UTF-8").split("\n");
+			String[] tradFr = FileUtils.readFileToString(new File("resources/fr.txt"), "UTF-8").split("\n");
+			
 			MonolingualCorpus corpus;
-			MonolingualCorpus corpusCN = new MonolingualCorpus(tc, "resources/chCorpus.txt");
-			if (langue == 2) {
-				corpus = new MonolingualCorpus(tf, "resources/frCorpus.txt");
-			} else {
-				corpus = new MonolingualCorpus(tc, "resources/chCorpus.txt");
+			if (langue == 1){
+				corpus =  new MonolingualCorpus(tc,
+						"resources/chCorpus.txt");
 			}
+			else {
+				corpus =  new MonolingualCorpus(tf,
+						"resources/frCorpus.txt");
+			}
+
 
 			for (int i = 0; i < corpus.getCorpusArray().length; i++) {
 				if (corpus.getCorpusArray()[i].contains(searchinput)) {
@@ -245,37 +156,54 @@ public class Model extends Observable {
 					 * }
 					 */
 					ArrayList<Integer> positions = suffixArray.getAllPositionsOfPhrase(searchinput);
-					corpus.getCorpusArray()[i] = corpus.getCorpusArray()[i].substring(0,
-							corpus.getCorpusArray()[i].length() - 1);
+					// currentCorpus.getCorpusArray()[i] =
+					// currentCorpus.getCorpusArray()[i].substring(0,
+					// currentCorpus.getCorpusArray()[i].length() - 1);
 
 					if (positions.size() != 0) {
 
 						String trad = "";
+						String piying = "";
 						if (langue == 1) {
-							trad = findTranslationChineseFrench(corpus.getCorpusArray()[i], 1, tradCh, tradFr, tradLink);
-							// System.out.println(trad);
-							// System.out.println(Model.getPinyin(corpus.getCorpusArray()[i]));
+							trad = findTranslationChineseFrench(corpus.getCorpusArray()[i], 1, tradCh, tradFr,
+									tradLink);
+//							 System.out.println("Chinois ##"+corpus.getCorpusArray()[i]+"####");
+//							 System.out.println(Model.getPinyin(currentCorpus.getCorpusArray()[i]));
+							piying = Model.getPinyin(corpus.getCorpusArray()[i]);
 						} else {
-							trad = findTranslationChineseFrench(corpus.getCorpusArray()[i], 2, tradCh, tradFr, tradLink);
+							trad = findTranslationChineseFrench(corpus.getCorpusArray()[i], 2, tradCh, tradFr,
+									tradLink);
+//							 System.out.println("Fr: ##"+corpus.getCorpusArray()[i]+"####");
 							// System.out.println(trad);
 							// System.out.println(Model.getPinyin(trad));
+							piying = Model.getPinyin(trad);
+
 						}
-						// System.out.println(corpus.getCorpusArray()[i]);
+						// System.out.println(currentCorpus.getCorpusArray()[i]);
 						// System.out.println("Ligne: " + i + " Positions: " +
 						// positions);
 						// System.out.println("Occurence: " + positions.size());
 
-						if (i == 0) {
-							listComponent.add(new SearchComponent(new Point(0, SearchPanel.heightComponent * (i + 1)),
-									corpus.getCorpusArray()[i], trad, Model.getPinyin(corpusCN.getCorpusArray()[i]), "",
-									positions.size(), View.width - 20, SearchPanel.heightComponent));
-						} else {
-							listComponent.add(new SearchComponent(new Point(0, SearchPanel.heightComponent * (i + 1)+ SearchPanel.space * i),
-									corpus.getCorpusArray()[i], trad, Model.getPinyin(corpusCN.getCorpusArray()[i]), "",
-									positions.size(), View.width - 20, SearchPanel.heightComponent));
-						}
-//						System.out.println("pying : "+Model.getPinyin(corpus.getCorpusArray()[i]));
-//						System.out.println("corpus : "+corpus.getCorpusArray()[i]);
+//						if (i == 0) {
+//							listComponent.add(new SearchComponent(new Point(0, SearchPanel.heightComponent * (i + 1)),
+//									currentCorpus.getCorpusArray()[i], trad, piying, "", positions.size(),
+//									View.width - 20, SearchPanel.heightComponent));
+//						} else {
+							if(j==0){
+								listComponent.add(new SearchComponent(new Point(0, SearchPanel.heightComponent
+										+ SearchPanel.space * j), corpus.getCorpusArray()[i], trad, piying, "",
+										positions.size(), View.width - 20, SearchPanel.heightComponent));
+							}else{
+								listComponent.add(new SearchComponent(new Point(0, SearchPanel.heightComponent * (j + 1)
+										+ SearchPanel.space * j), corpus.getCorpusArray()[i], trad, piying, "",
+										positions.size(), View.width - 20, SearchPanel.heightComponent));
+							}
+
+							
+							j++;
+//						}
+						
+//						System.out.println("corpus : " + currentCorpus.getCorpusArray()[i]);
 					}
 				}
 			}
@@ -285,11 +213,11 @@ public class Model extends Observable {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-//		System.out.println("Action dans le model 'search' : " + searchinput);
+		// System.out.println("Action dans le model 'search' : " + searchinput);
 
 		/* tri par pertinence */
 		Collections.sort(listComponent, comparePertinence());
-//		listComponent.sort(comparePertinence());
+		// listComponent.sort(comparePertinence());
 
 		/* notifie les observers */
 		setChanged();
@@ -488,7 +416,6 @@ public class Model extends Observable {
 		/*
 		 * choice = 1 => Chinese to French choice = 2 => French to Chinese
 		 */
-		String line;
 		String idA = "";
 		String idB = "";
 		String B = "";
@@ -497,67 +424,61 @@ public class Model extends Observable {
 		String[] bufferA;
 		String[] bufferB;
 
-		if (choice == 1) {
-			bufferA = dicoCh;
-			bufferB = dicoFr;
-			idLinkA = 0;
-			idLinkB = 1;
-		} else {
-			bufferA = dicoFr;
-			bufferB = dicoCh;
-			idLinkA = 1;
-			idLinkB = 0;
-		}
-		for (int i = 0; i < bufferA.length; i++) {
-			if (bufferA[i].contains(A)) {
-				String[] tmp = bufferA[i].split("	");
-				String cmp = tmp[2].substring(0, tmp[2].length() - 1);
-				if (cmp.equals(A)) {
-					idA = tmp[0];
-					break;
-				}
+			if (choice == 1) {
+				bufferA = dicoCh;
+				bufferB = dicoFr;
+				idLinkA = 0;
+				idLinkB = 1;
+			} else {
+				bufferA = dicoFr;
+				bufferB = dicoCh;
+				idLinkA = 1;
+				idLinkB = 0;
 			}
-		}
-
-		for (int i = 0; i < link.length; i++) {
-			if (link[i].contains(idA)) {
-				String[] tmp = link[i].split("	");
-				String cmp;
-				if (choice == 1) {
-					cmp = tmp[idLinkA];
-				} else {
-					cmp = tmp[idLinkA].substring(0, tmp[idLinkA].length() - 1);
-				}
-
-				if (cmp.equals(idA)) {
-					if (choice == 1) {
-						idB = tmp[idLinkB].substring(0, tmp[idLinkB].length() - 1);
-						;
-					} else {
-						idB = tmp[idLinkB];
+			for(int i = 0 ; i < bufferA.length ; i++){
+				if (bufferA[i].contains(A)) {
+					String[] tmp = bufferA[i].split("	");
+					String cmp = tmp[2];
+					if (cmp.equals(A)) {
+						idA = tmp[0];
+						System.out.println(idA);
+						break;
 					}
-					break;
 				}
 			}
-		}
-		for (int i = 0; i < bufferB.length; i++) {
 
-			if (bufferB[i].contains(idB)) {
-				String[] tmp = bufferB[i].split("	");
-				if (tmp[0].equals(idB)) {
-					B = tmp[2].substring(0, tmp[2].length() - 1);
-
-					break;
+		for(int i = 0 ; i < link.length ; i++){
+				if (link[i].contains(idA)) {
+					String[] tmp = link[i].split("	");
+					String cmp; 
+						cmp = tmp[idLinkA];
+					
+					if (cmp.equals(idA)) {
+						idB = tmp[idLinkB];
+						System.out.println(idB);
+						break;
+					}
 				}
 			}
-		}
-		if (B.equals("")) {
-			return ("Traduction non trouvee");
-		} else {
-			return B;
-		}
+		for(int i = 0 ; i < bufferB.length ; i++){
+
+				if (bufferB[i].contains(idB)) {
+					String[] tmp = bufferB[i].split("	");
+					if (tmp[0].equals(idB)) {
+						B = tmp[2];
+						
+						break;
+					}
+				}
+			}
+			if (B.equals("")) {
+				return("Traduction non trouvee");
+			}
+			else{
+				return B;
+			}
+
 	}
-
 	public Comparator<SearchComponent> comparePertinence() {
 		Comparator<SearchComponent> comparePertinence = new Comparator<SearchComponent>() {
 			@Override

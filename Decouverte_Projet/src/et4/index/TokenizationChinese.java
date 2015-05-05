@@ -12,6 +12,9 @@ public class TokenizationChinese extends Tokenization {
 	public TokenizationChinese(){
 		
 	}
+	/* 
+	 * Fonctionne seulement avec JAVA 8 (loop sur un array)
+	 */
 	@Override
 	public ArrayList<CorpusIndex> Tokenize(String fileName) throws FileNotFoundException {
 		ArrayList<CorpusIndex> index = new ArrayList<CorpusIndex>();
@@ -31,6 +34,8 @@ public class TokenizationChinese extends Tokenization {
 				}
 				index.add(cp);
 			}
+			
+			chB.close();
 		}catch(Exception e){
 			System.out.println(e);
 		}
