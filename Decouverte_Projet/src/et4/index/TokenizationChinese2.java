@@ -2,6 +2,7 @@ package et4.index;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -18,13 +19,24 @@ public class TokenizationChinese2 extends Tokenization {
 	
 	private Set<String> tokensSet;
 	
-	/*
-	public static void main(String[] args) throws Exception {
+	
+	/*public static void main(String[] args) throws Exception {
+		
 		TokenizationChinese2 tc = new TokenizationChinese2();
-		System.out.println(tc.TokenizeDeFichier("texteChinois.txt").toString());
+		List<String> sentences = tc.getTokensDeFichierEtoile("chCorpusUTF.txt");
+
+		System.out.println("List.size "+sentences.size());
+		
+		for (int i = 0; i < sentences.size(); i++) {
+			System.out.println(sentences.get(i).replaceFirst(" ", ""));
+		}
+		
+		//tc.getContenuDeFichierEtoile("test.txt");
+		//System.out.println(tc.getTokensDeFichierEtoile("test.txt"));
+		//System.out.println(tc.TokenizeDeFichier("test.txt").toString());
 		//System.out.println(tc.getTokensDePhrase("今天天气好,太好啦!"));
-	}
-	*/
+	}*/
+	
 	 
 	public CorpusIndex TokenizeDeFichier(String fileName) throws FileNotFoundException {
 		CorpusIndex index = new CorpusIndex();
@@ -48,7 +60,7 @@ public class TokenizationChinese2 extends Tokenization {
 		return index;
 	}
 
-	public String getContenuDeFichier(String filePath) {
+	public String getContenuDeFichierEtoile(String filePath){
 		String contenu = "";
 		File filename = new File(filePath);
 		InputStreamReader reader;
@@ -60,7 +72,8 @@ public class TokenizationChinese2 extends Tokenization {
 				line = br.readLine();
 				while (line != null) {
 					contenu += line;
-					contenu += '\n';
+					//contenu += '\n';
+					contenu += " *** ";
 					line = br.readLine();
 				}
 			} catch (IOException e) {
@@ -77,6 +90,41 @@ public class TokenizationChinese2 extends Tokenization {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 
+		//System.out.println("contenu : " + contenu);
+		return contenu;
+	}
+	
+	public String getContenuDeFichier(String filePath) {
+		String contenu = "";
+		File filename = new File(filePath);
+		InputStreamReader reader;
+		try {
+			reader = new InputStreamReader(new FileInputStream(filename));
+			BufferedReader br = new BufferedReader(reader);
+			String line = "";
+			try {
+				line = br.readLine();
+				while (line != null) {
+					contenu += line;
+					contenu += '\n';
+					//contenu += "***";
+					line = br.readLine();
+				}
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			try {
+				reader.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		//System.out.println("contenu" + contenu);
 		return contenu;
 	}
 
@@ -160,6 +208,15 @@ public class TokenizationChinese2 extends Tokenization {
 		return tokensSet;
 	}
 	
+	public List<String> getTokensDeFichierEtoile(String filepath) throws Exception {
+		String contenu = getTokensDePhraseEtoile(getContenuDeFichierEtoile(filepath));
+		contenu = contenu.replaceAll("\\* \\* \\*", "***").replaceAll("\\* \\*\\*", "***").replaceAll("\\*\\* \\*", "***").replaceAll("\\* \\* \\*\\* \\* \\*", "***").replace("\\* \\* \\* \\* \\* \\*", "***");
+		
+		String[] array = contenu.split("\\*\\*\\*");
+		
+		return Arrays.asList(array);
+	}
+	
 	public ArrayList<String> getTokensDePhrase(String phrase) throws Exception {
 		System.setOut(new PrintStream(System.out, true, "utf-8"));
 		Properties props = new Properties();
@@ -185,6 +242,7 @@ public class TokenizationChinese2 extends Tokenization {
 		 //Tokenization pour une phrase
 		String tokensList[] = new String[1000]; 
 		List<String> segmented = segmenter.segmentString(phrase);
+		
 		String tokens = "";
 		for(int i=0; i<segmented.size();i++){
 			tokens = tokens+segmented.get(i)+" ";
@@ -195,6 +253,8 @@ public class TokenizationChinese2 extends Tokenization {
 				.replaceAll("”", "").replaceAll("（", "").replaceAll("）", "")
 				.replaceAll("～", "").replaceAll("~", "").replaceAll("\\(", "")
 				.replaceAll("\\)", "").replaceAll("-", "").replaceAll("\n", "").replaceAll(",","");
+		System.out.println("segmented : " + tokens);
+		
 		tokensList = tokens.split(" ", -1);
 		ArrayList<String> resultat = new ArrayList<String>();
 		for(int i=0; i<tokensList.length;i++){
@@ -203,6 +263,46 @@ public class TokenizationChinese2 extends Tokenization {
 			}
 		}
 		return resultat;
+	}
+	
+	public String getTokensDePhraseEtoile(String phrase) throws Exception {
+		System.setOut(new PrintStream(System.out, true, "utf-8"));
+		Properties props = new Properties();
+		props.setProperty("sighanCorporaDict", basedir); //
+		props.setProperty("NormalizationTable", "data/norm.simp.utf8"); //
+		props.setProperty("normTableEncoding", "UTF-8"); // below is needed
+		// because
+		// CTBSegDocumentIteratorFactory
+		// accesses it
+		props.setProperty("serDictionary", basedir + "/dict-chris6.ser.gz");
+		/*
+		 * if (args.length > 0) { props.setProperty("testFile", args[0]); }
+		 */
+		props.setProperty("inputEncoding", "UTF-8");
+		props.setProperty("sighanPostProcessing", "true");
+
+		CRFClassifier<CoreLabel> segmenter = new CRFClassifier<CoreLabel>(props);
+		segmenter.loadClassifierNoExceptions(basedir + "/ctb.gz", props);
+		/*
+		 * for (String filename : args) { System.out.println("filename : " +
+		 * filename); segmenter.classifyAndWriteAnswers(filename); }
+		 */ 
+		 //Tokenization pour une phrase
+		String tokensList[] = new String[1000]; 
+		List<String> segmented = segmenter.segmentString(phrase);
+		
+		String tokens = "";
+		for(int i=0; i<segmented.size();i++){
+			tokens = tokens+segmented.get(i)+" ";
+		}
+		tokens = tokens.replaceAll("，", " ").replaceAll("、", "")
+				.replaceAll("。", "").replaceAll("：", "").replaceAll("；", "")
+				.replaceAll("《", "").replaceAll("》", "").replaceAll("“", "")
+				.replaceAll("”", "").replaceAll("（", "").replaceAll("）", "")
+				.replaceAll("～", "").replaceAll("~", "").replaceAll("\\(", "")
+				.replaceAll("\\)", "").replaceAll("-", "").replaceAll("\n", "").replaceAll(",","");
+		//System.out.println("segmented : " + tokens);
+		return tokens;
 	}
 
 	public ArrayList<Integer> getAllPostions(String contenu, String token) {

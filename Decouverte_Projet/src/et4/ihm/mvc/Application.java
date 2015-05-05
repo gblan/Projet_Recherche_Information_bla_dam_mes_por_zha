@@ -1,5 +1,6 @@
 package et4.ihm.mvc;
 
+
 public class Application {
 
 	public Application() {
@@ -13,7 +14,7 @@ public class Application {
 		View view = new View("Chinois Facile",model);
 		model.addObserver(view);
 		
-		model.fillSearch(null);
+//		model.fillSearch(new ArrayList<SearchComponent>());
 		model.fillKnowledge(null);
 		
 		Controller controller = new Controller(model, view);

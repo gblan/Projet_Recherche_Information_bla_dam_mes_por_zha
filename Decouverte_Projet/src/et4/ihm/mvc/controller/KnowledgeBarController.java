@@ -31,7 +31,7 @@ public class KnowledgeBarController implements ActionListener, KeyListener{
 	public void keyReleased(KeyEvent e) {
 		try {
 			JTextField txt = (JTextField) e.getSource();
-			model.search(txt.getText());
+			model.search(txt.getText(),0);
 		} catch (ClassCastException e2) {
 		}
 	}
@@ -40,7 +40,7 @@ public class KnowledgeBarController implements ActionListener, KeyListener{
 	public void actionPerformed(ActionEvent e) {
 		try {
 			JTextField txt = (JTextField) e.getSource();
-			model.search(txt.getText());
+			model.search(txt.getText(),0);
 		} catch (ClassCastException e2) {
 		}		
 	}

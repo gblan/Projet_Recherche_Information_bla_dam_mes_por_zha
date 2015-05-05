@@ -65,7 +65,7 @@ public class Word2VecObject {
             vec.setCache(cache);
             vec.fit();
             
-
+            
             SerializationUtils.saveObject(vec, new File(VEC_PATH));
             SerializationUtils.saveObject(cache,new File(CACHE_SER));
 
@@ -76,7 +76,8 @@ public class Word2VecObject {
             vec = SerializationUtils.readObject(new File(VEC_PATH));
             cache = SerializationUtils.readObject(new File(CACHE_SER));
             vec.setCache(cache);
-
+            
+            System.out.println("Read success");
          
             
             
