@@ -2,6 +2,7 @@ package et4.ihm.mvc;
 
 import java.awt.Point;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,6 +27,7 @@ import et4.index.CorpusIndex;
 import et4.index.Token;
 import et4.index.Tokenization;
 import et4.index.TokenizationChinese;
+import et4.index.TokenizationChinese2;
 import et4.index.TokenizationFrench;
 import graphe.GrapheWord2Vec;
 import graphe.PaireToken;
@@ -42,34 +44,13 @@ public class Model extends Observable{
 	private MonolingualCorpus corpus;
 	private GrapheWord2Vec graphe;
 	public Model() {
-		ArrayList<Token> tokenConnu = new ArrayList<Token>();
-			tokenConnu.add(new Token("Doc", 1, "Test"));
-			tokenConnu.add(new Token("Doc", 18, "Test"));
-			tokenConnu.add(new Token("Doc", 18, "Bis"));
-			tokenConnu.add(new Token("Doc", 90, "Je"));
-			tokenConnu.add(new Token("Doc", 1, "ne"));
+		ArrayList<String> tokenConnu = new ArrayList<String>();
+			tokenConnu.add("动物怕火。");
+			tokenConnu.add("我只是觉得这里用英语比较能表达我的想法。");
+			tokenConnu.add("密码是\"Muiriel\"。");
+			tokenConnu.add("Ubuntu包括的软件挺多。");
+			tokenConnu.add("她很少迟到。");
 			
-			tokenConnu.add(new Token("Doc", 18, "sais"));
-			tokenConnu.add(new Token("Doc", 18, "pris "));
-			tokenConnu.add(new Token("Doc", 90, "bébé"));
-			tokenConnu.add(new Token("Doc", 1, "le"));
-			tokenConnu.add(new Token("Doc", 18, "Test"));
-			tokenConnu.add(new Token("Doc", 18, "Bis"));
-			tokenConnu.add(new Token("Doc", 90, "Je"));
-			
-			tokenConnu.add(new Token("Doc", 90, "Muiriel"));
-			tokenConnu.add(new Token("Doc", 1, "a"));
-			tokenConnu.add(new Token("Doc", 18, "20"));
-			tokenConnu.add(new Token("Doc", 18, "ans"));
-			
-			tokenConnu.add(new Token("Doc", 1, "bras"));
-			tokenConnu.add(new Token("Doc", 1, "jambe"));
-			
-			tokenConnu.add(new Token("Doc", 1, "dans"));
-			tokenConnu.add(new Token("Doc", 1, "commencé"));
-			tokenConnu.add(new Token("Doc", 1, "pleuré"));
-			tokenConnu.add(new Token("Doc", 1, "jambe"));
-			tokenConnu.add(new Token("Doc", 1, "où"));
 		graphe = new GrapheWord2Vec(tokenConnu);
 	
 	
@@ -81,8 +62,8 @@ public class Model extends Observable{
 		try {
 			f = resource.getFile();
 			tw2v = new Word2VecObject(f);
-	    	tw2v.launch("femme");
-	    	double s = tw2v.similarity("femme","fille");
+	    	tw2v.launch("她很少迟到。");
+	    	double s = tw2v.similarity("她很少迟到。","她很少迟到。");
 	    	System.out.println("s = "+s);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -305,33 +286,42 @@ public class Model extends Observable{
 		double SEUIL = (double)70/100.0;
 		HashMap<Integer,ArrayList<String>> phraseretenu = new HashMap<Integer, ArrayList<String>>();
 		
-		for (int i = 0; i < corpus.getIndex().size(); i++) {
-			int connu = 0;
-			ArrayList<String> tokenretenu = new ArrayList<String>();
-			//System.out.println("Phrase : "+corpus.getIndex().get(i).getListTokens());
-			for(String token : corpus.getIndex().get(i).getListTokens().keySet()) {
-				
-				if(graphe.contains(token)) {
-					connu++;
-					//System.out.println("Token connu ="+token);
-				}
-				else {
-					tokenretenu.add(token);
-				}
+		
+		int connu = 0;
+		ArrayList<String> tokenretenu = new ArrayList<String>();
+		int line = 0;
+		//System.out.println("Phrase : "+corpus.getIndex().get(i).getListTokens());
+		
+		/*
+		 * 
+		 * Recuperation des token du fichier
+		 * 
+		 */
+		ArrayList<String> tokenChinese = new ArrayList<String>();
+		tokenChinese.addAll(corpus.getTc().getTokensSet());
+		for(String token : tokenChinese) {
+			
+			if(graphe.contains(token)) {
+				connu++;
+				//System.out.println("Token connu ="+token);
 			}
-			 
-			 if(connu!=0) {
-				 double pourcentage = (double)connu/(double)corpus.getIndex().get(i).getListTokens().size();
-				 
-				 if(pourcentage>SEUIL)
-				 {
-					 //System.out.println("Pourcentage "+pourcentage);
-					 //System.out.println("Phrase : "+corpus.getCorpusArray()[i]);
-					phraseretenu.put(i,tokenretenu); 
-				 }
-			 }
-			 
+			else {
+				tokenretenu.add(token);
+			}
 		}
+		 
+		 if(connu!=0) {
+			 double pourcentage = (double)connu/(double)tokenChinese.size();
+			 
+			 if(pourcentage>SEUIL)
+			 {
+				 //System.out.println("Pourcentage "+pourcentage);
+				 //System.out.println("Phrase : "+corpus.getCorpusArray()[i]);
+				phraseretenu.put(line,tokenretenu); 
+			 }
+		 }
+			 
+		
 		
 		/**
 		 * Faire Word2Vec
@@ -346,7 +336,7 @@ public class Model extends Observable{
 			System.out.println("Phrase : "+corpus.getCorpusArray()[keyCorpus.get(i)]);
 			System.out.println("Les tokens inconnu : "+phraseretenu.get(keyCorpus.get(i)));
 			String tokenrand = phraseretenu.get(keyCorpus.get(i)).get(0);
-			System.out.println("Size"+graphe.getNoeud().keySet().size());
+			
 			double similarity = 0;
 			for(String token : corpus.getIndex().get(keyCorpus.get(i)).getListTokens().keySet()) {
 				if(graphe.contains(token)) {
@@ -367,11 +357,23 @@ public class Model extends Observable{
 	/**
 	 * Prend en parametre le fichier que l'utilisateur a choisi dans le FileChooser
 	 * @param fichier
+	 * @throws FileNotFoundException 
 	 */
-	public void updateKnowledge(File file) {
+	public void updateKnowledge(File file) throws FileNotFoundException {
 		
 		System.out.println("Model : updateKnowledge in "+file.getAbsolutePath());
+		TokenizationChinese2 tokenizefile = new TokenizationChinese2();
+		tokenizefile.TokenizeDeFichier(file.getAbsolutePath());
+		ArrayList<String> tokennew = new ArrayList<String>();
+		tokennew.addAll(tokenizefile.getTokensSet());
 		
+		System.out.println("Nouveaux mots connus :D "+tokennew);
+		
+		System.out.println("Dico avant"+graphe);
+		
+		graphe.addDico(tokennew);
+		
+		System.out.println("Dico après"+graphe);
 	}
 	
 	public static String findTranslationChineseFrench(String A, int choice,String[] dicoCh,String[] dicoFr, String[] link) {

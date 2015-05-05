@@ -3,6 +3,7 @@ package et4.ihm.mvc.controller;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 
 import javax.swing.JFileChooser;
@@ -35,7 +36,12 @@ public class FooterController implements MouseListener{
 			    {
 			    	System.out.println("Open de : "+file.getName());			    	
 			    	
-			    	model.updateKnowledge(file);
+			    	try {
+						model.updateKnowledge(file);
+					} catch (FileNotFoundException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
 			    	/*if(fichier.getName().endsWith(".xml"))
 			    	{
 			    		System.out.println("Ouverture en cours ... : "+fichier.getAbsolutePath());

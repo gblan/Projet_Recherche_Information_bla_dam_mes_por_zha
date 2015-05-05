@@ -15,7 +15,8 @@ public class TokenizationChinese2 extends Tokenization {
 
 	private static final String basedir = System.getProperty(
 			"TokenizationChinese", "data");
-
+	
+	private Set<String> tokensSet;
 	
 	/*
 	public static void main(String[] args) throws Exception {
@@ -27,7 +28,7 @@ public class TokenizationChinese2 extends Tokenization {
 	 
 	public CorpusIndex TokenizeDeFichier(String fileName) throws FileNotFoundException {
 		CorpusIndex index = new CorpusIndex();
-		Set<String> tokensSet;
+		
 		try {
 			tokensSet = getTokensDeFichier(fileName);
 			Iterator<String> it = tokensSet.iterator();
@@ -229,5 +230,11 @@ public class TokenizationChinese2 extends Tokenization {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	public Set<String> getTokensSet() {
+		return tokensSet;
+	}
+	
+	
 
 }
