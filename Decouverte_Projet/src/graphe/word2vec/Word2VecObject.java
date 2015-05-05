@@ -1,10 +1,10 @@
 package graphe.word2vec;
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.IOException;
+import java.io.FileOutputStream;
 import java.io.InputStreamReader;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.PrintStream;
 
 import org.deeplearning4j.models.word2vec.Word2Vec;
 import org.deeplearning4j.models.word2vec.wordstore.VocabCache;
@@ -21,38 +21,15 @@ public class Word2VecObject {
     private TokenizerFactory tokenizer;
     private Word2Vec vec;
     VocabCache cache;
-    public final static String VEC_PATH = "vecch.ser";
-    public final static String CACHE_SER = "cachech.ser";
+    public final static String VEC_PATH = "vec2.ser";
+    public final static String CACHE_SER = "cache.ser";
 
-    public Word2VecObject(String path) throws Exception {
-        this.iter = new LineSentenceIterator(new File(path));
+    public Word2VecObject(File file) throws Exception {
+        this.iter = new LineSentenceIterator(new File(file.getAbsolutePath()));
         tokenizer =  new DefaultTokenizerFactory();
     }
 
-    public static void main(String[] args) throws Exception {
-    	/*if(args.length >= 1)
-    	{
-    		new TestWord2Vec(args[0]).train("femme");
-    	}   
-        else {
-        	
-        	
-            ClassPathResource resource = new ClassPathResource("frCorpus.txt");
-            System.out.println("ClassPathRessource");
-            File f = resource.getFile();
-
-            new TestWord2Vec(f.getAbsolutePath()).train("femme");
-
-        }*/
-    	ClassPathResource resource = new ClassPathResource("texteChinois.txt");
-        System.out.println("ClassPathRessource");
-        File f = resource.getFile();
-
-    	Word2VecObject tw2v = new Word2VecObject(f.getAbsolutePath());
-    	tw2v.launch("femme");
-    	double s = tw2v.similarity("femme","fille");
-    	System.out.println("s = "+s);
-    }
+    
 
     public double similarity(String first, String second) {
 		
@@ -75,11 +52,13 @@ public class Word2VecObject {
 
     public void train(String token) throws Exception {
         
+ 
+    	
         if(vec == null && !new File(VEC_PATH).exists()) {
             cache = new InMemoryLookupCache.Builder()
-                    .lr(2e-3).vectorLength(100).build();
-            
-            vec = new Word2Vec.Builder().minWordFrequency(5).vocabCache(cache)
+                    .lr(2e-5).vectorLength(100).build();
+            //minWordFrequency(5)
+            vec = new Word2Vec.Builder().vocabCache(cache)
                     .windowSize(5)
                     .layerSize(100).iterate(iter).tokenizerFactory(tokenizer)
                     .build();
@@ -98,16 +77,10 @@ public class Word2VecObject {
             cache = SerializationUtils.readObject(new File(CACHE_SER));
             vec.setCache(cache);
 
-            /*for(String s : cache.words()) {
-                System.out.println(s);
-            }*/
+         
+            
+            
 
-            BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-            String line;
-            System.out.println("Print similarity");
-            
-            
-            System.out.println(" --> "+vec.wordsNearest(token, 10));
             
             /*for(String s : vec.wordsNearest(token, 10)) {
             	System.out.println(token+" - "+s+" -> "+vec.similarity(s, token));
@@ -130,6 +103,42 @@ public class Word2VecObject {
                 System.out.println(vec.similarity(split[0],split[1]));
                 System.out.println("_____");
             }*/
+        }
+        
+     // Create a stream to hold the output
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		PrintStream ps = new PrintStream(baos);
+		// IMPORTANT: Save the old System.out!
+		PrintStream old = System.out;
+		// Tell Java to use your special stream
+		System.setOut(ps); // Print some output: goes to your special stream
+		
+        
+        System.out.println("_________VOCAB__________");
+        
+        
+        
+        for(String s : cache.words()) {
+        	
+        	if(s.equals("Caca") || s.equals("Pipi")) {
+        		System.out.println("J'ai trouve TOKEN CACA");
+        		System.exit(0);
+        	}
+        	
+            System.out.println(s);
+        }
+        System.out.println("_________VOCAB__________");
+
+		System.out.flush();
+		System.setOut(old); // Show what happened
+		//System.out.println("Here: " + baos.toString());
+        
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        String line;
+        System.out.println("Print similarity");
+        
+        try (PrintStream out = new PrintStream(new FileOutputStream("filename.txt"))) {
+            out.print(baos.toString());
         }
     }
 }

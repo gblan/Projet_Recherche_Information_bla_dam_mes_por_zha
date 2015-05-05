@@ -74,13 +74,13 @@ public class Model extends Observable{
 	
 	
 		launch();
-		ClassPathResource resource = new ClassPathResource("frCorpus.txt");
+		ClassPathResource resource = new ClassPathResource("chCorpusUTF.txt");
         System.out.println("ClassPathRessource");
         File f;
         
 		try {
 			f = resource.getFile();
-			tw2v = new Word2VecObject(f.getAbsolutePath());
+			tw2v = new Word2VecObject(f);
 	    	tw2v.launch("femme");
 	    	double s = tw2v.similarity("femme","fille");
 	    	System.out.println("s = "+s);
@@ -296,6 +296,8 @@ public class Model extends Observable{
 	}
 
 	private String learnWord2Vec(String text) {
+		
+		System.out.println("-------------------------||||||| "+tw2v.similarity("报道称", "克里姆林宫透露了上述信息"));
 		
 		/**
 		 * Lire le corpus => trouve phrase avec des phrases bcp de mots connu
