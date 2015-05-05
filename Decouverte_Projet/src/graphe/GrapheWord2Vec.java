@@ -8,11 +8,13 @@ import et4.index.Token;
 
 public class GrapheWord2Vec {
 
-	private HashMap<PaireToken,Float> noeud;
-	
+	private HashMap<PaireToken,Double> noeud;
+	private ArrayList<Token> dico;
 	public GrapheWord2Vec(ArrayList<Token> tokenConnu) {
-		noeud = new HashMap<PaireToken, Float>();
+		noeud = new HashMap<PaireToken, Double>();
+		dico = new ArrayList<Token>();
 		for(int i = 0; i<tokenConnu.size();i++){
+			dico.add(tokenConnu.get(i));
 			for(int j = i+1; j<tokenConnu.size(); j++ ) {
 				add(new PaireToken(tokenConnu.get(i), tokenConnu.get(j)));
 			}
@@ -21,17 +23,21 @@ public class GrapheWord2Vec {
 	}
 	
 	public void add(PaireToken paire) {
-		if(noeud.containsKey(new PaireToken(paire.getFirst(), paire.getSecond()))) {
+		if(noeud.containsKey(paire)) {
 		}
 		else {
-			noeud.put(paire, (float) (1.0));
+			noeud.put(paire, (double) (1.0));
 		}
+	}
+	
+	public boolean contains(PaireToken paire) {
+		return noeud.containsKey(paire);
 	}
 	
 	@Override
 	public String toString() {
 		String display = "";
-		for(Entry<PaireToken,Float> entry : noeud.entrySet()) {
+		for(Entry<PaireToken, Double> entry : noeud.entrySet()) {
 			display+=" "+entry.getKey()+" similarite = "+entry.getValue()+"\n";
 		}
 		return display;
@@ -39,7 +45,7 @@ public class GrapheWord2Vec {
 	
 	
 	
-	public HashMap<PaireToken, Float> getNoeud() {
+	public HashMap<PaireToken, Double> getNoeud() {
 		return noeud;
 	}
 
@@ -53,5 +59,12 @@ public class GrapheWord2Vec {
 		System.out.print("Graphe "+"\n"+graphe);
 		System.out.println(graphe.getNoeud().containsKey(new PaireToken(new Token("Doc", 1, "Test"), new Token("Doc", 1, "Test"))));
 	}
+
+	public boolean contains(String token) {
+		// TODO Auto-generated method stub
+		return dico.contains(new Token("", 0, token));
+	}
+	
+	
 	
 }

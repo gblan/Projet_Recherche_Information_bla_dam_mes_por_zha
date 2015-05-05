@@ -1,6 +1,7 @@
 package graphe.word2vec;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -15,41 +16,65 @@ import org.deeplearning4j.text.tokenization.tokenizerfactory.TokenizerFactory;
 import org.deeplearning4j.util.SerializationUtils;
 import org.springframework.core.io.ClassPathResource;
 
-public class TestWord2Vec {
+public class Word2VecObject {
 	private SentenceIterator iter;
     private TokenizerFactory tokenizer;
     private Word2Vec vec;
+    VocabCache cache;
+    public final static String VEC_PATH = "vecch.ser";
+    public final static String CACHE_SER = "cachech.ser";
 
-    public final static String VEC_PATH = "vec.ser";
-    public final static String CACHE_SER = "cache.ser";
-
-    public TestWord2Vec(String path) throws Exception {
+    public Word2VecObject(String path) throws Exception {
         this.iter = new LineSentenceIterator(new File(path));
         tokenizer =  new DefaultTokenizerFactory();
     }
 
     public static void main(String[] args) throws Exception {
-    	if(args.length >= 1)
-            new TestWord2Vec(args[0]).train();
+    	/*if(args.length >= 1)
+    	{
+    		new TestWord2Vec(args[0]).train("femme");
+    	}   
         else {
         	
-        	Path currentRelativePath = Paths.get("");
-        	String s = currentRelativePath.toAbsolutePath().toString();
-        	System.out.println("Current relative path is: " + s);
         	
             ClassPathResource resource = new ClassPathResource("frCorpus.txt");
             System.out.println("ClassPathRessource");
             File f = resource.getFile();
 
-            new TestWord2Vec(f.getAbsolutePath()).train();
+            new TestWord2Vec(f.getAbsolutePath()).train("femme");
 
-        }
-    	System.out.println("Fin");
+        }*/
+    	ClassPathResource resource = new ClassPathResource("texteChinois.txt");
+        System.out.println("ClassPathRessource");
+        File f = resource.getFile();
+
+    	Word2VecObject tw2v = new Word2VecObject(f.getAbsolutePath());
+    	tw2v.launch("femme");
+    	double s = tw2v.similarity("femme","fille");
+    	System.out.println("s = "+s);
     }
 
+    public double similarity(String first, String second) {
+		
+    	if(cache.indexOf(first) < 0) {
+            System.err.println("Word " + first + " not in vocab");
+            return 0;
+        }
+        if(cache.indexOf(second) < 0) {
+            System.err.println("Word " + second + " not in vocab");
+            return 0;
+        }
+    	return vec.similarity(first, second);
+		
+	}
 
-    public void train() throws Exception {
-        VocabCache cache;
+	public void launch(String token) throws Exception {
+    	
+        train(token);
+    }
+
+    public void train(String token) throws Exception {
+        
         if(vec == null && !new File(VEC_PATH).exists()) {
             cache = new InMemoryLookupCache.Builder()
                     .lr(2e-3).vectorLength(100).build();
@@ -73,17 +98,23 @@ public class TestWord2Vec {
             cache = SerializationUtils.readObject(new File(CACHE_SER));
             vec.setCache(cache);
 
-            for(String s : cache.words()) {
+            /*for(String s : cache.words()) {
                 System.out.println(s);
-            }
+            }*/
 
             BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
             String line;
             System.out.println("Print similarity");
             
-            System.out.println(" --> "+vec.wordsNearest("guerre", 10));
             
-            while((line = reader.readLine()) != null) {
+            System.out.println(" --> "+vec.wordsNearest(token, 10));
+            
+            /*for(String s : vec.wordsNearest(token, 10)) {
+            	System.out.println(token+" - "+s+" -> "+vec.similarity(s, token));
+            }*/
+     
+            
+            /*while((line = reader.readLine()) != null) {
             	String[] split = line.split(",");
             	
             	
@@ -98,7 +129,7 @@ public class TestWord2Vec {
                 System.out.println("_____");
                 System.out.println(vec.similarity(split[0],split[1]));
                 System.out.println("_____");
-            }
+            }*/
         }
     }
 }

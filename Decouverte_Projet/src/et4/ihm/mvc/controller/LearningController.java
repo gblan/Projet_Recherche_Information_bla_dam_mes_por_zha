@@ -28,7 +28,7 @@ public class LearningController implements KeyListener, MouseListener{
 	public void mouseClicked(MouseEvent e) {
 		// TODO Auto-generated method stub
 		if(e.getSource()==btn) {
-			System.out.println("iput.get" + input.getText());
+			System.out.println("input.get" + input.getText());
 			output.setText(model.learn(input.getText()));
 		}
 	}
