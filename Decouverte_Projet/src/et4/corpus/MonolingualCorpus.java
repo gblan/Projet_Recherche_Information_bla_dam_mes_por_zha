@@ -23,7 +23,7 @@ public class MonolingualCorpus {
 	private String[] corpusArray;
 
 	/*
-	 * 1 = Français 2 = Chinois
+	 * 1 = Francais 2 = Chinois
 	 */
 	public MonolingualCorpus(Tokenization tok, String filename)
 			throws IOException {
