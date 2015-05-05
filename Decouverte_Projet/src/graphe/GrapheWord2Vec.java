@@ -9,10 +9,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
-public class GrapheWord2Vec {
-
-	
+public class GrapheWord2Vec {	
 	private HashMap<String,Double> dico;
+	
+	public HashMap<String, Double> getDico(){
+		return dico;
+	}
+	
 	public GrapheWord2Vec(ArrayList<String> tokenConnu) {
 		dico = new HashMap<String, Double>();
 		for(int i = 0; i<tokenConnu.size();i++){

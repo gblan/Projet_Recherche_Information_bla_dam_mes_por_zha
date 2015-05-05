@@ -36,10 +36,13 @@ public class SearchBarController implements ActionListener, KeyListener {
 				System.out.println("searchFR OK : "+panel.getTextAreaFR().getText());
 
 				model.search(panel.getTextAreaFR().getText(), 2);
+				model.notifyChanges();
 			} else if (panel.getCnRadioButton().isSelected()) {
 				System.out.println("searchCN OK : "+panel.getTextAreaCN().getText());
 
 				model.search(panel.getTextAreaCN().getText(), 1);
+				model.notifyChanges();
+
 			}
 
 			/* pour ne pas afficher le caractère \n */

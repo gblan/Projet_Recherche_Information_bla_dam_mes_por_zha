@@ -9,7 +9,11 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Observable;
 import java.util.Scanner;
 
@@ -52,27 +56,36 @@ public class Model extends Observable {
 
 	public Model() {
 		ArrayList<String> tokenConnu = new ArrayList<String>();
-			tokenConnu.add("动物怕火。");
-			tokenConnu.add("我只是觉得这里用英语比较能表达我的想法。");
-			tokenConnu.add("密码是\"Muiriel\"。");
-			tokenConnu.add("Ubuntu包括的软件挺多。");
-			tokenConnu.add("她很少迟到。");
+		tokenConnu.add("国");
+		tokenConnu.add("中");
+		tokenConnu.add("中国");
+		tokenConnu.add("法国	");
+		tokenConnu.add("京");
+		tokenConnu.add("北京");
+		tokenConnu.add("南");
+		tokenConnu.add("南京");
+		tokenConnu.add("海");
+		tokenConnu.add("上海");
+		tokenConnu.add("天");
+		tokenConnu.add("穴");
+		tokenConnu.add("头");
+		tokenConnu.add("茶");
+		tokenConnu.add("工");
 		graphe = new GrapheWord2Vec(tokenConnu);
 
 		// launch();
 
-				
 		ClassPathResource resource = new ClassPathResource("chCorpusUTF.txt");
-        System.out.println("ClassPathRessource");
+		System.out.println("ClassPathRessource");
 
-        File f;
-        
+		File f;
+
 		try {
 			f = resource.getFile();
 			tw2v = new Word2VecObject(f);
-	    	tw2v.launch("她很少迟到。");
-	    	double s = tw2v.similarity("她很少迟到。","她很少迟到。");
-	    	System.out.println("s = "+s);
+			tw2v.launch("她很少迟到。");
+			double s = tw2v.similarity("她很少迟到。", "她很少迟到。");
+			System.out.println("s = " + s);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -80,30 +93,34 @@ public class Model extends Observable {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-//		System.out.println("model");
+		// System.out.println("model");
 	}
-	
+
 	/**
-	 * Prend en parametre un objet (indefini pour le moment)
-	 * qui permettra de remplir le panel de knowledge
+	 * Prend en parametre un objet (indefini pour le moment) qui permettra de
+	 * remplir le panel de knowledge
+	 * 
 	 * @param result
 	 */
 	public void fillKnowledge(Object result) {
-		
+
 		ArrayList<KnowledgeComponent> components = new ArrayList<KnowledgeComponent>();
 
-		float rate = 10;
-		for(int i = 0; i<15; i++) {
-			//Le premier composant n'a pas de + space dans le calcul
-			if(i==0) {
-				components.add(new KnowledgeComponent(new Point(0,KnowledgePanel.heightComponent+KnowledgePanel.space*i),"é¸Ÿ","oiseau",getPinyin("é¸Ÿ"), rate, View.width, KnowledgePanel.heightComponent));
+		int i = 0;
+		for (Entry<String, Double> entry : graphe.getDico().entrySet()) {
+			if (i == 0) {
+				components.add(new KnowledgeComponent(new Point(0, KnowledgePanel.heightComponent
+						+ KnowledgePanel.space * i), entry.getKey(), getTranslation(entry.getKey()), getPinyin(entry
+						.getKey()), entry.getValue(), View.width, KnowledgePanel.heightComponent));
+			} else {
+				// components.add(new KnowledgeComponent(new
+				// Point(0,KnowledgePanel.heightComponent*(i+1)+KnowledgePanel.space*i),"ç”·äºº","homme","NÃ¡nrÃ©n",
+				// rate, View.width, KnowledgePanel.heightComponent));
+				components.add(new KnowledgeComponent(new Point(0, KnowledgePanel.heightComponent * (i + 1)
+						+ KnowledgePanel.space * i), entry.getKey(), getTranslation(entry.getKey()), getPinyin(entry
+						.getKey()), entry.getValue(), View.width, KnowledgePanel.heightComponent));
 			}
-			else {
-				//components.add(new KnowledgeComponent(new Point(0,KnowledgePanel.heightComponent*(i+1)+KnowledgePanel.space*i),"ç”·äºº","homme","NÃ¡nrÃ©n", rate, View.width, KnowledgePanel.heightComponent));
-				components.add(new KnowledgeComponent(new Point(0,KnowledgePanel.heightComponent*(i+1)+KnowledgePanel.space*i),"é¸Ÿ","oiseau", getPinyin("é¸Ÿ"), rate, View.width, KnowledgePanel.heightComponent));
-			}
-			//components.add(new SearchComponent(new Point(0,heightComponent*2+space),"è¦�è¿˜æ˜¯ä¸�","Etre ou ne pas etre","YÃ o hÃ¡ishÃ¬ bÃ¹","not", View.width, heightComponent));
-			rate+=80;
+			i++;
 		}
 		
 		// Pattern observer appele
@@ -112,36 +129,124 @@ public class Model extends Observable {
 	}
 
 	/**
+	 * @param map
+	 * @param desc
+	 * @return Map Sorted by value
+	 */
+	public static <K, V extends Comparable<? super V>> Map<K, V> sortByValue(Map<K, V> map, boolean desc) {
+		List<Map.Entry<K, V>> list = new LinkedList<Map.Entry<K, V>>(map.entrySet());
+		Collections.sort(list, new Comparator<Map.Entry<K, V>>() {
+			public int compare(Map.Entry<K, V> o1, Map.Entry<K, V> o2) {
+				if (desc) {
+					return (o1.getValue()).compareTo(o2.getValue());
+				} else {
+					return (o2.getValue()).compareTo(o1.getValue());
+				}
+			}
+		});
+
+		Map<K, V> result = new LinkedHashMap<K, V>();
+		for (Map.Entry<K, V> entry : list) {
+			result.put(entry.getKey(), entry.getValue());
+		}
+		return result;
+	}
+	
+	private String getTranslation(String key) {
+		System.out.println("#### Key : "+key);
+		ArrayList<String> sentencesFrench = new ArrayList<String>();
+		/* recherche des phrases contenant le mot key */
+		search(key, 1);
+
+		/* recupération des phrases traduites */
+		for (int i = 0; i < listComponent.size(); i++) {
+			sentencesFrench.add(listComponent.get(i).getTranslation());
+			if(i==100){
+				break;
+			}
+		}
+
+		/*
+		 * recherche du mot le plus présent dans les phrases en français en le
+		 * triant selon le plus présent
+		 */
+		HashMap<String, Integer> map = new HashMap<String, Integer>();
+
+		for (String str : sentencesFrench) {
+			String[] strings = str.replaceAll("[(){},.;'!?<>%]", "").split("\\s+");
+
+			/* remplissage de la hashMap*/
+			for (int i = 0; i < strings.length; i++) {
+				if (map.containsKey(strings[i])) {
+					map.put(strings[i], 1 + map.get(strings[i]));
+				} else {
+					map.put(strings[i], 1);
+				}
+			}
+					
+		}
+		
+		/* tri de la hashmap*/
+		Map<String, Integer> result = sortByValue(map, false);
+		
+//		for(Entry<String, Integer> entry : result.entrySet()){
+//			System.out.println("key : "+entry.getKey());
+//			System.out.println("value : "+entry.getValue());
+//		}
+//		
+		HashMap<String, Integer> commonToken = new HashMap<String, Integer>();
+
+		commonToken.put("la", 1);
+		commonToken.put("le", 1);
+		commonToken.put("les", 1);
+		commonToken.put("l", 1);
+		commonToken.put("un", 1);
+		commonToken.put("une", 1);
+		commonToken.put("des", 1);
+		commonToken.put("d", 1);
+		commonToken.put("du", 1);
+		commonToken.put("de", 1);
+		commonToken.put("des", 1);
+		commonToken.put("au", 1);
+		commonToken.put("que", 1);
+		commonToken.put("et", 1);
+		commonToken.put("à", 1);
+		
+		for(Entry<String, Integer> entry : result.entrySet()){
+			if(!commonToken.containsKey(entry.getKey())){
+				return entry.getKey();
+			}
+		}
+		return "KO";
+	}
+
+	/**
 	 * @param searchinput
 	 * @param langue
 	 *            1 mandarin, 2 français
 	 */
 	public void search(String searchinput, int langue) {
-		int j=0;
+		int j = 0;
 		listComponent.clear();
-		
+
 		if (searchinput.equals(""))
 			return;
-		
+
 		Tokenization tf = new TokenizationFrench();
 		Tokenization tc = new TokenizationChinese();
 
-
 		try {
 			String[] tradCh = FileUtils.readFileToString(new File("resources/ch.txt"), "UTF-8").split("\n");
-			String[] tradLink = FileUtils.readFileToString(new File("resources/linksChineseFrench.txt"), "UTF-8").split("\n");
+			String[] tradLink = FileUtils.readFileToString(new File("resources/linksChineseFrench.txt"), "UTF-8")
+					.split("\n");
 			String[] tradFr = FileUtils.readFileToString(new File("resources/fr.txt"), "UTF-8").split("\n");
-			
-			MonolingualCorpus corpus;
-			if (langue == 1){
-				corpus =  new MonolingualCorpus(tc,
-						"resources/chCorpus.txt");
-			}
-			else {
-				corpus =  new MonolingualCorpus(tf,
-						"resources/frCorpus.txt");
-			}
 
+			MonolingualCorpus corpus;
+			if (langue == 1) {
+				corpus = new MonolingualCorpus(tc, "resources/chCorpus.txt");
+			} else {
+				corpus = new MonolingualCorpus(tf, "resources/frCorpus.txt");
+			}
 
 			for (int i = 0; i < corpus.getCorpusArray().length; i++) {
 				if (corpus.getCorpusArray()[i].contains(searchinput)) {
@@ -165,15 +270,13 @@ public class Model extends Observable {
 						String trad = "";
 						String piying = "";
 						if (langue == 1) {
-							trad = findTranslationChineseFrench(corpus.getCorpusArray()[i], 1, tradCh, tradFr,
-									tradLink);
-//							 System.out.println("Chinois ##"+corpus.getCorpusArray()[i]+"####");
-//							 System.out.println(Model.getPinyin(currentCorpus.getCorpusArray()[i]));
+							trad = findTranslationChineseFrench(corpus.getCorpusArray()[i], 1, tradCh, tradFr, tradLink);
+							// System.out.println("Chinois ##"+corpus.getCorpusArray()[i]+"####");
+							// System.out.println(Model.getPinyin(currentCorpus.getCorpusArray()[i]));
 							piying = Model.getPinyin(corpus.getCorpusArray()[i]);
 						} else {
-							trad = findTranslationChineseFrench(corpus.getCorpusArray()[i], 2, tradCh, tradFr,
-									tradLink);
-//							 System.out.println("Fr: ##"+corpus.getCorpusArray()[i]+"####");
+							trad = findTranslationChineseFrench(corpus.getCorpusArray()[i], 2, tradCh, tradFr, tradLink);
+							// System.out.println("Fr: ##"+corpus.getCorpusArray()[i]+"####");
 							// System.out.println(trad);
 							// System.out.println(Model.getPinyin(trad));
 							piying = Model.getPinyin(trad);
@@ -184,26 +287,21 @@ public class Model extends Observable {
 						// positions);
 						// System.out.println("Occurence: " + positions.size());
 
-//						if (i == 0) {
-//							listComponent.add(new SearchComponent(new Point(0, SearchPanel.heightComponent * (i + 1)),
-//									currentCorpus.getCorpusArray()[i], trad, piying, "", positions.size(),
-//									View.width - 20, SearchPanel.heightComponent));
-//						} else {
-							if(j==0){
-								listComponent.add(new SearchComponent(new Point(0, SearchPanel.heightComponent
-										+ SearchPanel.space * j), corpus.getCorpusArray()[i], trad, piying, "",
-										positions.size(), View.width - 20, SearchPanel.heightComponent));
-							}else{
-								listComponent.add(new SearchComponent(new Point(0, SearchPanel.heightComponent * (j + 1)
-										+ SearchPanel.space * j), corpus.getCorpusArray()[i], trad, piying, "",
-										positions.size(), View.width - 20, SearchPanel.heightComponent));
-							}
+						if (j == 0) {
+							listComponent.add(new SearchComponent(new Point(0, SearchPanel.heightComponent
+									+ SearchPanel.space * j), corpus.getCorpusArray()[i], trad, piying, "", positions
+									.size(), View.width - 20, SearchPanel.heightComponent));
+						} else {
+							listComponent.add(new SearchComponent(new Point(0, SearchPanel.heightComponent * (j + 1)
+									+ SearchPanel.space * j), corpus.getCorpusArray()[i], trad, piying, "", positions
+									.size(), View.width - 20, SearchPanel.heightComponent));
+						}
 
-							
-							j++;
-//						}
-						
-//						System.out.println("corpus : " + currentCorpus.getCorpusArray()[i]);
+						j++;
+						// }
+
+						// System.out.println("corpus : " +
+						// currentCorpus.getCorpusArray()[i]);
 					}
 				}
 			}
@@ -219,6 +317,10 @@ public class Model extends Observable {
 		Collections.sort(listComponent, comparePertinence());
 		// listComponent.sort(comparePertinence());
 
+	}
+
+	public void notifyChanges() {
+
 		/* notifie les observers */
 		setChanged();
 		notifyObservers(listComponent);
@@ -226,34 +328,33 @@ public class Model extends Observable {
 
 	public static String getPinyin(String phraseChinoise) {
 		String pinYinDePhrase = null;
-		HanyuPinyinOutputFormat format= new HanyuPinyinOutputFormat();
+		HanyuPinyinOutputFormat format = new HanyuPinyinOutputFormat();
 		format.setToneType(HanyuPinyinToneType.WITH_TONE_MARK);
 		format.setVCharType(HanyuPinyinVCharType.WITH_U_UNICODE);
-		                  
+
 		for (int j = 0; j < phraseChinoise.length(); j++) {
 			char caractereChinois = phraseChinoise.charAt(j);
 			String[] pinyinArray = null;
 			try {
-				pinyinArray = PinyinHelper
-						.toHanyuPinyinStringArray(caractereChinois, format);
+				pinyinArray = PinyinHelper.toHanyuPinyinStringArray(caractereChinois, format);
 			} catch (BadHanyuPinyinOutputFormatCombination e) {
 				e.printStackTrace();
 			}
-			/* afficher toutes les possibilites de Pinyin
-			for (int i = 0; i < pinyinArray.length; ++i) {
-				System.out.println(pinyinArray[i]);
-			}
-			*/
-			//System.out.println(pinyinArray[0]);
+			/*
+			 * afficher toutes les possibilites de Pinyin for (int i = 0; i <
+			 * pinyinArray.length; ++i) { System.out.println(pinyinArray[i]); }
+			 */
+			// System.out.println(pinyinArray[0]);
 			try {
-				//temp est inutile, c'est juste pour savoir pinyinArray est null ou pas
+				// temp est inutile, c'est juste pour savoir pinyinArray est
+				// null ou pas
 				int temp = pinyinArray.length;
-				if(pinYinDePhrase == null){
+				if (pinYinDePhrase == null) {
 					pinYinDePhrase = pinyinArray[0];
-					}else{
-						pinYinDePhrase = pinYinDePhrase + " " + pinyinArray[0];
-					}
-			} catch (NullPointerException e){
+				} else {
+					pinYinDePhrase = pinYinDePhrase + " " + pinyinArray[0];
+				}
+			} catch (NullPointerException e) {
 				pinYinDePhrase = pinYinDePhrase + " " + caractereChinois;
 			}
 		}
@@ -261,35 +362,32 @@ public class Model extends Observable {
 	}
 
 	public String learn(String text) {
-		if(text.equals("")) {
+		if (text.equals("")) {
 			return learnWord2Vec(text);
-		}
-		else {
+		} else {
 			// TODO Auto-generated method stub
 			return getPinyin(text);
 		}
 	}
 
 	private String learnWord2Vec(String text) {
-		
-		System.out.println("-------------------------||||||| "+tw2v.similarity("买完整版", "买完整版"));
-		
+
+		System.out.println("-------------------------||||||| " + tw2v.similarity("买完整版", "买完整版"));
+
 		/**
 		 * Lire le corpus => trouve phrase avec des phrases bcp de mots connu
 		 */
-		double SEUIL = (double)70/100.0;
-		HashMap<Integer,ArrayList<String>> phraseretenu = new HashMap<Integer, ArrayList<String>>();
-		
-		
+		double SEUIL = (double) 70 / 100.0;
+		HashMap<Integer, ArrayList<String>> phraseretenu = new HashMap<Integer, ArrayList<String>>();
+
 		int connu = 0;
 		ArrayList<String> tokenretenu = new ArrayList<String>();
 		int line = 0;
-		//System.out.println("Phrase : "+corpus.getIndex().get(i).getListTokens());
-		
+		// System.out.println("Phrase : "+corpus.getIndex().get(i).getListTokens());
+
 		/*
 		 * 
 		 * Recuperation des token du fichier
-		 * 
 		 */
 		TokenizationChinese2 tc = new TokenizationChinese2();
 		List<String> sentences = null;
@@ -299,28 +397,26 @@ public class Model extends Observable {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		if(sentences==null)
-		{
+
+		if (sentences == null) {
 			System.out.println("Error sentences null in Model");
 			System.exit(0);
 		}
 		ArrayList<String> tokenChinese = new ArrayList<String>();
-		for(String sentence : sentences) {
-			
+		for (String sentence : sentences) {
+
 			tokenChinese.clear();
-			
+
 			String[] array = sentence.split(" ");
 			tokenChinese.addAll(Arrays.asList(array));
-			
-			for(String token : tokenChinese) {
-				
-				if(graphe.contains(token)) {
+
+			for (String token : tokenChinese) {
+
+				if (graphe.contains(token)) {
 					connu++;
-					System.out.println("Token connu ="+token);
-				}
-				else {
-					System.out.println("Token Inconnu ="+token);
+					System.out.println("Token connu =" + token);
+				} else {
+					System.out.println("Token Inconnu =" + token);
 					tokenretenu.add(token);
 				}
 			}
@@ -335,35 +431,36 @@ public class Model extends Observable {
 			}
 			line++;
 		}
-		
+
 		/**
 		 * Faire Word2Vec
 		 */
 		ArrayList<Integer> keyCorpus = new ArrayList<Integer>();
 		keyCorpus.addAll(phraseretenu.keySet());
-		
+
 		String result = "";
-		double SEUIL_W2V = (double)25.0/100.0;
+		double SEUIL_W2V = (double) 25.0 / 100.0;
 		for (int i = 0; i < phraseretenu.size(); i++) {
-			
-			System.out.println("Phrase : "+corpus.getCorpusArray()[keyCorpus.get(i)]);
-			System.out.println("Les tokens inconnu : "+phraseretenu.get(keyCorpus.get(i)));
+
+			System.out.println("Phrase : " + corpus.getCorpusArray()[keyCorpus.get(i)]);
+			System.out.println("Les tokens inconnu : " + phraseretenu.get(keyCorpus.get(i)));
 			String tokenrand = phraseretenu.get(keyCorpus.get(i)).get(0);
-			
+
 			double similarity = 0;
-			for(String token : corpus.getIndex().get(keyCorpus.get(i)).getListTokens().keySet()) {
-				if(graphe.contains(token)) {
-					similarity+=tw2v.similarity(token, tokenrand);
-					//System.out.println("Similarity Entre ["+token+","+tokenrand+"] ======== "+similarity);
+			for (String token : corpus.getIndex().get(keyCorpus.get(i)).getListTokens().keySet()) {
+				if (graphe.contains(token)) {
+					similarity += tw2v.similarity(token, tokenrand);
+					// System.out.println("Similarity Entre ["+token+","+tokenrand+"] ======== "+similarity);
 				}
 			}
-			
-			System.out.println("__________RESULT = "+(double)similarity/(double)corpus.getIndex().get(keyCorpus.get(i)).getListTokens().size()+"__________");
-			if((double)similarity/(double)corpus.getIndex().get(keyCorpus.get(i)).getListTokens().size()>SEUIL_W2V) {
-				result+=corpus.getCorpusArray()[keyCorpus.get(i)]+"\n";
+
+			System.out.println("__________RESULT = " + (double) similarity
+					/ (double) corpus.getIndex().get(keyCorpus.get(i)).getListTokens().size() + "__________");
+			if ((double) similarity / (double) corpus.getIndex().get(keyCorpus.get(i)).getListTokens().size() > SEUIL_W2V) {
+				result += corpus.getCorpusArray()[keyCorpus.get(i)] + "\n";
 			}
 		}
-		
+
 		return result;
 	}
 
@@ -372,23 +469,23 @@ public class Model extends Observable {
 	 * FileChooser
 	 * 
 	 * @param fichier
-	 * @throws FileNotFoundException 
+	 * @throws FileNotFoundException
 	 */
 	public void updateKnowledge(File file) throws FileNotFoundException {
-		
-		System.out.println("Model : updateKnowledge in "+file.getAbsolutePath());
+
+		System.out.println("Model : updateKnowledge in " + file.getAbsolutePath());
 		TokenizationChinese2 tokenizefile = new TokenizationChinese2();
 		tokenizefile.TokenizeDeFichier(file.getAbsolutePath());
 		ArrayList<String> tokennew = new ArrayList<String>();
 		tokennew.addAll(tokenizefile.getTokensSet());
-		
-		System.out.println("Nouveaux mots connus :D "+tokennew);
-		
-		System.out.println("Dico avant"+graphe);
-		
+
+		System.out.println("Nouveaux mots connus :D " + tokennew);
+
+		System.out.println("Dico avant" + graphe);
+
 		graphe.addDico(tokennew);
-		
-		System.out.println("Dico après"+graphe);
+
+		System.out.println("Dico après" + graphe);
 	}
 
 	public static String findTranslationChineseFrench(String A, int choice, String[] dicoCh, String[] dicoFr,
@@ -404,61 +501,61 @@ public class Model extends Observable {
 		String[] bufferA;
 		String[] bufferB;
 
-			if (choice == 1) {
-				bufferA = dicoCh;
-				bufferB = dicoFr;
-				idLinkA = 0;
-				idLinkB = 1;
-			} else {
-				bufferA = dicoFr;
-				bufferB = dicoCh;
-				idLinkA = 1;
-				idLinkB = 0;
-			}
-			for(int i = 0 ; i < bufferA.length ; i++){
-				if (bufferA[i].contains(A)) {
-					String[] tmp = bufferA[i].split("	");
-					String cmp = tmp[2];
-					if (cmp.equals(A)) {
-						idA = tmp[0];
-						System.out.println(idA);
-						break;
-					}
+		if (choice == 1) {
+			bufferA = dicoCh;
+			bufferB = dicoFr;
+			idLinkA = 0;
+			idLinkB = 1;
+		} else {
+			bufferA = dicoFr;
+			bufferB = dicoCh;
+			idLinkA = 1;
+			idLinkB = 0;
+		}
+		for (int i = 0; i < bufferA.length; i++) {
+			if (bufferA[i].contains(A)) {
+				String[] tmp = bufferA[i].split("	");
+				String cmp = tmp[2];
+				if (cmp.equals(A)) {
+					idA = tmp[0];
+//					System.out.println(idA);
+					break;
 				}
 			}
+		}
 
-		for(int i = 0 ; i < link.length ; i++){
-				if (link[i].contains(idA)) {
-					String[] tmp = link[i].split("	");
-					String cmp; 
-						cmp = tmp[idLinkA];
-					
-					if (cmp.equals(idA)) {
-						idB = tmp[idLinkB];
-						System.out.println(idB);
-						break;
-					}
-				}
-			}
-		for(int i = 0 ; i < bufferB.length ; i++){
+		for (int i = 0; i < link.length; i++) {
+			if (link[i].contains(idA)) {
+				String[] tmp = link[i].split("	");
+				String cmp;
+				cmp = tmp[idLinkA];
 
-				if (bufferB[i].contains(idB)) {
-					String[] tmp = bufferB[i].split("	");
-					if (tmp[0].equals(idB)) {
-						B = tmp[2];
-						
-						break;
-					}
+				if (cmp.equals(idA)) {
+					idB = tmp[idLinkB];
+//					System.out.println(idB);
+					break;
 				}
 			}
-			if (B.equals("")) {
-				return("Traduction non trouvee");
+		}
+		for (int i = 0; i < bufferB.length; i++) {
+
+			if (bufferB[i].contains(idB)) {
+				String[] tmp = bufferB[i].split("	");
+				if (tmp[0].equals(idB)) {
+					B = tmp[2];
+
+					break;
+				}
 			}
-			else{
-				return B;
-			}
+		}
+		if (B.equals("")) {
+			return ("Traduction non trouvee");
+		} else {
+			return B;
+		}
 
 	}
+
 	public Comparator<SearchComponent> comparePertinence() {
 		Comparator<SearchComponent> comparePertinence = new Comparator<SearchComponent>() {
 			@Override

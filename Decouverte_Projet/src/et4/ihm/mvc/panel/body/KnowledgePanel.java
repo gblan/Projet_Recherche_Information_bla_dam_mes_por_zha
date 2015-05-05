@@ -29,13 +29,13 @@ public class KnowledgePanel extends JPanel{
 		super();
 		components = new ArrayList<KnowledgeComponent>();
 		
-		JTextField textField = new JTextField();
-		textField.setPreferredSize(new Dimension(View.width-20,50));
-		textField.setFont(new Font(FONT, Font.PLAIN, FONT_SIZE));
-		textField.setCaretColor(Color.WHITE);
+//		JTextField textField = new JTextField();
+//		textField.setPreferredSize(new Dimension(View.width-20,50));
+//		textField.setFont(new Font(FONT, Font.PLAIN, FONT_SIZE));
+//		textField.setCaretColor(Color.WHITE);
 		int r = 241, g = 196, b = 15, a = 255;
-		textField.setBackground(new Color(r,g,b,a));
-		textField.setForeground(Color.white);
+//		textField.setBackground(new Color(r,g,b,a));
+//		textField.setForeground(Color.white);
 		//
 		
 		JLabel label = new JLabel("Vous connaissez déjà : ");
@@ -44,11 +44,11 @@ public class KnowledgePanel extends JPanel{
 		
 		add(label);
 		
-		KnowledgeBarController c = new KnowledgeBarController(model);
-		textField.addKeyListener(c);
-		textField.addActionListener(c);
+//		KnowledgeBarController c = new KnowledgeBarController(model);
+//		textField.addKeyListener(c);
+//		textField.addActionListener(c);
 		
-		add(textField);
+//		add(textField);
 		
 
 	}
