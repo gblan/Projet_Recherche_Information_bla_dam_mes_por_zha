@@ -158,9 +158,10 @@ public class Test {
 					 */
 					ArrayList<Integer> positions = suffixArray
 							.getAllPositionsOfPhrase(search);
+
 					corpus.getCorpusArray()[i] = corpus.getCorpusArray()[i]
-							.substring(0,
-									corpus.getCorpusArray()[i].length() - 1);
+							.substring(0,corpus.getCorpusArray()[i].length() - 1);
+					
 					if (positions.size() != 0) {
 						System.out.println("");
 						if (choix == 1){

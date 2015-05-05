@@ -42,7 +42,6 @@ public class TokenizationFrench extends Tokenization {
 			System.out.println(e);
 		}
 		
-
 		
 		/*CorpusIndex index = new CorpusIndex();
 		PTBTokenizer<CoreLabel> ptbt = new PTBTokenizer<CoreLabel>(new FileReader(fileName),
@@ -52,12 +51,10 @@ public class TokenizationFrench extends Tokenization {
 			label = (CoreLabel) ptbt.next();
 			//System.out.println("label "+label+" label position "+label.beginPosition()+ " label.value = "+label.value());
 			index.addToken(new Token(fileName, label.beginPosition(), label.value()));
-		}
+		}*/
 		
 		
-		//System.out.println("Exit du system dans TokenizationFrench.java");
-		//System.exit(0);
-		*/
+		
 		return index;
 	}
 

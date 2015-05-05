@@ -41,7 +41,7 @@ public class SuffixArray {
 	 */
 	public void initTabSuffix() {
 		int i = 0;
-
+		
 		for (Entry<String, Token> entry : corpus.getIndex().get(line).getListTokens().entrySet()) {
 			//System.out.println(entry.getKey());
 			for (int position : entry.getValue().getPositions()) {
