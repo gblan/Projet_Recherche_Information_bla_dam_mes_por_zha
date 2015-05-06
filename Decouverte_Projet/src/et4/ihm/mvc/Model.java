@@ -1,5 +1,6 @@
 package et4.ihm.mvc;
 
+import java.awt.Container;
 import java.awt.Point;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -361,11 +362,86 @@ public class Model extends Observable {
 		return pinYinDePhrase;
 	}
 
+	/**
+	 * @param text : input learn
+	 * @return
+	 */
 	public String learn(String text) {
+		double SEUIL = (double)70/100.0;
+		String[] tokens;
+		String str = "";
 		if (text.equals("")) {
 			return learnWord2Vec(text);
 		} else {
-			// TODO Auto-generated method stub
+			TokenizationChinese2 tok2 = new TokenizationChinese2();
+			ArrayList<String> tokenChinese = new ArrayList<String>();
+			ArrayList<String> tokensInconnu = new ArrayList<String>();
+			HashMap<String, ArrayList<String>> mapPhraseRetenu = new HashMap<String, ArrayList<String>>();
+
+			try {
+				str = tok2.getTokensDePhraseEtoile(text);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			tokens = str.split("\\s+");
+			
+			for(int i=0;i<tokens.length;i++){
+
+				System.out.println("tokens[i] : "+tokens[i]);
+		
+			}
+			
+			tokenChinese.addAll(Arrays.asList(tokens));
+			
+			for(String token : tokenChinese) {
+				System.out.println(graphe.contains(token));
+				if(!graphe.contains(token) || graphe.getDico().get(token) < 0.2) {
+					/* ajout du mot inconnu a la liste*/
+					tokensInconnu.add(token);
+					System.out.println("Token inconnu ="+token);
+				}
+			}
+			
+			for(String token : tokensInconnu) {
+				ArrayList<String> phrasesResult = new ArrayList<String>();
+				
+				/* learn automatique */
+				
+				/* filtre 1 : phrases qui contiennent le token */
+				search(token, 2);				
+				for(SearchComponent search : listComponent){
+					int connu = 0;
+					String[] tmp = null;
+					try {
+						tmp = tok2.getTokensDePhraseEtoile(search.getSentence()).split("\\s+");
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+					for(int i=0;i<tmp.length;i++){
+						if(!graphe.contains(tmp[i]) || graphe.getDico().get(tmp[i]) < 0.2) {
+							/* ajout du mot inconnu a la liste*/
+							connu++;
+						}
+					}
+					
+					double pourcentage = (double) connu / (double) tmp.length;
+
+					if (pourcentage > SEUIL) {
+						phrasesResult.add(search.getSentence());
+					}
+				}
+				mapPhraseRetenu.put(token, phrasesResult);
+				
+				/* filtre 2 : phrases qui contiennent plus de 70% de mots conus*/
+				
+				
+				
+			}
+			
 			return getPinyin(text);
 		}
 	}
@@ -589,5 +665,22 @@ private String learnWord2Vec(String text) {
 
 		return comparePertinence;
 	}
+	
+    /**
+     * @param list1
+     * @param list2
+     * @return intersection entre plusieurs listes
+     */
+    public <T> List<T> intersection(List<T> list1, List<T> list2) {
+        List<T> list = new ArrayList<T>();
+
+        for (T t : list1) {
+            if(list2.contains(t)) {
+                list.add(t);
+            }
+        }
+
+        return list;
+    }
 
 }
