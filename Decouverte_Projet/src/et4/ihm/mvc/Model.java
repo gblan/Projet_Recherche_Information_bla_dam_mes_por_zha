@@ -405,13 +405,16 @@ public class Model extends Observable {
 			}
 			
 			for(String token : tokensInconnu) {
+				System.out.println("Boucle 1 : "+token);
 				ArrayList<String> phrasesResult = new ArrayList<String>();
 				
 				/* learn automatique */
 				
 				/* filtre 1 : phrases qui contiennent le token */
-				search(token, 2);				
+				search(token, 1);				
 				for(SearchComponent search : listComponent){
+					System.out.println("Boucle 2");
+
 					int connu = 0;
 					String[] tmp = null;
 					try {
@@ -422,6 +425,7 @@ public class Model extends Observable {
 					}
 					
 					for(int i=0;i<tmp.length;i++){
+
 						if(!graphe.contains(tmp[i]) || graphe.getDico().get(tmp[i]) < 0.2) {
 							/* ajout du mot inconnu a la liste*/
 							connu++;
