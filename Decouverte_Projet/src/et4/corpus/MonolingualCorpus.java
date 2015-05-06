@@ -47,9 +47,6 @@ public class MonolingualCorpus {
 		}
 		
 		
-		tc = new TokenizationChinese2();
-		tc.TokenizeDeFichier("chCorpusUTF.txt");
-		System.out.println("End");
 		
 	}
 

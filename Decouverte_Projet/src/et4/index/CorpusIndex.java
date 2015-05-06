@@ -1,11 +1,16 @@
 package et4.index;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
 
 
-public class CorpusIndex {
+public class CorpusIndex implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private HashMap<String, Token> mapTokens;
 
 	public CorpusIndex() {

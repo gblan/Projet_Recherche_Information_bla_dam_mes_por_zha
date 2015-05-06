@@ -1,11 +1,17 @@
 package graphe.word2vec;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.PrintStream;
+import java.nio.charset.Charset;
 
+import org.deeplearning4j.models.word2vec.VocabWord;
 import org.deeplearning4j.models.word2vec.Word2Vec;
 import org.deeplearning4j.models.word2vec.wordstore.VocabCache;
 import org.deeplearning4j.models.word2vec.wordstore.inmemory.InMemoryLookupCache;
@@ -14,7 +20,8 @@ import org.deeplearning4j.text.sentenceiterator.SentenceIterator;
 import org.deeplearning4j.text.tokenization.tokenizerfactory.DefaultTokenizerFactory;
 import org.deeplearning4j.text.tokenization.tokenizerfactory.TokenizerFactory;
 import org.deeplearning4j.util.SerializationUtils;
-import org.springframework.core.io.ClassPathResource;
+
+import et4.index.TokenizationChinese2;
 
 public class Word2VecObject {
 	private SentenceIterator iter;
@@ -29,6 +36,65 @@ public class Word2VecObject {
         tokenizer =  new DefaultTokenizerFactory();
     }
 
+    /*public static void main(String[] args) {
+    	TokenizationChinese2 tokenizationchinese2sav = new TokenizationChinese2();;
+		
+		try {
+			tokenizationchinese2sav.load();
+			System.out.println("Tokenization chargee");
+		} catch (ClassNotFoundException | IOException e1) {
+			// TODO Auto-generated catch block
+			
+			try {
+				tokenizationchinese2sav.getTokensDeFichierEtoile("chCorpusUTFBis.txt");
+				tokenizationchinese2sav.save();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		//System.out.println(tokenizationchinese2sav.getSentences());
+		FileOutputStream fos1 = null;
+		try {
+			fos1 = new FileOutputStream("chCorpusUTFBis.txt");
+		} catch (FileNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	    
+		BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(fos1,Charset.forName("UTF-8")));
+	    
+		for(String sentence : tokenizationchinese2sav.getSentences()) {
+			String[] array = sentence.split(" ");
+			
+			try {
+				
+
+			
+				for(String s : array) {
+					writer.write(s);
+					writer.newLine();
+				}
+				
+				
+				
+				
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		try {
+			writer.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}*/
     
 
     public double similarity(String first, String second) {
@@ -56,10 +122,10 @@ public class Word2VecObject {
     	
         if(vec == null && !new File(VEC_PATH).exists()) {
             cache = new InMemoryLookupCache.Builder()
-                    .lr(2e-5).vectorLength(100).build();
+                    .lr(2e-3).vectorLength(100).build();
             //minWordFrequency(5)
             vec = new Word2Vec.Builder().vocabCache(cache)
-                    .windowSize(5)
+                    .windowSize(10)
                     .layerSize(100).iterate(iter).tokenizerFactory(tokenizer)
                     .build();
             vec.setCache(cache);
@@ -117,17 +183,10 @@ public class Word2VecObject {
         
         System.out.println("_________VOCAB__________");
         
-        
-        
         for(String s : cache.words()) {
-        	
-        	if(s.equals("Caca") || s.equals("Pipi")) {
-        		System.out.println("J'ai trouve TOKEN CACA");
-        		System.exit(0);
-        	}
-        	
-            System.out.println(s);
+        	System.out.println(s);
         }
+        
         System.out.println("_________VOCAB__________");
 
 		System.out.flush();

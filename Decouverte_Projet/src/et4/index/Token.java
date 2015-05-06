@@ -1,8 +1,9 @@
 package et4.index;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Token {
+public class Token implements Serializable{
 
 	private String documentName;
 	private ArrayList<Integer> positions = new ArrayList<Integer>();
