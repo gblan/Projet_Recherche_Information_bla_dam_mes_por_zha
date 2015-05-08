@@ -3,6 +3,7 @@ package et4.index;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -12,14 +13,18 @@ import java.util.Set;
 import edu.stanford.nlp.ie.crf.CRFClassifier;
 import edu.stanford.nlp.ling.CoreLabel;
 
-public class TokenizationChinese2 extends Tokenization {
+public class TokenizationChinese2 extends Tokenization implements Serializable{
 
 	private static final String basedir = System.getProperty(
 			"TokenizationChinese", "data");
 	
 	private Set<String> tokensSet;
-	
-	
+	private CorpusIndex index;
+	private String contenu;
+	private String contenubis;
+	private ArrayList<Integer> positions;
+	private String tokens = "";
+	ArrayList<String> sentences = new ArrayList<String>();
 	/*public static void main(String[] args) throws Exception {
 		
 		TokenizationChinese2 tc = new TokenizationChinese2();
@@ -38,30 +43,8 @@ public class TokenizationChinese2 extends Tokenization {
 	}*/
 	
 	 
-	public CorpusIndex TokenizeDeFichier(String fileName) throws FileNotFoundException {
-		CorpusIndex index = new CorpusIndex();
-		
-		try {
-			tokensSet = getTokensDeFichier(fileName);
-			Iterator<String> it = tokensSet.iterator();
-			while (it.hasNext()) {
-				String token = it.next();
-				ArrayList<Integer> positions = getAllPostions(
-						getContenuDeFichier(fileName), token);
-				index.getListTokens().put(token,
-						new Token(fileName, positions, token));
-			}
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		System.out.println("Exit du system dans TokenizationChinese.java");
-		// System.exit(0);
-		return index;
-	}
-
 	public String getContenuDeFichierEtoile(String filePath){
-		String contenu = "";
+		contenubis = "";
 		File filename = new File(filePath);
 		InputStreamReader reader;
 		try {
@@ -71,9 +54,9 @@ public class TokenizationChinese2 extends Tokenization {
 			try {
 				line = br.readLine();
 				while (line != null) {
-					contenu += line;
+					contenubis += line;
 					//contenu += '\n';
-					contenu += " *** ";
+					contenubis += " *** ";
 					line = br.readLine();
 				}
 			} catch (IOException e) {
@@ -91,42 +74,10 @@ public class TokenizationChinese2 extends Tokenization {
 			e.printStackTrace();
 		} 
 		//System.out.println("contenu : " + contenu);
-		return contenu;
+		return contenubis;
 	}
 	
-	public String getContenuDeFichier(String filePath) {
-		String contenu = "";
-		File filename = new File(filePath);
-		InputStreamReader reader;
-		try {
-			reader = new InputStreamReader(new FileInputStream(filename));
-			BufferedReader br = new BufferedReader(reader);
-			String line = "";
-			try {
-				line = br.readLine();
-				while (line != null) {
-					contenu += line;
-					contenu += '\n';
-					//contenu += "***";
-					line = br.readLine();
-				}
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			try {
-				reader.close();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} 
-		//System.out.println("contenu" + contenu);
-		return contenu;
-	}
+	
 
 	/**
 	 * This is a very simple demo of calling the Chinese Word Segmenter
@@ -197,7 +148,7 @@ public class TokenizationChinese2 extends Tokenization {
 				.replaceAll("～", "").replaceAll("~", "").replaceAll("\\(", "")
 				.replaceAll("\\)", "").replaceAll("-", "").replaceAll("\n", "");
 		tokensList = tokens.split(" ", -1);
-		Set<String> tokensSet = new HashSet<String>();
+		tokensSet = new HashSet<String>();
 		for (int i = 0; i < tokensList.length; i++) {
 			// System.out.println(tokensList[i] + " ");
 			// System.out.println("empty : "+tokensList[i].isEmpty());
@@ -209,11 +160,12 @@ public class TokenizationChinese2 extends Tokenization {
 	}
 	
 	public List<String> getTokensDeFichierEtoile(String filepath) throws Exception {
-		String contenu = getTokensDePhraseEtoile(getContenuDeFichierEtoile(filepath));
+		contenu = getTokensDePhraseEtoile(getContenuDeFichierEtoile(filepath));
 		contenu = contenu.replaceAll("\\* \\* \\*", "***").replaceAll("\\* \\*\\*", "***").replaceAll("\\*\\* \\*", "***").replaceAll("\\* \\* \\*\\* \\* \\*", "***").replace("\\* \\* \\* \\* \\* \\*", "***");
 		
 		String[] array = contenu.split("\\*\\*\\*");
-		
+		sentences = new ArrayList<String>();
+		sentences.addAll(Arrays.asList(array));
 		return Arrays.asList(array);
 	}
 	
@@ -291,7 +243,7 @@ public class TokenizationChinese2 extends Tokenization {
 		String tokensList[] = new String[1000]; 
 		List<String> segmented = segmenter.segmentString(phrase);
 		
-		String tokens = "";
+		tokens = "";
 		for(int i=0; i<segmented.size();i++){
 			tokens = tokens+segmented.get(i)+" ";
 		}
@@ -306,7 +258,7 @@ public class TokenizationChinese2 extends Tokenization {
 	}
 
 	public ArrayList<Integer> getAllPostions(String contenu, String token) {
-		ArrayList<Integer> positions = new ArrayList<Integer>();
+		positions = new ArrayList<Integer>();
 		String s = contenu;
 		int positionAbsolu = 0;
 		for (;;) {
@@ -333,6 +285,71 @@ public class TokenizationChinese2 extends Tokenization {
 
 	public Set<String> getTokensSet() {
 		return tokensSet;
+	}
+
+	public CorpusIndex getIndex() {
+		return index;
+	}
+
+	public String getContenu() {
+		return contenu;
+	}
+
+	public ArrayList<Integer> getPositions() {
+		return positions;
+	}
+
+	public String getTokens() {
+		return tokens;
+	}
+	
+	public void save() throws IOException {
+		FileOutputStream fos = new FileOutputStream("tokenizationchines.ser");
+        ObjectOutputStream oos = new ObjectOutputStream(fos);
+        oos.writeObject(this);
+        oos.close();
+        fos.close();
+        System.out.printf("Serialized HashMap data is saved in dico.ser");
+	}
+	
+	public void load() throws IOException, ClassNotFoundException {
+		FileInputStream fis = new FileInputStream("tokenizationchines.ser");
+        ObjectInputStream ois = new ObjectInputStream(fis);
+        TokenizationChinese2 tmp = (TokenizationChinese2) ois.readObject();
+        
+        tokensSet = tmp.tokensSet;
+        contenu = tmp.contenu;
+        contenubis = tmp.contenubis;
+        positions = tmp.positions;
+        tokens = tmp.tokens;
+        sentences = tmp.sentences;
+        /*
+         * private Set<String> tokensSet;
+	private CorpusIndex index;
+	private String contenu;
+	private String contenubis;
+	private ArrayList<Integer> positions;
+	private String tokens = "";
+         */
+        
+        ois.close();
+        fis.close();
+        
+        System.out.println("------DESERIALIZE------");
+        
+        System.out.println(this);
+	}
+
+
+
+	public String getContenubis() {
+		return contenubis;
+	}
+
+
+
+	public ArrayList<String> getSentences() {
+		return sentences;
 	}
 	
 	

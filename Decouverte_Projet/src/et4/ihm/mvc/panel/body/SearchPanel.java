@@ -152,9 +152,9 @@ public class SearchPanel extends JPanel {
 			yoccurence = yphonetic + 20;
 
 			g.setColor(sc.getBackground());
-			g.fill(sc.getR().r);
+			//g.fill(sc.getR().r);
 			g.setColor(sc.getBorder());
-			g.draw(sc.getR().r);
+			//g.draw(sc.getR().r);
 
 			g.setColor(Color.WHITE);
 

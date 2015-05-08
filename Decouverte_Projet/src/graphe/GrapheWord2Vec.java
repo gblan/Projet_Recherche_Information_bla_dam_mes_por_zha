@@ -92,9 +92,9 @@ public class GrapheWord2Vec {
         ois.close();
         fis.close();
         
-        System.out.println("------DESERIALIZE------");
+        /*System.out.println("------DESERIALIZE------");
         
-        System.out.println(this);
+        System.out.println(this);*/
 	}
 
 	public HashMap<String,Double> getDico() {

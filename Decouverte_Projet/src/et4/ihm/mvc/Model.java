@@ -1,6 +1,18 @@
 package et4.ihm.mvc;
 
-import java.awt.Container;
+import et4.beans.SuffixArray;
+import et4.corpus.MonolingualCorpus;
+import et4.ihm.mvc.component.KnowledgeComponent;
+import et4.ihm.mvc.component.SearchComponent;
+import et4.ihm.mvc.panel.body.KnowledgePanel;
+import et4.ihm.mvc.panel.body.SearchPanel;
+import et4.index.Tokenization;
+import et4.index.TokenizationChinese;
+import et4.index.TokenizationChinese2;
+import et4.index.TokenizationFrench;
+import graphe.GrapheWord2Vec;
+import graphe.word2vec.Word2VecObject;
+
 import java.awt.Point;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -16,9 +28,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Observable;
-import java.util.Scanner;
-
-import org.springframework.core.io.ClassPathResource;
 
 import net.sourceforge.pinyin4j.PinyinHelper;
 import net.sourceforge.pinyin4j.format.HanyuPinyinOutputFormat;
@@ -27,20 +36,7 @@ import net.sourceforge.pinyin4j.format.HanyuPinyinVCharType;
 import net.sourceforge.pinyin4j.format.exception.BadHanyuPinyinOutputFormatCombination;
 
 import org.apache.commons.io.FileUtils;
-
-import et4.beans.SuffixArray;
-import et4.corpus.MonolingualCorpus;
-import et4.ihm.mvc.component.KnowledgeComponent;
-import et4.ihm.mvc.component.SearchComponent;
-import et4.ihm.mvc.panel.body.KnowledgePanel;
-import et4.ihm.mvc.panel.body.SearchPanel;
-import et4.index.Token;
-import et4.index.Tokenization;
-import et4.index.TokenizationChinese;
-import et4.index.TokenizationChinese2;
-import et4.index.TokenizationFrench;
-import graphe.GrapheWord2Vec;
-import graphe.word2vec.Word2VecObject;
+import org.springframework.core.io.ClassPathResource;
 
 /**
  * Noyau de l'interface, tout les appels aux algos doivent se faire ici meme et
@@ -54,7 +50,7 @@ public class Model extends Observable {
 	private GrapheWord2Vec graphe;
 	private MonolingualCorpus corpus;
 	private ArrayList<SearchComponent> listComponent = new ArrayList<SearchComponent>();;
-
+	private TokenizationChinese2 tokenizationchinese2sav;
 	public Model() {
 		ArrayList<String> tokenConnu = new ArrayList<String>();
 		tokenConnu.add("国");
@@ -74,6 +70,25 @@ public class Model extends Observable {
 		tokenConnu.add("工");
 		graphe = new GrapheWord2Vec();
 
+		System.out.println("Tokenization en cours ...");
+		tokenizationchinese2sav = new TokenizationChinese2();;
+		
+		try {
+			tokenizationchinese2sav.load();
+			System.out.println("Tokenization chargee");
+		} catch (ClassNotFoundException | IOException e1) {
+			// TODO Auto-generated catch block
+			
+			try {
+				tokenizationchinese2sav.getTokensDeFichierEtoile("chCorpusUTFBis.txt");
+				tokenizationchinese2sav.save();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		
 		// launch();
 
 		ClassPathResource resource = new ClassPathResource("chCorpusUTF.txt");
@@ -110,16 +125,18 @@ public class Model extends Observable {
 		int i = 0;
 		for (Entry<String, Double> entry : graphe.getDico().entrySet()) {
 			if (i == 0) {
-				components.add(new KnowledgeComponent(new Point(0, KnowledgePanel.heightComponent
+				/*components.add(new KnowledgeComponent(new Point(0, KnowledgePanel.heightComponent
 						+ KnowledgePanel.space * i), entry.getKey(), getTranslation(entry.getKey()), getPinyin(entry
-						.getKey()), entry.getValue(), View.width, KnowledgePanel.heightComponent));
+						.getKey()), entry.getValue(), View.width, KnowledgePanel.heightComponent));*/
 			} else {
 				// components.add(new KnowledgeComponent(new
 				// Point(0,KnowledgePanel.heightComponent*(i+1)+KnowledgePanel.space*i),"ç”·äºº","homme","NÃ¡nrÃ©n",
 				// rate, View.width, KnowledgePanel.heightComponent));
-				components.add(new KnowledgeComponent(new Point(0, KnowledgePanel.heightComponent * (i + 1)
-						+ KnowledgePanel.space * i), entry.getKey(), getTranslation(entry.getKey()), getPinyin(entry
-						.getKey()), entry.getValue(), View.width, KnowledgePanel.heightComponent));
+				
+					components.add(new KnowledgeComponent(new Point(0, KnowledgePanel.heightComponent * (i + 1)
+							+ KnowledgePanel.space * i), entry.getKey(), getTranslation(entry.getKey()), getPinyin(entry
+							.getKey()), entry.getValue(), View.width, KnowledgePanel.heightComponent));
+				
 			}
 			i++;
 		}
@@ -158,7 +175,7 @@ public class Model extends Observable {
 		ArrayList<String> sentencesFrench = new ArrayList<String>();
 		/* recherche des phrases contenant le mot key */
 		search(key, 1);
-
+		
 		/* recupération des phrases traduites */
 		for (int i = 0; i < listComponent.size(); i++) {
 			sentencesFrench.add(listComponent.get(i).getTranslation());
@@ -242,7 +259,6 @@ public class Model extends Observable {
 					.split("\n");
 			String[] tradFr = FileUtils.readFileToString(new File("resources/fr.txt"), "UTF-8").split("\n");
 
-			MonolingualCorpus corpus;
 			if (langue == 1) {
 				corpus = new MonolingualCorpus(tc, "resources/chCorpus.txt");
 			} else {
@@ -250,6 +266,7 @@ public class Model extends Observable {
 			}
 
 			for (int i = 0; i < corpus.getCorpusArray().length; i++) {
+				
 				if (corpus.getCorpusArray()[i].contains(searchinput)) {
 					SuffixArray suffixArray = new SuffixArray(corpus, i);
 					suffixArray.initTabSuffix();
@@ -411,8 +428,11 @@ public class Model extends Observable {
 				/* learn automatique */
 				
 				/* filtre 1 : phrases qui contiennent le token */
-				search(token, 1);				
+				search(token, 1);	
+				int j=0;
 				for(SearchComponent search : listComponent){
+					if(j==1)
+						break;
 					System.out.println("Boucle 2");
 
 					int connu = 0;
@@ -437,6 +457,7 @@ public class Model extends Observable {
 					if (pourcentage > SEUIL) {
 						phrasesResult.add(search.getSentence());
 					}
+					j++;
 				}
 				mapPhraseRetenu.put(token, phrasesResult);
 				
@@ -445,8 +466,10 @@ public class Model extends Observable {
 				
 				
 			}
-			
-			return getPinyin(text);
+			if (mapPhraseRetenu.values().size() == 0) {
+				return "Le texte est bien appris !";
+			}
+			return mapPhraseRetenu.values().toString();
 		}
 	}
 
@@ -461,7 +484,7 @@ private String learnWord2Vec(String text) {
 		ArrayList<String> phraseretenu = new ArrayList<String>();
 		
 		
-		int connu = 0;
+		
 		ArrayList<String> tokenretenu = new ArrayList<String>();
 		int line = 0;
 		//System.out.println("Phrase : "+corpus.getIndex().get(i).getListTokens());
@@ -471,10 +494,9 @@ private String learnWord2Vec(String text) {
 		 * Recuperation des token du fichier
 		 * 
 		 */
-		TokenizationChinese2 tc = new TokenizationChinese2();
 		List<String> sentences = null;
 		try {
-			sentences = tc.getTokensDeFichierEtoile("chCorpusUTF.txt");
+			sentences = tokenizationchinese2sav.getSentences();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -487,36 +509,40 @@ private String learnWord2Vec(String text) {
 		}
 		ArrayList<String> tokenChinese = new ArrayList<String>();
 		for(String sentence : sentences) {
-			tokenretenu.clear();
+			int connu = 0;
+			
 			tokenChinese.clear();
 			
 			String[] array = sentence.split(" ");
 			
-			for(String str : array) {
-				System.out.println("str = "+str);
-			}
+			
 			
 			tokenChinese.addAll(Arrays.asList(array));
-			
 			for(String token : tokenChinese) {
+				
 				System.out.println(graphe.contains(token));
-				if(graphe.contains(token)) {
+				if(graphe.contains(token) && !token.replaceAll(" ", "").equals("")) {
 					connu++;
-					System.out.println("Token connu ="+token);
+					//System.out.println("Token connu ="+token);
 				}
 				else {
 					//System.out.println("Token Inconnu ="+token);
 					//System.out.println("Token inconnu ="+token);
+					if(!token.replaceAll(" ", "").equals("")) {
+						if(tokenretenu.size()<10) {
+							tokenretenu.add(token);
+						}
+					}
 				}
+				
 			}
 			if (connu != 0) {
+				System.out.println("************ Connu "+connu+" size"+tokenChinese.size());
 				double pourcentage = (double) connu / (double) tokenChinese.size();
 				
 				/**
 				 * Si on depace le seuil => la phrase est bonne pour l'affichage
 				 */
-				System.out.println("Pourcentage "+pourcentage);
-				System.out.println("Phrase : "+sentence);
 				if (pourcentage > SEUIL) {
 					System.out.println("Pourcentage "+pourcentage);
 					System.out.println("Phrase : "+sentence);
@@ -527,9 +553,49 @@ private String learnWord2Vec(String text) {
 			line++;
 		}
 		
-		System.out.println("Fin");
-		System.exit(0);
+
 		String result = "";
+		double SEUIL_W2V = (double)25.0/100.0;
+		System.out.println("Avant"+tokenretenu.size());
+		
+		for (int i = 0; i < 3; i++) {
+			result+=phraseretenu.get(i)+"\n";
+		}
+		//System.out.println("corpus.getTc().getTokensSet()"+tokenizationchinese2sav.getSentences());
+		/*
+		double similarity = 0;
+		for(String sentence : phraseretenu) {
+			similarity = 0;
+			
+			int i = 0;
+			int cpt = 0;
+			
+			for(String tok : tokenizationchinese2sav.getSentences()) {
+				
+				String array[] = tok.split(" ");
+				ArrayList<String> tmp = new ArrayList<String>();
+				tmp.addAll(Arrays.asList(array));
+				//System.out.println("udhsqdgdsqggsdqghdsqf ------ "+tokenretenu.size()+" i = "+i+" ppppppp "+tmp.size());
+				for (int j = 0; j < tokenretenu.size(); j++) {
+					for(String token : tmp) {
+						//System.out.println("token"+token+" tokenretenu"+tokenretenu.size());
+						if(!token.replaceAll(" ", "").equals("")) {
+							System.out.println("Similarity ["+token+" - "+tokenretenu.get(j)+"]"+tw2v.similarity(token, tokenretenu.get(j)));
+							similarity+=tw2v.similarity(token, tokenretenu.get(j));
+							cpt++;
+						}
+						
+					}
+				}
+			}
+			
+			
+			
+			System.out.println("__________RESULT = "+(double)similarity/(double)cpt+"__________");
+			if((double)similarity/(double)cpt>SEUIL_W2V) {
+				result+=sentence+"\n";
+			}
+		}*/
 		/**
 		 * Faire Word2Vec
 		 */
@@ -580,15 +646,26 @@ private String learnWord2Vec(String text) {
 		}
 		
 		ArrayList<String> tokennew = new ArrayList<String>();
-		tokennew.addAll(sentences);
+		
+		for(String tok : sentences) {
+			String array[] = tok.split(" ");
+			tokennew.addAll(Arrays.asList(array));
+		}
+		
+		
 		
 		//System.out.println("Nouveaux mots connus :D "+tokennew);
 		
-		System.out.println("Dico avant"+graphe);
+		//System.out.println("Dico avant"+graphe);
+		System.out.println("_________\n");
+		for(String s : tokennew) {
+			System.out.println(s);
+		}
+		
 		
 		graphe.addDico(tokennew);
 		
-		System.out.println("Dico après"+graphe);
+		//System.out.println("Dico après"+graphe);
 	}
 
 	public static String findTranslationChineseFrench(String A, int choice, String[] dicoCh, String[] dicoFr,
