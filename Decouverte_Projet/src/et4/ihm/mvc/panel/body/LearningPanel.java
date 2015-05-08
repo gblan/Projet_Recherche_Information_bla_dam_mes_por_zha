@@ -38,6 +38,8 @@ public class LearningPanel extends JPanel{
 	// a Font bundled as a resource, if available
 	private Font bundledFont;
 	// resource path of the configuration
+	
+	private PinyinInputTextArea inputarea;
 	static private final String PROPERTIES_RESOURCE = "input.properties";
 	
 	static private final String[] SUPPORTED_CHARSETS = new String[] {
@@ -52,7 +54,8 @@ public class LearningPanel extends JPanel{
 	public LearningPanel(Model model) {
 		this.model = model;
 		
-		PinyinInputTextArea inputarea = initConfig(); inputarea.setBackground(UIColor.BLUE_DARK);
+		inputarea = initConfig(); 
+		inputarea.setBackground(UIColor.BLUE_DARK);
 			inputarea.setForeground(Color.WHITE);
 			inputarea.setFont(new Font(FONT, Font.PLAIN, FONT_SIZE));
 			inputarea.setCaretColor(Color.WHITE);
@@ -104,6 +107,10 @@ public class LearningPanel extends JPanel{
 		
 		
 		LearningController c = new LearningController(model, btn, inputarea, outputarea);
+	}
+	
+	public PinyinInputTextArea getInputArea(){
+		return inputarea;
 	}
 	
 	@Override

@@ -7,6 +7,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 
 public class GrapheWord2Vec {
@@ -94,6 +95,10 @@ public class GrapheWord2Vec {
         /*System.out.println("------DESERIALIZE------");
         
         System.out.println(this);*/
+	}
+
+	public HashMap<String,Double> getDico() {
+		return dico;
 	}
 	
 }

@@ -15,14 +15,14 @@ public class KnowledgeComponent extends Forme{
 	private String phonetic = "";
 	private String rate = "";
 	
-	public KnowledgeComponent(Point position,String knownword, String translation, String phonetic, Float rate,int width, int height) {
+	public KnowledgeComponent(Point position,String knownword, String translation, String phonetic, double d1 ,int width, int height) {
 		
 		super(position, UIColor.APSHALT_LIGHT, UIColor.BLUE_LIGHT);
 		
 		this.knownword = knownword;
 		this.translation = translation;
 		this.phonetic = phonetic;
-		this.rate = String.valueOf(rate);
+		this.rate = String.valueOf(d1);
 		
 		r = new RectangleItem(new Rectangle(position,new Dimension(width,height)), getBackground(),getBorder());
 	}
