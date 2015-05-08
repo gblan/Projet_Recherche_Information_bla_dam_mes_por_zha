@@ -28,7 +28,7 @@ public class SearchBarController implements ActionListener, KeyListener {
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		System.out.println("keyPressed");
+//		System.out.println("keyPressed");
 
 		if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 
