@@ -100,5 +100,22 @@ public class GrapheWord2Vec {
 	public HashMap<String,Double> getDico() {
 		return dico;
 	}
+
+	public void update(String retenu, double d) {
+		double valeuractuel;
+		if(contains(retenu)) {
+			valeuractuel = dico.get(retenu)+d;
+			if(valeuractuel>=1) {
+				dico.replace(retenu, 1.0);
+			}
+			else {
+				dico.replace(retenu, valeuractuel);
+			}
+		}
+		else {
+			dico.put(retenu, d);
+		}
+		
+	}
 	
 }
