@@ -70,7 +70,7 @@ public class Model extends Observable {
 		tokenConnu.add("头");
 		tokenConnu.add("茶");
 		tokenConnu.add("工");
-		graphe = new GrapheWord2Vec();
+		graphe = new GrapheWord2Vec(this);
 
 		//System.out.println("Tokenization en cours ...");
 		tokenizationchinese2sav = new TokenizationChinese2();;

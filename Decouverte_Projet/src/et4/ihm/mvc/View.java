@@ -47,15 +47,8 @@ public class View implements Observer {
 		body = new BodyPanel(model, footer);
 		header = new HeaderPanel(body, footer);
 
-		frame.addWindowListener(new java.awt.event.WindowAdapter() {
-			@Override
-			public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-				if (JOptionPane.showConfirmDialog(frame, "Are you sure to close this window?", "Really Closing?",
-						JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
-					System.exit(0);
-				}
-			}
-		});
+
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		init();
 

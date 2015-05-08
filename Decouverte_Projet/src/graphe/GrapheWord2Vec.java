@@ -7,12 +7,13 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Map.Entry;
+
+import et4.ihm.mvc.Model;
 
 public class GrapheWord2Vec {
 
-	
+	Model mod;
 	private HashMap<String,Double> dico;
 	/*public GrapheWord2Vec(ArrayList<String> tokenConnu) {
 		dico = new HashMap<String, Double>();
@@ -21,10 +22,14 @@ public class GrapheWord2Vec {
 		}
 	}*/
 	
-	public GrapheWord2Vec() {
+	public GrapheWord2Vec(Model mod) {
+		this.mod = mod;
 		try {
 			load();
 			System.out.println("L'ouverture de votre dictionnaire a reussi");
+			
+			
+			
 		} catch (ClassNotFoundException | IOException e) {
 			System.out.println("Creation d'un nouveau dictionnaire");
 			dico = new HashMap<String, Double>();
@@ -83,6 +88,7 @@ public class GrapheWord2Vec {
         oos.close();
         fos.close();
         System.out.printf("Serialized HashMap data is saved in dico.ser");
+        mod.fillKnowledge(null);
 	}
 	
 	public void load() throws IOException, ClassNotFoundException {
@@ -91,7 +97,7 @@ public class GrapheWord2Vec {
         dico = (HashMap<String,Double>) ois.readObject();
         ois.close();
         fis.close();
-        
+        mod.fillKnowledge(null);
         /*System.out.println("------DESERIALIZE------");
         
         System.out.println(this);*/
