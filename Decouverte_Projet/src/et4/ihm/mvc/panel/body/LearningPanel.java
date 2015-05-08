@@ -12,10 +12,12 @@ import java.awt.im.InputContext;
 import java.io.IOException;
 import java.util.Properties;
 
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
 import org.kiang.chinese.pinyin.im.PinyinInputTermSource.PinyinInputMethodControl;
@@ -79,13 +81,15 @@ public class LearningPanel extends JPanel{
 		knowledgeBtn.add(knowledge);
 		knowledgeBtn.add(Box.createHorizontalGlue());
 		 */
-
 		
+		JScrollPane scrollLearn = new JScrollPane();
+		scrollLearn.setBorder(BorderFactory.createEmptyBorder());
 		JTextArea outputarea = new JTextArea(); outputarea.setBackground(UIColor.BLUE_DARK);
 			outputarea.setForeground(Color.WHITE);
 			outputarea.setFont(new Font(FONT, Font.PLAIN, FONT_SIZE));
 			outputarea.setEditable(false);
 			outputarea.setCaretColor(Color.WHITE);
+
 		JLabel outputlabel = new JLabel("Output"); 
 			outputlabel.setBackground(UIColor.BLUE_DARK); 
 			outputlabel.setOpaque(true);
@@ -99,11 +103,11 @@ public class LearningPanel extends JPanel{
 		
 		LearningSubmitBtn btn = new LearningSubmitBtn("Submit");
 		output.add(btn, BorderLayout.PAGE_END);
-		
+		scrollLearn.setViewportView(output);
 		setLayout(new GridLayout(2, 1));
 		
 		add(input);
-		add(output);
+		add(scrollLearn);
 		
 		
 		LearningController c = new LearningController(model, btn, inputarea, outputarea);
