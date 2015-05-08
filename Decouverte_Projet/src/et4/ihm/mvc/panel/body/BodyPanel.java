@@ -116,6 +116,7 @@ public class BodyPanel extends JPanel{
 		add(scrollKnowledge,BorderLayout.CENTER);
 		revalidate(); // forcer le refresh
 	}
+	
 	public void showLearning() {
 		hideAll();
 		add(learning,BorderLayout.CENTER);

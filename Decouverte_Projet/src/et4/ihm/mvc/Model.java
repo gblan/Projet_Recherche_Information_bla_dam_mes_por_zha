@@ -49,7 +49,8 @@ public class Model extends Observable {
 	private Word2VecObject tw2v;
 	private GrapheWord2Vec graphe;
 	private MonolingualCorpus corpus;
-	private ArrayList<SearchComponent> listComponent = new ArrayList<SearchComponent>();;
+	private ArrayList<SearchComponent> listComponentSearch = new ArrayList<SearchComponent>();;
+	private ArrayList<SearchComponent> listComponentLearn = new ArrayList<SearchComponent>();;
 	private TokenizationChinese2 tokenizationchinese2sav;
 	public Model() {
 		ArrayList<String> tokenConnu = new ArrayList<String>();
@@ -177,8 +178,8 @@ public class Model extends Observable {
 		search(key, 1);
 		
 		/* recupération des phrases traduites */
-		for (int i = 0; i < listComponent.size(); i++) {
-			sentencesFrench.add(listComponent.get(i).getTranslation());
+		for (int i = 0; i < listComponentSearch.size(); i++) {
+			sentencesFrench.add(listComponentSearch.get(i).getTranslation());
 			if(i==100){
 				break;
 			}
@@ -245,7 +246,7 @@ public class Model extends Observable {
 	 */
 	public void search(String searchinput, int langue) {
 		int j = 0;
-		listComponent.clear();
+		listComponentSearch.clear();
 
 		if (searchinput.equals(""))
 			return;
@@ -260,7 +261,7 @@ public class Model extends Observable {
 			String[] tradFr = FileUtils.readFileToString(new File("resources/fr.txt"), "UTF-8").split("\n");
 
 			if (langue == 1) {
-				corpus = new MonolingualCorpus(tc, "resources/chCorpus.txt");
+				corpus = new MonolingualCorpus(tc, "resources/chCorpusUTF.txt");
 			} else {
 				corpus = new MonolingualCorpus(tf, "resources/frCorpus.txt");
 			}
@@ -306,11 +307,11 @@ public class Model extends Observable {
 						// System.out.println("Occurence: " + positions.size());
 
 						if (j == 0) {
-							listComponent.add(new SearchComponent(new Point(0, SearchPanel.heightComponent
+							listComponentSearch.add(new SearchComponent(new Point(0, SearchPanel.heightComponent
 									+ SearchPanel.space * j), corpus.getCorpusArray()[i], trad, piying, "", positions
 									.size(), View.width - 20, SearchPanel.heightComponent));
 						} else {
-							listComponent.add(new SearchComponent(new Point(0, SearchPanel.heightComponent * (j + 1)
+							listComponentSearch.add(new SearchComponent(new Point(0, SearchPanel.heightComponent * (j + 1)
 									+ SearchPanel.space * j), corpus.getCorpusArray()[i], trad, piying, "", positions
 									.size(), View.width - 20, SearchPanel.heightComponent));
 						}
@@ -325,14 +326,14 @@ public class Model extends Observable {
 			}
 
 		} catch (IOException e) {
-			System.err.println("File Not Found");
+			System.err.println("File Not Found or data not available");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		// System.out.println("Action dans le model 'search' : " + searchinput);
 
 		/* tri par pertinence */
-		Collections.sort(listComponent, comparePertinence());
+		Collections.sort(listComponentSearch, comparePertinence());
 		// listComponent.sort(comparePertinence());
 
 	}
@@ -341,7 +342,7 @@ public class Model extends Observable {
 
 		/* notifie les observers */
 		setChanged();
-		notifyObservers(listComponent);
+		notifyObservers(listComponentSearch);
 	}
 
 	public static String getPinyin(String phraseChinoise) {
@@ -383,17 +384,18 @@ public class Model extends Observable {
 	 * @param text : input learn
 	 * @return
 	 */
-	public String learn(String text) {
+	public HashMap<String, ArrayList<String>> learn(String text) {
+		HashMap<String, ArrayList<String>> mapPhraseRetenu = new HashMap<String, ArrayList<String>>();
+
+		listComponentLearn.clear();
 		double SEUIL = (double)70/100.0;
 		String[] tokens;
 		String str = "";
-		if (text.equals("")) {
-			return learnWord2Vec(text);
-		} else {
+
+
 			TokenizationChinese2 tok2 = new TokenizationChinese2();
 			ArrayList<String> tokenChinese = new ArrayList<String>();
 			ArrayList<String> tokensInconnu = new ArrayList<String>();
-			HashMap<String, ArrayList<String>> mapPhraseRetenu = new HashMap<String, ArrayList<String>>();
 
 			try {
 				str = tok2.getTokensDePhraseEtoile(text);
@@ -422,18 +424,18 @@ public class Model extends Observable {
 			}
 			
 			for(String token : tokensInconnu) {
-				System.out.println("Boucle 1 : "+token);
+//				System.out.println("Boucle 1 : "+token);
 				ArrayList<String> phrasesResult = new ArrayList<String>();
 				
 				/* learn automatique */
 				
 				/* filtre 1 : phrases qui contiennent le token */
-				search(token, 1);	
+				search(token, 1);
 				int j=0;
-				for(SearchComponent search : listComponent){
+				for(SearchComponent search : listComponentSearch){
 					if(j==1)
 						break;
-					System.out.println("Boucle 2");
+//					System.out.println("Boucle 2");
 
 					int connu = 0;
 					String[] tmp = null;
@@ -462,15 +464,10 @@ public class Model extends Observable {
 				mapPhraseRetenu.put(token, phrasesResult);
 				
 				/* filtre 2 : phrases qui contiennent plus de 70% de mots conus*/
-				
-				
-				
+								
 			}
-			if (mapPhraseRetenu.values().size() == 0) {
-				return "Le texte est bien appris !";
-			}
-			return mapPhraseRetenu.values().toString();
-		}
+
+			return mapPhraseRetenu;
 	}
 
 private String learnWord2Vec(String text) {

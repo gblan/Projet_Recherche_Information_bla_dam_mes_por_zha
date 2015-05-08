@@ -18,7 +18,7 @@ import et4.index.Tokenization;
 import et4.index.TokenizationChinese2;
 
 public class MonolingualCorpus {
-	private static ArrayList<CorpusIndex> index;
+	private ArrayList<CorpusIndex> index;
 	private ArrayList<Integer> nbMots = new ArrayList<Integer>();
 	private String corpus="";
 	private String[] corpusArray;

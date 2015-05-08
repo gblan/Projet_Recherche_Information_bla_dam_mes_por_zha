@@ -171,8 +171,10 @@ public class SearchPanel extends JPanel {
 				g.setFont(new Font("Helvetica-Neue", Font.PLAIN, 12));
 				g.drawString("New Words : " + sc.getNewWords(), 20, ynewword);
 			} else{
-				g.setFont(new Font("Helvetica-Neue", Font.PLAIN, 12));
-				g.drawString("Occurence : " + sc.getOccurence(), 20, yoccurence);
+				if(sc.getOccurence() != 0){
+					g.setFont(new Font("Helvetica-Neue", Font.PLAIN, 12));
+					g.drawString("Occurence : " + sc.getOccurence(), 20, yoccurence);
+				}
 			}
 			yglobal += heightComponent + space;
 

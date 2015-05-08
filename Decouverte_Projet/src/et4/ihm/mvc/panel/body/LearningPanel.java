@@ -69,7 +69,7 @@ public class LearningPanel extends JPanel{
 			
 		JPanel input = new JPanel();
 		input.setLayout(new BorderLayout());
-		
+	
 		input.add(inputlabel, BorderLayout.PAGE_START);
 		input.add(inputarea, BorderLayout.CENTER);
 		
@@ -99,15 +99,16 @@ public class LearningPanel extends JPanel{
 		JPanel output = new JPanel();
 		output.setLayout(new BorderLayout());
 		output.add(outputlabel, BorderLayout.PAGE_START);
-		output.add(outputarea, BorderLayout.CENTER);
+		scrollLearn.setViewportView(outputarea);
+		output.add(scrollLearn, BorderLayout.CENTER);
 		
 		LearningSubmitBtn btn = new LearningSubmitBtn("Submit");
 		output.add(btn, BorderLayout.PAGE_END);
-		scrollLearn.setViewportView(output);
+		
 		setLayout(new GridLayout(2, 1));
 		
 		add(input);
-		add(scrollLearn);
+		add(output);
 		
 		
 		LearningController c = new LearningController(model, btn, inputarea, outputarea);
