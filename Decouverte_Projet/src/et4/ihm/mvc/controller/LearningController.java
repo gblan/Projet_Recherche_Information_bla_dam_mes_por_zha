@@ -64,7 +64,7 @@ public class LearningController implements KeyListener, MouseListener{
 					result += "New word to learn : \""+newWord+"\"\n\n";
 					for (String sentence : listSentences) {
 						
-						String trad = Model.findTranslationChineseFrench(sentence, 1, tradCh, tradFr, tradLink);
+						String trad = Model.findTranslationChineseFrench(sentence, 1, tradCh, tradFr, tradLink, false);
 						String piying = Model.getPinyin(sentence);
 	
 						result+="Sentence with this word :\n";

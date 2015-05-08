@@ -46,11 +46,12 @@ import org.springframework.core.io.ClassPathResource;
  *
  */
 public class Model extends Observable {
+
+	
 	private Word2VecObject tw2v;
 	private GrapheWord2Vec graphe;
 	private MonolingualCorpus corpus;
 	private ArrayList<SearchComponent> listComponentSearch = new ArrayList<SearchComponent>();;
-	private ArrayList<SearchComponent> listComponentLearn = new ArrayList<SearchComponent>();;
 	private TokenizationChinese2 tokenizationchinese2sav;
 	public Model() {
 		ArrayList<String> tokenConnu = new ArrayList<String>();
@@ -289,12 +290,12 @@ public class Model extends Observable {
 						String trad = "";
 						String piying = "";
 						if (langue == 1) {
-							trad = findTranslationChineseFrench(corpus.getCorpusArray()[i], 1, tradCh, tradFr, tradLink);
+							trad = findTranslationChineseFrench(corpus.getCorpusArray()[i], 1, tradCh, tradFr, tradLink,false);
 							// System.out.println("Chinois ##"+corpus.getCorpusArray()[i]+"####");
 							// System.out.println(Model.getPinyin(currentCorpus.getCorpusArray()[i]));
 							piying = Model.getPinyin(corpus.getCorpusArray()[i]);
 						} else {
-							trad = findTranslationChineseFrench(corpus.getCorpusArray()[i], 2, tradCh, tradFr, tradLink);
+							trad = findTranslationChineseFrench(corpus.getCorpusArray()[i], 2, tradCh, tradFr, tradLink,false);
 							// System.out.println("Fr: ##"+corpus.getCorpusArray()[i]+"####");
 							// System.out.println(trad);
 							// System.out.println(Model.getPinyin(trad));
@@ -387,7 +388,6 @@ public class Model extends Observable {
 	public HashMap<String, ArrayList<String>> learn(String text) {
 		HashMap<String, ArrayList<String>> mapPhraseRetenu = new HashMap<String, ArrayList<String>>();
 
-		listComponentLearn.clear();
 		double SEUIL = (double)70/100.0;
 		String[] tokens;
 		String str = "";
@@ -470,7 +470,7 @@ public class Model extends Observable {
 			return mapPhraseRetenu;
 	}
 
-private String learnWord2Vec(String text) {
+	private String learnWord2Vec(String text) {
 		
 		System.out.println("-------------------------||||||| "+tw2v.similarity("买完整版", "买完整版"));
 		
@@ -506,8 +506,9 @@ private String learnWord2Vec(String text) {
 		}
 		ArrayList<String> tokenChinese = new ArrayList<String>();
 		for(String sentence : sentences) {
-			int connu = 0;
 			
+			int connu = 0;
+			tokenretenu.clear();
 			tokenChinese.clear();
 			
 			String[] array = sentence.split(" ");
@@ -526,9 +527,10 @@ private String learnWord2Vec(String text) {
 					//System.out.println("Token Inconnu ="+token);
 					//System.out.println("Token inconnu ="+token);
 					if(!token.replaceAll(" ", "").equals("")) {
-						if(tokenretenu.size()<10) {
+					
 							tokenretenu.add(token);
-						}
+							
+						
 					}
 				}
 				
@@ -543,6 +545,11 @@ private String learnWord2Vec(String text) {
 				if (pourcentage > SEUIL) {
 					System.out.println("Pourcentage "+pourcentage);
 					System.out.println("Phrase : "+sentence);
+					
+					for(String retenu : tokenretenu) {
+						graphe.update(retenu,0.2);
+					}
+					
 					// System.out.println("Phrase : "+corpus.getCorpusArray()[i]);
 					phraseretenu.add(sentence);
 				}
@@ -554,10 +561,25 @@ private String learnWord2Vec(String text) {
 		String result = "";
 		double SEUIL_W2V = (double)25.0/100.0;
 		System.out.println("Avant"+tokenretenu.size());
-		
-		for (int i = 0; i < 3; i++) {
-			result+=phraseretenu.get(i)+"\n";
+		String[] tradCh,tradLink,tradFr;
+		try {
+			tradCh = FileUtils.readFileToString(new File("resources/ch.txt"), "UTF-8").split("\n");
+			tradLink = FileUtils.readFileToString(new File("resources/linksChineseFrench.txt"), "UTF-8")
+					.split("\n");
+			tradFr = FileUtils.readFileToString(new File("resources/fr.txt"), "UTF-8").split("\n");
+			
+			for (int i = 0; i < 3; i++) {
+				result.replaceFirst(" ", "");
+				String pr = phraseretenu.get(i).replaceAll(" ", "");
+				result+=pr+ getPinyin(pr)+ " - " + Model.findTranslationChineseFrench(pr, 1, tradCh, tradFr, tradLink,true) +"\n";
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+		
+		
+		
 		//System.out.println("corpus.getTc().getTokensSet()"+tokenizationchinese2sav.getSentences());
 		/*
 		double similarity = 0;
@@ -666,7 +688,7 @@ private String learnWord2Vec(String text) {
 	}
 
 	public static String findTranslationChineseFrench(String A, int choice, String[] dicoCh, String[] dicoFr,
-			String[] link) {
+			String[] link, boolean contains) {
 		/*
 		 * choice = 1 => Chinese to French choice = 2 => French to Chinese
 		 */
@@ -693,10 +715,19 @@ private String learnWord2Vec(String text) {
 			if (bufferA[i].contains(A)) {
 				String[] tmp = bufferA[i].split("	");
 				String cmp = tmp[2];
-				if (cmp.equals(A)) {
-					idA = tmp[0];
-//					System.out.println(idA);
-					break;
+				if(contains) {
+					if (cmp.contains(A)) {
+						idA = tmp[0];
+//						System.out.println(idA);
+						break;
+					}
+				}
+				else {
+					if (cmp.equals(A)) {
+						idA = tmp[0];
+//						System.out.println(idA);
+						break;
+					}
 				}
 			}
 		}
@@ -706,11 +737,20 @@ private String learnWord2Vec(String text) {
 				String[] tmp = link[i].split("	");
 				String cmp;
 				cmp = tmp[idLinkA];
-
-				if (cmp.equals(idA)) {
-					idB = tmp[idLinkB];
-//					System.out.println(idB);
-					break;
+				
+				if(contains) {
+					if (cmp.contains(idA)) {
+						idB = tmp[idLinkB];
+//						System.out.println(idB);
+						break;
+					}
+				}
+				else {
+					if (cmp.equals(idA)) {
+						idB = tmp[idLinkB];
+//						System.out.println(idB);
+						break;
+					}
 				}
 			}
 		}
@@ -718,10 +758,19 @@ private String learnWord2Vec(String text) {
 
 			if (bufferB[i].contains(idB)) {
 				String[] tmp = bufferB[i].split("	");
-				if (tmp[0].equals(idB)) {
-					B = tmp[2];
+				if(contains) {
+					if (tmp[0].contains(idB)) {
+						B = tmp[2];
 
-					break;
+						break;
+					}
+				}
+				else {
+					if (tmp[0].equals(idB)) {
+						B = tmp[2];
+
+						break;
+					}
 				}
 			}
 		}
