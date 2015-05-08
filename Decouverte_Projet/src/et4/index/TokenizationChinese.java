@@ -37,7 +37,7 @@ public class TokenizationChinese extends Tokenization {
 			
 			chB.close();
 		}catch(Exception e){
-			System.out.println(e);
+			//System.out.println(e);
 		}
 		
 
@@ -48,13 +48,13 @@ public class TokenizationChinese extends Tokenization {
 		
 		for (CoreLabel label; ptbt.hasNext();) {
 			label = (CoreLabel) ptbt.next();
-			//System.out.println("label "+label+" label position "+label.beginPosition()+ " label.value = "+label.value());
+			////System.out.println("label "+label+" label position "+label.beginPosition()+ " label.value = "+label.value());
 			index.addToken(new Token(fileName, label.beginPosition(), label.value()));
 		}
 		
 		
-		//System.out.println("Exit du system dans TokenizationFrench.java");
-		//System.exit(0);
+		////System.out.println("Exit du //System dans TokenizationFrench.java");
+		////System.exit(0);
 		*/
 		return index;
 	}

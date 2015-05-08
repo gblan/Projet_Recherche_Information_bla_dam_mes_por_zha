@@ -34,7 +34,7 @@ public class FooterController implements MouseListener{
 			    
 			    if(file!=null)
 			    {
-			    	System.out.println("Open de : "+file.getName());			    	
+			    	//System.out.println("Open de : "+file.getName());			    	
 			    	
 			    	try {
 						model.updateKnowledge(file);
@@ -44,17 +44,17 @@ public class FooterController implements MouseListener{
 					}
 			    	/*if(fichier.getName().endsWith(".xml"))
 			    	{
-			    		System.out.println("Ouverture en cours ... : "+fichier.getAbsolutePath());
+			    		//System.out.println("Ouverture en cours ... : "+fichier.getAbsolutePath());
 			    		
 			    	}
 			    	else
 			    	{
-			    		System.out.println("Le fichier choisi n'est pas sous le bon format !");
+			    		//System.out.println("Le fichier choisi n'est pas sous le bon format !");
 			    	}*/
 			    }
 			    else
 			    {
-			    	System.out.println("Vous n'avez pas choisi de fichier");
+			    	//System.out.println("Vous n'avez pas choisi de fichier");
 			    }
 			}
 		}

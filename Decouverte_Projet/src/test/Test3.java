@@ -15,7 +15,7 @@ public class Test3 {
 
 	public static void main(String[] args) throws IOException {
 		File t = new File("");
-		System.out.println(""+t.getAbsolutePath());
+		//System.out.println(""+t.getAbsolutePath());
 		InputStream ch = new FileInputStream("src/chCorpus.txt");
 	    InputStreamReader frR = new InputStreamReader(ch,
 	            Charset.forName("UTF-8"));
@@ -31,7 +31,7 @@ public class Test3 {
 	            bw1.newLine();
 	        }
 
-	        System.out.println("Done");
+	        //System.out.println("Done");
 
 	}
 }

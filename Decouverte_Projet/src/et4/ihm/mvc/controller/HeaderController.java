@@ -34,20 +34,20 @@ public class HeaderController implements ActionListener, MouseListener{
 	public void mouseClicked(MouseEvent e) {
 		// TODO Auto-generated method stub
 		
-		//System.out.println(e.getSource());
+		////System.out.println(e.getSource());
 		
 		if(header.getSearchBtn().equals(e.getSource())){
-			System.out.println("Search");
+			//System.out.println("Search");
 			body.showSearch();
 			footer.showLoading();
 		}
 		else if(header.getKnowledgeBtn().equals(e.getSource())){
-			System.out.println("Knowledge");
+			//System.out.println("Knowledge");
 			body.showKnowledge();
 			footer.showBtn();
 		}
 		else if(header.getLearningBtn().equals(e.getSource())){
-			System.out.println("Learning");
+			//System.out.println("Learning");
 			body.showLearning();
 			footer.showLoading();
 		}
@@ -81,7 +81,7 @@ public class HeaderController implements ActionListener, MouseListener{
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
-		System.out.println("Action");
+		//System.out.println("Action");
 
 	}
 

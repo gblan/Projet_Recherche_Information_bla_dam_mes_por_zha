@@ -52,7 +52,7 @@ public class LearningController implements KeyListener, MouseListener{
 				e1.printStackTrace();
 			}
 				
-			System.out.println("input.get" + input.getText());
+			//System.out.println("input.get" + input.getText());
 			HashMap<String, ArrayList<String>> hashmapNewWords = model.learn(input.getText());
 			
 			for(Entry<String,ArrayList<String>> entry : hashmapNewWords.entrySet()){

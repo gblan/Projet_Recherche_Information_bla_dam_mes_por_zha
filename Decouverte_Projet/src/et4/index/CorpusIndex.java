@@ -44,7 +44,7 @@ public class CorpusIndex implements Serializable{
 			Token value = mapTokens.get(key);
 			resultat = resultat + key + " <-String----Token-> "
 			+ value + "\n";
-			// System.out.println(key.toString() + " <-String----Token-> " +
+			// //System.out.println(key.toString() + " <-String----Token-> " +
 			// value);
 		}
 		return resultat;

@@ -37,7 +37,7 @@ public class TokenizationFrench extends Tokenization {
 			}
 			frB.close();
 		}catch(Exception e){
-			System.out.println(e);
+			//System.out.println(e);
 		}
 		
 		
@@ -47,7 +47,7 @@ public class TokenizationFrench extends Tokenization {
 		
 		for (CoreLabel label; ptbt.hasNext();) {
 			label = (CoreLabel) ptbt.next();
-			//System.out.println("label "+label+" label position "+label.beginPosition()+ " label.value = "+label.value());
+			////System.out.println("label "+label+" label position "+label.beginPosition()+ " label.value = "+label.value());
 			index.addToken(new Token(fileName, label.beginPosition(), label.value()));
 		}*/
 		

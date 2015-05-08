@@ -43,17 +43,17 @@ public class SuffixArray {
 		int i = 0;
 		
 		for (Entry<String, Token> entry : corpus.getIndex().get(line).getListTokens().entrySet()) {
-//			System.out.println(entry.getKey());
+//			//System.out.println(entry.getKey());
 			for (int position : entry.getValue().getPositions()) {
-//				System.out.println(position);
+//				//System.out.println(position);
 				tabSuffixes[i] = position;
 				i++;
 			}
 		}
 		/*for(int j =0; j<tabSuffixes.length;j++){
-			System.out.println(tabSuffixes[j]);
+			//System.out.println(tabSuffixes[j]);
 		}
-		System.out.println("init OK");*/
+		//System.out.println("init OK");*/
 	}
 
 	// call to sort the entire suffix array
@@ -68,7 +68,7 @@ public class SuffixArray {
 	 * @param end
 	 */
 	public void qsort(int[] tabSuffixes, int begin, int end) {
-		// System.out.println("qsort");
+		// //System.out.println("qsort");
 		if (end > begin) {
 			int index = begin + RAND.nextInt(end - begin + 1);
 			int pivot = tabSuffixes[index];
@@ -93,7 +93,7 @@ public class SuffixArray {
 			qsort(tabSuffixes, begin, index - 1);
 			qsort(tabSuffixes, index + 1, end);
 		}
-		// System.out.println("QSort OK");
+		// //System.out.println("QSort OK");
 	}
 
 	public void initLCPVector() throws Exception {
@@ -102,7 +102,7 @@ public class SuffixArray {
 		LCPVector[0] = 0;
 		for (int i = 1; i < tabSuffixes.length ; i++) {
 			LCPVector[i] = getLCPLongPrefixeBetween(tabSuffixes[i-1], tabSuffixes[i]);
-			//System.out.println("Result : "+LCPVector[i]);
+			////System.out.println("Result : "+LCPVector[i]);
 		}
 
 		LCPVector[tabSuffixes.length] = 0;
@@ -131,11 +131,11 @@ public class SuffixArray {
 
 		String corpusSentence = corpus.getCorpusArray()[line];
 
-		// System.out.println("Corpus "+corpusSentence);
+		// //System.out.println("Corpus "+corpusSentence);
 
-		/*System.out.println("Token a la position : " + posFirstToken + " = |"
+		/*//System.out.println("Token a la position : " + posFirstToken + " = |"
 				+ returnAllSentence(posFirstToken) + "|");
-		System.out.println("Token a la position : " + posSecondToken + " = |"
+		//System.out.println("Token a la position : " + posSecondToken + " = |"
 				+ returnAllSentence(posSecondToken) + "|");*/
 
 		String firstToken = corpusSentence.substring(posFirstToken, corpusSentence.length());
@@ -236,7 +236,7 @@ public class SuffixArray {
 		
 		// Creation d'un tableau de suffixe
 		for (int i = 0; i < tabSuffixes.length ; i++) {
-			//System.out.println("= "+tabSuffixes[i]);
+			////System.out.println("= "+tabSuffixes[i]);
 			array.add(returnAllSentence(tabSuffixes[i]));
 		}
 
@@ -343,7 +343,7 @@ public class SuffixArray {
 		
 	String search = "Pastèque";
 	int position = SuffixArray.dichotomieRecursive(exemple,search,0,exemple.size()-1);
-	System.out.println("Position = "+position);
+	//System.out.println("Position = "+position);
 
 	ArrayList<Integer> positions = new ArrayList<Integer>();
 	
@@ -371,6 +371,6 @@ public class SuffixArray {
 			break;
 	}
 	
-	System.out.println("Positions : "+positions);
+	//System.out.println("Positions : "+positions);
 }*/
 }

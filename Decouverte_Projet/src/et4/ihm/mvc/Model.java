@@ -72,12 +72,12 @@ public class Model extends Observable {
 		tokenConnu.add("工");
 		graphe = new GrapheWord2Vec();
 
-		System.out.println("Tokenization en cours ...");
+		//System.out.println("Tokenization en cours ...");
 		tokenizationchinese2sav = new TokenizationChinese2();;
 		
 		try {
 			tokenizationchinese2sav.load();
-			System.out.println("Tokenization chargee");
+			//System.out.println("Tokenization chargee");
 		} catch (ClassNotFoundException | IOException e1) {
 			// TODO Auto-generated catch block
 			
@@ -94,7 +94,7 @@ public class Model extends Observable {
 		// launch();
 
 		ClassPathResource resource = new ClassPathResource("chCorpusUTF.txt");
-		System.out.println("ClassPathRessource");
+		//System.out.println("ClassPathRessource");
 
 		File f;
 
@@ -103,7 +103,7 @@ public class Model extends Observable {
 			tw2v = new Word2VecObject(f);
 			tw2v.launch("她很少迟到。");
 			double s = tw2v.similarity("她很少迟到。", "她很少迟到。");
-			System.out.println("s = " + s);
+			//System.out.println("s = " + s);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -111,7 +111,7 @@ public class Model extends Observable {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		// System.out.println("model");
+		// //System.out.println("model");
 	}
 
 	/**
@@ -173,7 +173,7 @@ public class Model extends Observable {
 	}
 	
 	private String getTranslation(String key) {
-		System.out.println("#### Key : "+key);
+		//System.out.println("#### Key : "+key);
 		ArrayList<String> sentencesFrench = new ArrayList<String>();
 		/* recherche des phrases contenant le mot key */
 		search(key, 1);
@@ -210,8 +210,8 @@ public class Model extends Observable {
 		Map<String, Integer> result = sortByValue(map, false);
 		
 //		for(Entry<String, Integer> entry : result.entrySet()){
-//			System.out.println("key : "+entry.getKey());
-//			System.out.println("value : "+entry.getValue());
+//			//System.out.println("key : "+entry.getKey());
+//			//System.out.println("value : "+entry.getValue());
 //		}
 //		
 		HashMap<String, Integer> commonToken = new HashMap<String, Integer>();
@@ -277,7 +277,7 @@ public class Model extends Observable {
 
 					/*
 					 * for (int j = 0; j < suffixArray.getLCPVector().length ;
-					 * j++) { System.out.println(suffixArray.getLCPVector()[j]);
+					 * j++) { //System.out.println(suffixArray.getLCPVector()[j]);
 					 * }
 					 */
 					ArrayList<Integer> positions = suffixArray.getAllPositionsOfPhrase(searchinput);
@@ -291,21 +291,21 @@ public class Model extends Observable {
 						String piying = "";
 						if (langue == 1) {
 							trad = findTranslationChineseFrench(corpus.getCorpusArray()[i], 1, tradCh, tradFr, tradLink,false);
-							// System.out.println("Chinois ##"+corpus.getCorpusArray()[i]+"####");
-							// System.out.println(Model.getPinyin(currentCorpus.getCorpusArray()[i]));
+							// //System.out.println("Chinois ##"+corpus.getCorpusArray()[i]+"####");
+							// //System.out.println(Model.getPinyin(currentCorpus.getCorpusArray()[i]));
 							piying = Model.getPinyin(corpus.getCorpusArray()[i]);
 						} else {
 							trad = findTranslationChineseFrench(corpus.getCorpusArray()[i], 2, tradCh, tradFr, tradLink,false);
-							// System.out.println("Fr: ##"+corpus.getCorpusArray()[i]+"####");
-							// System.out.println(trad);
-							// System.out.println(Model.getPinyin(trad));
+							// //System.out.println("Fr: ##"+corpus.getCorpusArray()[i]+"####");
+							// //System.out.println(trad);
+							// //System.out.println(Model.getPinyin(trad));
 							piying = Model.getPinyin(trad);
 
 						}
-						// System.out.println(currentCorpus.getCorpusArray()[i]);
-						// System.out.println("Ligne: " + i + " Positions: " +
+						// //System.out.println(currentCorpus.getCorpusArray()[i]);
+						// //System.out.println("Ligne: " + i + " Positions: " +
 						// positions);
-						// System.out.println("Occurence: " + positions.size());
+						// //System.out.println("Occurence: " + positions.size());
 
 						if (j == 0) {
 							listComponentSearch.add(new SearchComponent(new Point(0, SearchPanel.heightComponent
@@ -320,18 +320,18 @@ public class Model extends Observable {
 						j++;
 						// }
 
-						// System.out.println("corpus : " +
+						// //System.out.println("corpus : " +
 						// currentCorpus.getCorpusArray()[i]);
 					}
 				}
 			}
 
 		} catch (IOException e) {
-			System.err.println("File Not Found or data not available");
+			//System.err.println("File Not Found or data not available");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		// System.out.println("Action dans le model 'search' : " + searchinput);
+		// //System.out.println("Action dans le model 'search' : " + searchinput);
 
 		/* tri par pertinence */
 		Collections.sort(listComponentSearch, comparePertinence());
@@ -362,9 +362,9 @@ public class Model extends Observable {
 			}
 			/*
 			 * afficher toutes les possibilites de Pinyin for (int i = 0; i <
-			 * pinyinArray.length; ++i) { System.out.println(pinyinArray[i]); }
+			 * pinyinArray.length; ++i) { //System.out.println(pinyinArray[i]); }
 			 */
-			// System.out.println(pinyinArray[0]);
+			// //System.out.println(pinyinArray[0]);
 			try {
 				// temp est inutile, c'est juste pour savoir pinyinArray est
 				// null ou pas
@@ -408,23 +408,23 @@ public class Model extends Observable {
 			
 			for(int i=0;i<tokens.length;i++){
 
-				System.out.println("tokens[i] : "+tokens[i]);
+				//System.out.println("tokens[i] : "+tokens[i]);
 		
 			}
 			
 			tokenChinese.addAll(Arrays.asList(tokens));
 			
 			for(String token : tokenChinese) {
-				System.out.println(graphe.contains(token));
+				//System.out.println(graphe.contains(token));
 				if(!graphe.contains(token) || graphe.getDico().get(token) < 0.2) {
 					/* ajout du mot inconnu a la liste*/
 					tokensInconnu.add(token);
-					System.out.println("Token inconnu ="+token);
+					//System.out.println("Token inconnu ="+token);
 				}
 			}
 			
 			for(String token : tokensInconnu) {
-//				System.out.println("Boucle 1 : "+token);
+//				//System.out.println("Boucle 1 : "+token);
 				ArrayList<String> phrasesResult = new ArrayList<String>();
 				
 				/* learn automatique */
@@ -435,7 +435,7 @@ public class Model extends Observable {
 				for(SearchComponent search : listComponentSearch){
 					if(j==1)
 						break;
-//					System.out.println("Boucle 2");
+//					//System.out.println("Boucle 2");
 
 					int connu = 0;
 					String[] tmp = null;
@@ -472,7 +472,7 @@ public class Model extends Observable {
 
 	private String learnWord2Vec(String text) {
 		
-		System.out.println("-------------------------||||||| "+tw2v.similarity("买完整版", "买完整版"));
+		//System.out.println("-------------------------||||||| "+tw2v.similarity("买完整版", "买完整版"));
 		
 		/**
 		 * Lire le corpus => trouve phrase avec des phrases bcp de mots connu
@@ -484,7 +484,7 @@ public class Model extends Observable {
 		
 		ArrayList<String> tokenretenu = new ArrayList<String>();
 		int line = 0;
-		//System.out.println("Phrase : "+corpus.getIndex().get(i).getListTokens());
+		////System.out.println("Phrase : "+corpus.getIndex().get(i).getListTokens());
 		
 		/*
 		 * 
@@ -501,8 +501,8 @@ public class Model extends Observable {
 		
 		if(sentences==null)
 		{
-			System.out.println("Error sentences null in Model");
-			System.exit(0);
+			//System.out.println("Error sentences null in Model");
+			//System.exit(0);
 		}
 		ArrayList<String> tokenChinese = new ArrayList<String>();
 		for(String sentence : sentences) {
@@ -518,14 +518,14 @@ public class Model extends Observable {
 			tokenChinese.addAll(Arrays.asList(array));
 			for(String token : tokenChinese) {
 				
-				System.out.println(graphe.contains(token));
+				//System.out.println(graphe.contains(token));
 				if(graphe.contains(token) && !token.replaceAll(" ", "").equals("")) {
 					connu++;
-					//System.out.println("Token connu ="+token);
+					////System.out.println("Token connu ="+token);
 				}
 				else {
-					//System.out.println("Token Inconnu ="+token);
-					//System.out.println("Token inconnu ="+token);
+					////System.out.println("Token Inconnu ="+token);
+					////System.out.println("Token inconnu ="+token);
 					if(!token.replaceAll(" ", "").equals("")) {
 					
 							tokenretenu.add(token);
@@ -536,21 +536,21 @@ public class Model extends Observable {
 				
 			}
 			if (connu != 0) {
-				System.out.println("************ Connu "+connu+" size"+tokenChinese.size());
+				//System.out.println("************ Connu "+connu+" size"+tokenChinese.size());
 				double pourcentage = (double) connu / (double) tokenChinese.size();
 				
 				/**
 				 * Si on depace le seuil => la phrase est bonne pour l'affichage
 				 */
 				if (pourcentage > SEUIL) {
-					System.out.println("Pourcentage "+pourcentage);
-					System.out.println("Phrase : "+sentence);
+					//System.out.println("Pourcentage "+pourcentage);
+					//System.out.println("Phrase : "+sentence);
 					
 					for(String retenu : tokenretenu) {
 						graphe.update(retenu,0.2);
 					}
 					
-					// System.out.println("Phrase : "+corpus.getCorpusArray()[i]);
+					// //System.out.println("Phrase : "+corpus.getCorpusArray()[i]);
 					phraseretenu.add(sentence);
 				}
 			}
@@ -560,7 +560,7 @@ public class Model extends Observable {
 
 		String result = "";
 		double SEUIL_W2V = (double)25.0/100.0;
-		System.out.println("Avant"+tokenretenu.size());
+		//System.out.println("Avant"+tokenretenu.size());
 		String[] tradCh,tradLink,tradFr;
 		try {
 			tradCh = FileUtils.readFileToString(new File("resources/ch.txt"), "UTF-8").split("\n");
@@ -580,7 +580,7 @@ public class Model extends Observable {
 		
 		
 		
-		//System.out.println("corpus.getTc().getTokensSet()"+tokenizationchinese2sav.getSentences());
+		////System.out.println("corpus.getTc().getTokensSet()"+tokenizationchinese2sav.getSentences());
 		/*
 		double similarity = 0;
 		for(String sentence : phraseretenu) {
@@ -594,12 +594,12 @@ public class Model extends Observable {
 				String array[] = tok.split(" ");
 				ArrayList<String> tmp = new ArrayList<String>();
 				tmp.addAll(Arrays.asList(array));
-				//System.out.println("udhsqdgdsqggsdqghdsqf ------ "+tokenretenu.size()+" i = "+i+" ppppppp "+tmp.size());
+				////System.out.println("udhsqdgdsqggsdqghdsqf ------ "+tokenretenu.size()+" i = "+i+" ppppppp "+tmp.size());
 				for (int j = 0; j < tokenretenu.size(); j++) {
 					for(String token : tmp) {
-						//System.out.println("token"+token+" tokenretenu"+tokenretenu.size());
+						////System.out.println("token"+token+" tokenretenu"+tokenretenu.size());
 						if(!token.replaceAll(" ", "").equals("")) {
-							System.out.println("Similarity ["+token+" - "+tokenretenu.get(j)+"]"+tw2v.similarity(token, tokenretenu.get(j)));
+							//System.out.println("Similarity ["+token+" - "+tokenretenu.get(j)+"]"+tw2v.similarity(token, tokenretenu.get(j)));
 							similarity+=tw2v.similarity(token, tokenretenu.get(j));
 							cpt++;
 						}
@@ -610,7 +610,7 @@ public class Model extends Observable {
 			
 			
 			
-			System.out.println("__________RESULT = "+(double)similarity/(double)cpt+"__________");
+			//System.out.println("__________RESULT = "+(double)similarity/(double)cpt+"__________");
 			if((double)similarity/(double)cpt>SEUIL_W2V) {
 				result+=sentence+"\n";
 			}
@@ -625,18 +625,18 @@ public class Model extends Observable {
 		double SEUIL_W2V = (double)25.0/100.0;
 		for (int i = 0; i < phraseretenu.size(); i++) {
 			
-			System.out.println("Les tokens inconnu : "+phraseretenu.get(keyCorpus.get(i)));
+			//System.out.println("Les tokens inconnu : "+phraseretenu.get(keyCorpus.get(i)));
 			String tokenrand = phraseretenu.get(keyCorpus.get(i)).get(0);
 			
 			double similarity = 0;
 			for(String token : corpus.getIndex().get(keyCorpus.get(i)).getListTokens().keySet()) {
 				if(graphe.contains(token)) {
 					similarity+=tw2v.similarity(token, tokenrand);
-					//System.out.println("Similarity Entre ["+token+","+tokenrand+"] ======== "+similarity);
+					////System.out.println("Similarity Entre ["+token+","+tokenrand+"] ======== "+similarity);
 				}
 			}
 			
-			System.out.println("__________RESULT = "+(double)similarity/(double)corpus.getIndex().get(keyCorpus.get(i)).getListTokens().size()+"__________");
+			//System.out.println("__________RESULT = "+(double)similarity/(double)corpus.getIndex().get(keyCorpus.get(i)).getListTokens().size()+"__________");
 			if((double)similarity/(double)corpus.getIndex().get(keyCorpus.get(i)).getListTokens().size()>SEUIL_W2V) {
 				result+=corpus.getCorpusArray()[keyCorpus.get(i)]+"\n";
 			}
@@ -654,7 +654,7 @@ public class Model extends Observable {
 	 */
 	public void updateKnowledge(File file) throws FileNotFoundException {
 		
-		System.out.println("Model : updateKnowledge in "+file.getAbsolutePath());
+		//System.out.println("Model : updateKnowledge in "+file.getAbsolutePath());
 		TokenizationChinese2 tc = new TokenizationChinese2();
 		List<String> sentences = null;
 		try {
@@ -673,18 +673,18 @@ public class Model extends Observable {
 		
 		
 		
-		//System.out.println("Nouveaux mots connus :D "+tokennew);
+		////System.out.println("Nouveaux mots connus :D "+tokennew);
 		
-		//System.out.println("Dico avant"+graphe);
-		System.out.println("_________\n");
+		////System.out.println("Dico avant"+graphe);
+		//System.out.println("_________\n");
 		for(String s : tokennew) {
-			System.out.println(s);
+			//System.out.println(s);
 		}
 		
 		
 		graphe.addDico(tokennew);
 		
-		//System.out.println("Dico après"+graphe);
+		////System.out.println("Dico après"+graphe);
 	}
 
 	public static String findTranslationChineseFrench(String A, int choice, String[] dicoCh, String[] dicoFr,
@@ -718,14 +718,14 @@ public class Model extends Observable {
 				if(contains) {
 					if (cmp.contains(A)) {
 						idA = tmp[0];
-//						System.out.println(idA);
+//						//System.out.println(idA);
 						break;
 					}
 				}
 				else {
 					if (cmp.equals(A)) {
 						idA = tmp[0];
-//						System.out.println(idA);
+//						//System.out.println(idA);
 						break;
 					}
 				}
@@ -741,14 +741,14 @@ public class Model extends Observable {
 				if(contains) {
 					if (cmp.contains(idA)) {
 						idB = tmp[idLinkB];
-//						System.out.println(idB);
+//						//System.out.println(idB);
 						break;
 					}
 				}
 				else {
 					if (cmp.equals(idA)) {
 						idB = tmp[idLinkB];
-//						System.out.println(idB);
+//						//System.out.println(idB);
 						break;
 					}
 				}

@@ -28,17 +28,17 @@ public class SearchBarController implements ActionListener, KeyListener {
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-//		System.out.println("keyPressed");
+//		//System.out.println("keyPressed");
 
 		if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 
 			if (panel.getFrRadioButton().isSelected()) {
-				System.out.println("searchFR OK : "+panel.getTextAreaFR().getText());
+				//System.out.println("searchFR OK : "+panel.getTextAreaFR().getText());
 
 				model.search(panel.getTextAreaFR().getText(), 2);
 				model.notifyChanges();
 			} else if (panel.getCnRadioButton().isSelected()) {
-				System.out.println("searchCN OK : "+panel.getTextAreaCN().getText());
+				//System.out.println("searchCN OK : "+panel.getTextAreaCN().getText());
 
 				model.search(panel.getTextAreaCN().getText(), 1);
 				model.notifyChanges();
@@ -48,7 +48,7 @@ public class SearchBarController implements ActionListener, KeyListener {
 			/* pour ne pas afficher le caractère \n */
 			e.consume();
 
-			System.out.println("keyPressed ENTER");
+			//System.out.println("keyPressed ENTER");
 		}
 	}
 
@@ -59,15 +59,15 @@ public class SearchBarController implements ActionListener, KeyListener {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		System.out.println("ActionPerformed searchBar");
+		//System.out.println("ActionPerformed searchBar");
 		/* panel affiché */
 		if (panel.getFrRadioButton().isSelected()) {
-			System.out.println("FRSELECTED");
+			//System.out.println("FRSELECTED");
 			panel.setInputField(2);
 			panel.revalidate();
 
 		} else {
-			System.out.println("CNSELECTED");
+			//System.out.println("CNSELECTED");
 			panel.setInputField(1);
 			panel.revalidate();
 

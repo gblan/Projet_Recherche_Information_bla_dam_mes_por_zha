@@ -78,7 +78,7 @@ public class BodyPanel extends JPanel{
 	 * s'aggrandit
 	 */
 	public void updateSizeSearch() {
-		System.out.println(search.getSearchComponent().size());
+		//System.out.println(search.getSearchComponent().size());
 		search.setPreferredSize(new Dimension(View.width-20,120*search.getSearchComponent().size()+120));
 		//scrollSearch.setPreferredSize(new Dimension(View.width,140*3));
 		
